@@ -2,6 +2,9 @@ package main.java.com.codepath.trees;
 
 import main.java.com.codepath.objects.TreeNode;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class TreeProblems {
 
     public static TreeNode<Integer> previous= null;
@@ -103,4 +106,97 @@ public class TreeProblems {
         return Math.max(left, right) + 1;
     }
 
+    public int countLeafNodes(TreeNode<Integer> root) {
+        if (root == null) {
+            return 0;
+        }
+
+        if (root.getLeft() == null && root.getRight() == null) {
+            return 1;
+        } else {
+            return countLeafNodes(root.getLeft()) + countLeafNodes(root.getRight());
+        }
+    }
+
+    public boolean compareTrees(TreeNode<Integer> root, TreeNode<Integer> other) {
+
+        if (root == null && other == null) {
+            return true;
+        }
+
+        if (root == null || other == null) {
+            return false;
+        }
+
+        if (root.getValue().compareTo(other.getValue()) != 0) {
+            return false;
+        }
+
+        return compareTrees(root.getLeft(), other.getLeft()) && compareTrees(root.getRight(), other.getRight());
+    }
+
+    class TreeCell {
+        TreeNode<Integer> node;
+        int sum;
+
+        TreeCell(TreeNode node, int sum) {
+            this.node = node;
+            this.sum = sum;
+        }
+
+        public String toString() {
+            return node.toString() + ":sum="+sum;
+        }
+    };
+
+    /**
+     * This is better done by using Depth First Search, but this is never the less a good
+     * exercise for with Breadth First Search. The struggle with Breadth First search
+     * is preserving the path. We accomplish this by creating a new Object, that stores
+     * the TreeNode and the accumulated sum at that node. Each node, therefore presents
+     * a given path, and the length of that given path.
+     *
+     * @param root tree node
+     * @param target target to sum to;
+     * @return
+     */
+    public boolean pathSumWithBFS(TreeNode<Integer> root, int target) {
+
+        Queue<TreeCell> queue = new LinkedList<>();
+        queue.add(new TreeCell(root, root.getValue()));
+
+        while(!queue.isEmpty()) {
+            TreeCell treeCell = queue.poll();
+
+            if(treeCell.node.getLeft() == null && treeCell.node.getRight() == null && treeCell.sum == target) {
+                return true;
+            }
+
+            if (treeCell.node.getLeft() != null) {
+                TreeCell leftTreeCell = new TreeCell(treeCell.node.getLeft(), treeCell.sum + treeCell.node.getLeft().getValue());
+                queue.add(leftTreeCell);
+
+            }
+
+            if (treeCell.node.getRight() != null) {
+                TreeCell rightTreeCell = new TreeCell(treeCell.node.getRight(), treeCell.sum + treeCell.node.getRight().getValue());
+                queue.add(rightTreeCell);
+            }
+        }
+        return false;
+    }
+
+    public boolean pathSumWithDfs(TreeNode<Integer> root, int target) {
+        if (root == null) {
+            return false;
+        }
+
+        int result = target - root.getValue();
+        if (root.getLeft() == null && root.getRight() == null && result == 0) {
+            return true;
+        } else {
+            return pathSumWithDfs(root.getLeft(), target - root.getValue())
+                || pathSumWithDfs(root.getRight(), target - root.getValue());
+        }
+    }
 }

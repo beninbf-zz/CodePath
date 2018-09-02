@@ -7,13 +7,13 @@ public class TreeNode<T> {
 
     public TreeNode() {}
 
-    TreeNode(T value) {
+    public TreeNode(T value) {
         this.value = value;
         this.left = null;
         this.right = null;
     }
 
-    TreeNode(T value, TreeNode<T> left, TreeNode<T> right) {
+    public TreeNode(T value, TreeNode<T> left, TreeNode<T> right) {
         this.left = left;
         this.right = right;
     }
