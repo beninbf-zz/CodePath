@@ -51,7 +51,7 @@ public class Sorting {
 
         // We need to compare the last element of the array, so use less than or equal
         while(rightBegArray <= rightEndArray) {
-            temp[counter] = array[rightEndArray];
+            temp[counter] = array[rightBegArray];
             counter++;
             rightBegArray++;
         }
@@ -130,7 +130,7 @@ public class Sorting {
             int right = intervalSize - 1;
             for (int i = 0; i < groups; i++) {
                 int mid = (left + right) / 2;
-                //System.out.println("left=" +left + "mid="+mid+ "right=" +right);
+                System.out.println("[l=" +left + ", m="+mid+ ", r=" +right+"]");
                 merge(array, left, mid, right, temp);
                 left += intervalSize;
                 right += intervalSize;
@@ -144,6 +144,55 @@ public class Sorting {
         }
     }
 
+    public void iterativeMergeSort2(int[] array) {
+        int n = array.length;
+        int groups = returnRoundedUpInt(n, 2);
+        int[] temp = new int[array.length];
+        for (int k = groups; k >= 1; k--) {
+            System.out.println("GROUPS: " + k);
+            int intervalSize = n / k;
+            System.out.println("width: " + intervalSize);
+            int left = 0;
+            int right = Math.min(left + intervalSize, n - 1);
+            int mid = (left + right) / 2;
+            for (int i = 0; i < k; i++) {
+                System.out.println("[l=" +left + ", m="+mid+ ", r=" +right+"]");
+                merge(array, left, mid, Math.min(right, n - 1), temp);
+                left = Math.min( n - 1, Math.min(right, n - 1) + 1);
+                right = Math.min(left + intervalSize, n - 1);
+                mid = (left + right) / 2;
+            }
+            print(array);
+            //groups = returnRoundedUpInt(groups, 2);
+        }
+    }
+
+    public void iterativeMergeSort3(int[] array) {
+        int n = array.length;
+        int groups = returnRoundedUpInt(n, 2);
+        int[] temp = new int[array.length];
+        // interval size, merging arrays of length 1, then length 2, then 4
+        for (int intervalSize = 1; intervalSize < n; intervalSize = intervalSize * 2) {
+            System.out.println("GROUPS: " + groups);
+
+            System.out.println("width: " + intervalSize);
+            int left = 0;
+            // We add interval - 1 to the mid point because the array is zero based
+            // We always take the minimum of mid + interval and the number of elements in the array
+            int mid = Math.min(left + (intervalSize - 1), n - 1);
+            int right = Math.min(mid + intervalSize, n - 1);
+            for (int i = 0; i < groups; i++) {
+                System.out.println("[l=" +left + ", m="+mid+ ", r=" +right+"]");
+                merge(array, left, mid, right, temp);
+                left = Math.min(right + 1, n - 1);
+                mid = Math.min(left + (intervalSize - 1), n - 1);
+                right = Math.min(mid + intervalSize, n - 1);
+            }
+            print(array);
+            groups = returnRoundedUpInt(groups, 2);
+        }
+    }
+
     public int returnRoundedUpInt(int number, int divisor) {
         int result = 0;
         if (number % divisor == 0) {
@@ -152,5 +201,26 @@ public class Sorting {
             result = (number / divisor) + 1;
         }
         return result;
+    }
+
+    public int gcd(int a, int b) {
+        if (b == 0) {
+            return a;
+        }
+
+        int value = a % b;
+        return gcd(b, value);
+    }
+
+    public int gcdSubtraction(int a, int b) {
+        if (a == b) {
+            return a;
+        }
+
+        if (a > b) {
+            return gcdSubtraction( a - b, b);
+        } else {
+            return gcdSubtraction(a, b - a);
+        }
     }
 }
