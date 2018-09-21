@@ -35,7 +35,10 @@ public class Main {
 //        System.out.println(recursionProblems.fibonnaci(10));
 //        System.out.println(recursionProblems.fibonnaciIter(10));
 
-        recursionProblems.printDecimalNumbers(2);
+        //recursionProblems.printDecimalNumbers(2);
+
+        //recursionProblems.diceRoll(2);
+        recursionProblems.diceSum(3, 7);
 
 
 

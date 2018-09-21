@@ -232,7 +232,7 @@ public class RecursionProblems {
 //            printDecimalNumbers(n - 1, prefix + "8");
 //            printDecimalNumbers(n - 1, prefix + "9");
 
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < 10; i++) {
                 printDecimalNumbers(n - 1, prefix + String.valueOf(i));
             }
         }
@@ -262,5 +262,51 @@ public class RecursionProblems {
             f2 = result;
         }
         return result;
+    }
+
+    public void diceRoll(int n) {
+        String prefix = "";
+        diceRoll(n, prefix);
+    }
+
+    private void diceRoll(int n, String prefix) {
+        if (n == 0) {
+            System.out.println(prefix);
+        } else {
+            for (int i = 1; i <= 6; i++) {
+                diceRoll(n - 1, prefix + String.valueOf(i));
+            }
+        }
+    }
+
+    public void diceSum(int n, int sum) {
+        diceSum(n, "", 0, sum);
+    }
+
+    private void diceSum(int n, String prefix, int sumSoFar, int sum) {
+        if (n == 0) {
+            if (sum == sumSoFar) {
+                System.out.println(prefix + "=" + sumSoFar);
+                return;
+            }
+            return;
+        } else {
+            for (int i = 1; i <= 6; i++) {
+                diceSum(n - 1, prefix + String.valueOf(i), i + sumSoFar, sum);
+            }
+        }
+    }
+
+    public void printCapitalVariations(String word) {
+        String prefix = "";
+        printCapitalVariations(word, prefix);
+    }
+
+    private void printCapitalVariations(String word, String prefix) {
+        if (word.isEmpty()) {
+            System.out.println(prefix);
+        } else {
+
+        }
     }
 }
