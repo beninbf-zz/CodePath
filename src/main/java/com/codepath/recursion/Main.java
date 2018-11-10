@@ -9,9 +9,9 @@ public class Main {
 //        System.out.println(test.substring(0, 0));
 //        System.out.println(test.substring(0, test.length()));
 //
-//        System.out.println(recursionProblems.getSubStrings("12345"));
+        System.out.println(recursionProblems.getSubStrings("12345"));
 //
-//        System.out.println(recursionProblems.getSubStringRecursive("12345"));
+        System.out.println(recursionProblems.getSubStringRecursive("12345"));
 
         //System.out.println(recursionProblems.nChooseK(23, 3));
         //System.out.println(recursionProblems.nChooseKMemoization(23, 3));
@@ -38,8 +38,7 @@ public class Main {
         //recursionProblems.printDecimalNumbers(2);
 
         //recursionProblems.diceRoll(2);
-        recursionProblems.diceSum(3, 7);
-
+        //recursionProblems.diceSum(3, 7);
 
 
 

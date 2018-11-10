@@ -34,13 +34,11 @@ public class TreeProblems {
 
         if (min != null && root.getValue().compareTo(min) < 0) {
             return false;
-
         }
 
         if (max != null && root.getValue().compareTo(max) > 0) {
             return false;
         }
-
 
         return isBSTMinMax(root.getLeft(), min, root.getValue()) && isBSTMinMax(root.getRight(), root.getValue(), max);
     }
@@ -139,6 +137,7 @@ public class TreeProblems {
 
     class TreeCell {
         TreeNode<Integer> node;
+        TreeCell parent;
         int sum;
 
         TreeCell(TreeNode node, int sum) {
@@ -147,22 +146,31 @@ public class TreeProblems {
         }
 
         public String toString() {
-            return node.toString() + ":sum="+sum;
+            String parentValue = (parent != null) ? parent.node.getValue().toString() : "";
+            return node.toString() + " parent: " + parentValue + " :sum="+sum;
+        }
+
+        public String getPathRepresentation() {
+            return node.getValue().toString();
         }
     };
 
     /**
      * This is better done by using Depth First Search, but this is never the less a good
-     * exercise for with Breadth First Search. The struggle with Breadth First search
-     * is preserving the path. We accomplish this by creating a new Object, that stores
-     * the TreeNode and the accumulated sum at that node. Each node, therefore presents
-     * a given path, and the length of that given path.
+     * exercise for understanding Breadth First Search. The struggle with Breadth First search
+     * is preserving the path as we move from node to node. We accomplish this by creating a
+     * new Object, that stores the TreeNode and the accumulated sum along the path up to that
+     * node. With this new object, that we call TreeCell, we can therefore accumulate the sum
+     * up until that node. Every time we encounter a node, we create a new TreeCell node, and we store
+     * the value for the accumulated sum, which is composed of roots accumulated value, and the current
+     * value of the node. By doing this, we can accurately check that a given node is correctly holding
+     * the sum from the nodes that came before in a path in a tree.
      *
      * @param root tree node
      * @param target target to sum to;
      * @return
      */
-    public boolean pathSumWithBFS(TreeNode<Integer> root, int target) {
+    public boolean pathSumWithBfs(TreeNode<Integer> root, int target) {
 
         Queue<TreeCell> queue = new LinkedList<>();
         queue.add(new TreeCell(root, root.getValue()));
@@ -202,17 +210,17 @@ public class TreeProblems {
         }
     }
 
-    public ArrayList<ArrayList<TreeNode<Integer>>> pathWithDfsWrapper(TreeNode<Integer> root, int target) {
+    public ArrayList<ArrayList<TreeNode<Integer>>> findPathsThatSumWithDfs(TreeNode<Integer> root, int target) {
 
         ArrayList<ArrayList<TreeNode<Integer>>> output = new ArrayList<>();
         ArrayList<TreeNode<Integer>> candidate = new ArrayList<>();
 
-        pathWithDfs(root,  target,  output, candidate);
+        findPathsThatSumWithDfs(root,  target,  output, candidate);
         return output;
     }
 
 
-    public void pathWithDfs(TreeNode<Integer> root, int target, ArrayList<ArrayList<TreeNode<Integer>>> output, ArrayList<TreeNode<Integer>> candidate) {
+    public void findPathsThatSumWithDfs(TreeNode<Integer> root, int target, ArrayList<ArrayList<TreeNode<Integer>>> output, ArrayList<TreeNode<Integer>> candidate) {
 
         if (root == null) {
             return;
@@ -236,11 +244,11 @@ public class TreeProblems {
             candidate.remove(candidate.size() - 1);
         }
 
-        pathWithDfs(root.getLeft(), result, output, candidate);
+        findPathsThatSumWithDfs(root.getLeft(), result, output, candidate);
         /**
          * this happens after you have explored the left and are at the root
          */
-        pathWithDfs(root.getRight(), result, output, candidate);
+        findPathsThatSumWithDfs(root.getRight(), result, output, candidate);
 
         /**
          * After exploring the right, there is no more tree, so any code after the line above
@@ -252,40 +260,46 @@ public class TreeProblems {
         }
     }
 
-    public ArrayList<ArrayList<TreeNode<Integer>>> pathSumWithBFSOutput(TreeNode<Integer> root, int target) {
-        ArrayList<ArrayList<TreeNode<Integer>>> output = new ArrayList<>();
-        ArrayList<TreeNode<Integer>> candidate = new ArrayList<>();
-         pathSumWithBFS( root, target,  output, candidate);
-         return output;
+    public ArrayList<ArrayList<TreeCell>> findPathsThatSumWithBFS(TreeNode<Integer> root, int target) {
+        ArrayList<TreeCell> paths = new ArrayList<>();
+        ArrayList<ArrayList<TreeCell>> output = new ArrayList<>();
+        findPathsThatSumWithBFS(root, target, paths);
+
+        for(TreeCell cell: paths) {
+            ArrayList<TreeCell> path = new ArrayList<>();
+            path.add(cell);
+            while(cell.parent != null) {
+                path.add(cell.parent);
+                cell = cell.parent;
+            }
+            output.add(path);
+        }
+        return output;
     }
 
-    public void pathSumWithBFS(TreeNode<Integer> root, int target, ArrayList<ArrayList<TreeNode<Integer>>> output, ArrayList<TreeNode<Integer>> candidate) {
+    public void findPathsThatSumWithBFS(TreeNode<Integer> root, int target, ArrayList<TreeCell> paths) {
 
         Queue<TreeCell> queue = new LinkedList<>();
         queue.add(new TreeCell(root, root.getValue()));
 
         while(!queue.isEmpty()) {
             TreeCell treeCell = queue.poll();
-            candidate.add(treeCell.node);
 
             boolean isLeafNode = treeCell.node.getLeft() == null && treeCell.node.getRight() == null;
 
             if(isLeafNode && treeCell.sum == target) {
-                output.add((ArrayList<TreeNode<Integer>>) candidate.clone());
-            } else if (isLeafNode && (treeCell.sum != 0)) {
-                candidate.remove(candidate.size() - 1);
-            } else if (!isLeafNode && (treeCell.sum <= 0)) {
-                candidate.remove(candidate.size() - 1);
+                paths.add(treeCell);
             }
 
             if (treeCell.node.getLeft() != null) {
                 TreeCell leftTreeCell = new TreeCell(treeCell.node.getLeft(), treeCell.sum + treeCell.node.getLeft().getValue());
+                leftTreeCell.parent = treeCell;
                 queue.add(leftTreeCell);
-
             }
 
             if (treeCell.node.getRight() != null) {
                 TreeCell rightTreeCell = new TreeCell(treeCell.node.getRight(), treeCell.sum + treeCell.node.getRight().getValue());
+                rightTreeCell.parent = treeCell;
                 queue.add(rightTreeCell);
             }
         }
