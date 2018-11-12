@@ -3,8 +3,18 @@ package main.java.com.codepath.recursion;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
+/**
+ * A class of recursion problems
+ */
 public class RecursionProblems {
 
+    /**
+     * Gets sub strings.
+     *
+     * @param s the s
+     * @return the sub strings
+     */
     public ArrayList<String> getSubStrings(String s) {
         ArrayList<String> results = new ArrayList<>();
         int length = s.length();

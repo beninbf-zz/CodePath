@@ -1,6 +1,5 @@
 package main.java.com.codepath.dynamicprogramming;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 

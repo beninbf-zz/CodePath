@@ -27,6 +27,6 @@ public class Main {
         String test ="myinterviewtrainer";
         Set<String> dictionary = new LinkedHashSet<>(Arrays.asList("my", "interview", "trainer"));
 
-        System.out.println(dynamicProgramming.wordBreak1(test, dictionary));
+        //System.out.println(dynamicProgramming.wordBreak1(test, dictionary));
     }
 }

@@ -1,6 +1,5 @@
 package main.java.com.codepath.objects;
 
-
 /**
  * The type LinkedListNode.
  */
@@ -21,7 +20,7 @@ public class LinkedListNode {
      *
      * @param x the x
      */
-    LinkedListNode(int x) {
+    public LinkedListNode(int x) {
         val = x; next = null;
     }
 }
