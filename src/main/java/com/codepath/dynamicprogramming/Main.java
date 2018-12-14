@@ -1,5 +1,7 @@
 package main.java.com.codepath.dynamicprogramming;
 
+import main.java.com.codepath.util.Util;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -12,9 +14,9 @@ public class Main {
         int[][] A = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
 
 
-        DynamicProgramming dynamicProgramming = new DynamicProgramming();
+        //DynamicProgramming dynamicProgramming = new DynamicProgramming();
 //
-//        dynamicProgramming.print2DArray(grid);
+      // dynamicProgramming.print2DArray(grid);
 //        System.out.println(dynamicProgramming.findMinPath(grid));
 //        System.out.println(dynamicProgramming.findMinPathDP(grid));
 //
@@ -28,5 +30,18 @@ public class Main {
         Set<String> dictionary = new LinkedHashSet<>(Arrays.asList("my", "interview", "trainer"));
 
         //System.out.println(dynamicProgramming.wordBreak1(test, dictionary));
+
+        int[][] array = {{1, 1}, {2, 2}};
+
+        int[][] arrayClone = array.clone();
+
+        array[1][1] = 98;
+
+        Util.print2DArray(array);
+        System.out.println("Different array");
+        Util.print2DArray(arrayClone);
+
+
+
     }
 }

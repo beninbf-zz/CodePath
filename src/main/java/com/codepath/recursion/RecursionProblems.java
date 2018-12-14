@@ -9,6 +9,151 @@ import java.util.Arrays;
  */
 public class RecursionProblems {
 
+    public void printBinary(int n) {
+        printBinary(n, "");
+    }
+
+    private void printBinary(int n, String binaryNumber) {
+        if (n == 0) {
+            System.out.println(binaryNumber);
+            return;
+        }
+
+        printBinary(n - 1, binaryNumber + "0");
+        printBinary(n - 1, binaryNumber + "1");
+    }
+
+    public void printDecimal(int n) {
+        printDecimal(n, "");
+    }
+
+    private void printDecimal(int n, String decimalNumber) {
+        if (n == 0) {
+            System.out.println(decimalNumber);
+            return;
+        }
+
+        printDecimal(n - 1, decimalNumber + "0");
+        printDecimal(n - 1, decimalNumber + "1");
+        printDecimal(n - 1, decimalNumber + "2");
+        printDecimal(n - 1, decimalNumber + "3");
+        printDecimal(n - 1, decimalNumber + "4");
+        printDecimal(n - 1, decimalNumber + "5");
+        printDecimal(n - 1, decimalNumber + "6");
+        printDecimal(n - 1, decimalNumber + "7");
+        printDecimal(n - 1, decimalNumber + "8");
+        printDecimal(n - 1, decimalNumber + "9");
+    }
+
+    public void rollingDice(int n) {
+        rollingDiceChoose(n, "");
+    }
+
+    private void rollingDice(int n , String prefix) {
+        if (n == 0) {
+            System.out.println(prefix);
+            return;
+        }
+
+        rollingDice(n - 1, prefix + "1");
+        rollingDice(n - 1, prefix + "2");
+        rollingDice(n - 1, prefix + "3");
+        rollingDice(n - 1, prefix + "4");
+        rollingDice(n - 1, prefix + "5");
+        rollingDice(n - 1, prefix + "6");
+
+    }
+
+    private void rollingDiceChoose(int n , String prefix) {
+        if (n == 0) {
+            System.out.println(prefix);
+            return;
+        }
+
+        for (int i = 1; i <= 6; i++) {
+            //Choose
+            prefix  = prefix + i;
+
+            // explore
+            rollingDiceChoose(n - 1, prefix);
+
+            // un choose...we already explored the previous value, so remove it and keep exploring
+            prefix = prefix.substring(0, prefix.length() - 1);
+        }
+
+    }
+
+    public void rollingDiceChooseSum(int n, int sum) {
+        ArrayList<Integer> prefix = new ArrayList<>();
+        int sumSoFar = 0;
+        rollingDiceChooseSum(n, prefix, sum, sumSoFar);
+    }
+
+    private void rollingDiceChooseSum(int dice , ArrayList<Integer> prefix, int sum, int sumSoFar) {
+        if (dice == 0) {
+            if (sumSoFar == sum) {
+                System.out.println(prefix);
+                return;
+            }
+            return;
+        }
+
+        for (int i = 1; i <= 6; i++) {
+            //Choose
+            prefix.add(i);
+
+            // explore
+            rollingDiceChooseSum(dice - 1, prefix, sum, sumSoFar + i);
+
+            // un choose...we already explored the previous value, so remove it and keep exploring
+            prefix.remove(prefix.size() - 1);
+
+        }
+    }
+
+    private void rollingDiceChooseSumOptimized(int dice , ArrayList<Integer> prefix, int sum, int sumSoFar) {
+        // since we are only rolling if the target is within the range of a given max and min
+        // we no longer need to check the sumSoFar.
+        if (dice == 0) {
+            System.out.println(prefix);
+            return;
+        }
+
+        for (int i = 1; i <= 6; i++) {
+
+            // the minimum you could possibly roll, is your current sum fo far, plus what you just rolled, i.e. i
+            // plus the minimum you could roll with the remaining dies. i.e. 1 * remaining dice
+            // remaining dice is dice - 1, because i is your current roll (i.e. your current dice)
+            int minYouCouldRoll = sumSoFar + i + 1 * (dice  - 1);
+
+            // the maximum you could possibly roll, is your current sum so far, plus what you just rolled, i.e. i
+            // plus the max you could roll with the remaining dice. i.e. 6 * remaining dice
+            // remaining dice is dice - 1, because i is your current roll (i.e. your current dice)
+            int maxYouCouldRoll = sumSoFar + i + 6 * (dice - 1);
+
+            if (minYouCouldRoll <= sum && maxYouCouldRoll >= sum) {
+                //Choose
+                prefix.add(i);
+
+                // explore
+                rollingDiceChooseSum(dice - 1, prefix, sum, sumSoFar + i);
+
+                // un choose...we already explored the previous value, so remove it and keep exploring
+                prefix.remove(prefix.size() - 1);
+            }
+        }
+
+    }
+
+    public void print(char[] array) {
+        System.out.print("[");
+        for(int i = 0; i < array.length - 1; i++) {
+            System.out.print(array[i] + ", ");
+        }
+        System.out.print(array[array.length - 1]+"]");
+        System.out.println();
+    }
+
     /**
      * Gets sub strings.
      *
@@ -318,5 +463,100 @@ public class RecursionProblems {
         } else {
 
         }
+    }
+
+    public boolean mySubSetSum(int[] array, int sum) {
+        if (array.length == 1) {
+            return array[0] == sum;
+        }
+        return mySubSetSum(array, array.length, sum);
+    }
+
+    private boolean mySubSetSum(int[] array, int n, int sum) {
+        if (sum == 0) {
+            return true;
+        } else if (n == 0 && sum != 0) {
+            return false;
+        }
+
+        return mySubSetSum(array, n - 1, sum) || mySubSetSum(array, n - 1, sum - array[n - 1]);
+    }
+
+    public boolean subSetSum(int[] array, int sum) {
+        if (array.length == 1) {
+            return array[0] == sum;
+        }
+        return subSetSum(array, array.length, sum);
+    }
+
+    private boolean subSetSum(int[] array, int n, int sum) {
+
+        if (n == 0 && sum != 0) {
+            return false;
+        } else if (n == 0 && sum > 0) {
+            return false;
+        }
+
+        if (sum == 0) {
+            return true;
+        }
+
+        return subSetSum(array, n - 1, sum - array[n - 1]) || subSetSum(array, n - 1, sum - array[n - 1]);
+    }
+
+    public String[] findAllWellFormedBrackets(int n) {
+        String s = "";
+        ArrayList<String> results = new ArrayList<>();
+        int leftBracket = n;
+        int rightBracket = n;
+        findAllWellFormedBrackets(leftBracket, rightBracket, s, results);
+        String[] stringArray = Arrays.copyOf(results.toArray(), results.size(), String[].class);
+        return stringArray;
+    }
+
+    public void findAllWellFormedBrackets(int leftBracket, int rightBracket, String s, ArrayList results) {
+
+        if (leftBracket == 0 && rightBracket == 0) {
+            results.add(s);
+            return;
+        }
+
+        if (leftBracket > rightBracket) {
+            return;
+        }
+
+        if (leftBracket > 0) {
+            findAllWellFormedBrackets(leftBracket - 1, rightBracket, s + "(", results);
+        }
+
+        if (rightBracket > 0) {
+            findAllWellFormedBrackets(leftBracket, rightBracket - 1, s + ")", results);
+        }
+
+    }
+
+    public boolean isSubsetSum1(int set[], int sum) {
+        return isSubsetSum1(set, set.length, sum);
+    }
+
+    private boolean isSubsetSum1(int set[],
+                               int n, int sum) {
+        // Base Cases
+        if (sum == 0)
+            return true;
+        if (n == 0 && sum != 0)
+            return false;
+
+        // If last element is greater than
+        // sum, then ignore it
+        if (set[n-1] > sum)
+            return isSubsetSum1(set, n-1, sum);
+
+        /* else, check if sum can be obtained
+        by any of the following
+            (a) including the last element
+            (b) excluding the last element */
+        return isSubsetSum1(set, n-1, sum) ||
+            isSubsetSum1(set, n-1, sum-set[n-1]);
     }
 }
