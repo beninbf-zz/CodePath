@@ -75,43 +75,6 @@ public class Util {
     }
 
     public static int charDifference(String one, String two) {
-        Set<Character> set = new HashSet<Character>();
-
-        for (Character character: one.toCharArray()) {
-            set.add(character);
-        }
-
-        int numberOfCollisions = 0;
-        for (Character character: two.toCharArray()) {
-            if (set.contains(character)) {
-                numberOfCollisions++;
-            }
-        }
-
-        return one.length() - numberOfCollisions;
-    }
-
-    public static int charDifferenceOther(String one, String two) {
-        int[] characters = new int[26];
-        int difference = 0;
-        char[] oneArray = one.toCharArray();
-        for (int i = 0; i < oneArray.length; i++) {
-            int index = oneArray[i] % characters.length;
-            characters[index]++;
-        }
-
-        char[] twoArray = two.toCharArray();
-        for (int i = 0; i < twoArray.length; i++) {
-            int index = twoArray[i] % characters.length;
-            characters[index]--;
-            if (characters[index] < 0) {
-                difference++;
-            }
-        }
-        return difference;
-    }
-
-    public static int charDifferenceOther1(String one, String two) {
         int difference = 0;
         int length = one.length();
         for (int i = 0; i < length; i++) {

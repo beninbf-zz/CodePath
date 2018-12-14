@@ -16,10 +16,6 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class GraphProblems {
-    public void shortestPathWithKeysAndDoors(String[][] grid) {
-
-    }
-
     public void BFS(List<Vertex<Integer>> adjList) {
         if (adjList == null || adjList.size() ==  0) {
             return;
@@ -52,6 +48,13 @@ public class GraphProblems {
     }
 
     public List<String> wordLadder(String start, String stop, String[] dictionary) {
+
+        if (dictionary.length == 0) {
+            if (isNeighbor(start, stop)) {
+                return Arrays.asList(start, stop);
+            }
+            return Arrays.asList("-1");
+        }
 
         ArrayList<String> totalWords = new ArrayList<>();
         totalWords.add(start);
@@ -124,7 +127,7 @@ public class GraphProblems {
     }
 
     public boolean isNeighbor(String vertex, String potentialNeighbor) {
-        if (Util.charDifferenceOther1(vertex, potentialNeighbor) == 1) {
+        if (Util.charDifference(vertex, potentialNeighbor) == 1) {
             return true;
         }
         return false;
