@@ -48,7 +48,6 @@ public class GraphProblems {
     }
 
     public List<String> wordLadder(String start, String stop, String[] dictionary) {
-
         if (dictionary.length == 0) {
             if (isNeighbor(start, stop)) {
                 return Arrays.asList(start, stop);
@@ -60,6 +59,8 @@ public class GraphProblems {
             for (String word : dictionary) {
                 if (isNeighbor(word, start)) {
                     return Arrays.asList(start, word, stop);
+                } else {
+                    return Arrays.asList("-1");
                 }
             }
         }
@@ -72,7 +73,7 @@ public class GraphProblems {
         totalWords.add(stop);
 
         Map<String, Vertex<String>> lookUp = new HashMap<String, Vertex<String>>();
-        List<Vertex<String>> graph = buildGraph(totalWords, lookUp);
+        List<Vertex<String>> graph = buildGraphOther(totalWords, lookUp);
         Map<String, Vertex<String>> previous = new HashMap<>();
         Vertex<String> startVertex = graph.get(0);
         Vertex<String> stopVertex = graph.get(graph.size() - 1);
@@ -80,13 +81,12 @@ public class GraphProblems {
         LinkedList<Vertex<String>> q = new LinkedList<Vertex<String>>();
         q.addFirst(startVertex);
 
-        Set<String> seen = new HashSet<>();
-        seen.add(startVertex.getLabel());
+        startVertex.setVisited(true);
         while (!q.isEmpty()) {
             Vertex<String> current = q.pollFirst();
             for (Vertex neighbor: current.getNeigbhors()) {
-                if (!seen.contains(neighbor.getLabel())) {
-                    seen.add((String) neighbor.getLabel());
+                if (!neighbor.isVisited()) {
+                    neighbor.setVisited(true);
                     q.add(lookUp.get(neighbor.getLabel()));
                     previous.put((String) neighbor.getLabel(), current);
                 }
@@ -117,6 +117,30 @@ public class GraphProblems {
                 }
             }
             adjlist.add(vertex);
+            lookUp.put(vertex.getLabel(), vertex);
+        }
+        return adjlist;
+    }
+
+    private List<Vertex<String>> buildGraphOther(List<String> allWords, Map<String, Vertex<String>> lookUp) {
+        List<Vertex<String>> adjlist = new ArrayList<>();
+        for (String word : allWords) {
+            Vertex<String> vertex = new Vertex<>(word);
+            adjlist.add(vertex);
+        }
+
+        for (Vertex<String> vertex : adjlist) {
+            List<Vertex<String>> neighbors = new ArrayList<>();
+            vertex.setNeigbhors(neighbors);
+            for (Vertex<String> otherVertex : adjlist) {
+                if (vertex.getLabel().equals(otherVertex.getLabel())) {
+                    continue;
+                } else {
+                    if (isNeighbor(vertex.getLabel(), otherVertex.getLabel())) {
+                        vertex.getNeigbhors().add(otherVertex);
+                    }
+                }
+            }
             lookUp.put(vertex.getLabel(), vertex);
         }
         return adjlist;
