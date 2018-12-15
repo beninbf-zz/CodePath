@@ -6,6 +6,7 @@ import java.util.List;
 public class Vertex<T> {
     private List<Vertex<T>> neigbhors;
     private T label;
+    private boolean visited;
 
     public Vertex(T label) {
         this.label = label;
@@ -52,7 +53,17 @@ public class Vertex<T> {
         this.label = label;
     }
 
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+
     public String toString() {
         return "{ " + label + " }";
     }
+
+
 }
