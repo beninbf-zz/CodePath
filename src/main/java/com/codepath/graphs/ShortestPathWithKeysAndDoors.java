@@ -5,6 +5,7 @@ import main.java.com.codepath.util.Util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ShortestPathWithKeysAndDoors {
@@ -24,20 +25,20 @@ public class ShortestPathWithKeysAndDoors {
         }
 
         int[] startCoordinates = findStartOrEnd(grid, START);
-        Set<String> seen = new HashSet<>();
+        LinkedHashSet<String> seen = new LinkedHashSet<>();
         ArrayList<int[]> candidatePath = new ArrayList<>();
         ArrayList<ArrayList<int[]>> paths = new ArrayList<>();
         exploreGrid1(grid, startCoordinates[0], startCoordinates[1], candidatePath, paths, seen);
 
 
-        for (int[] coordinates : paths.get(0)) {
-            System.out.println("[" + coordinates[0] + ", " + coordinates[1] + "]");
-        }
+//        for (int[] coordinates : paths.get(0)) {
+//            System.out.println("[" + coordinates[0] + ", " + coordinates[1] + "]");
+//        }
         System.out.println("-----------------");
-        for (int[] coordinates : paths.get(1)) {
-            System.out.println("[" + coordinates[0] + ", " + coordinates[1] + "]");
-        }
-        System.out.println("-----------------");
+//        for (int[] coordinates : paths.get(1)) {
+//            System.out.println("[" + coordinates[0] + ", " + coordinates[1] + "]");
+//        }
+//        System.out.println("-----------------");
 
         ArrayList<int[]> shortestPath = null;
         if (paths.size() > 0) {
@@ -53,9 +54,20 @@ public class ShortestPathWithKeysAndDoors {
 
     private void exploreGrid1(String[][] grid, int startRow, int startCol, ArrayList<int[]> candidatePath, ArrayList<ArrayList<int[]>> paths,
                               Set<String> seen) {
+
+        if (inBounds(grid, startRow, startCol) && grid[startRow][startCol].equals(END)) {
+            int[] path = new int[2];
+            path[0] = startRow;
+            path[1] = startCol;
+            candidatePath.add(path);
+            Util.copyArrayListsToList(candidatePath, paths);
+            return;
+        }
+
         if (!canMove(grid, startRow, startCol, candidatePath, seen)) {
             return;
         }
+
         int[] path = new int[2];
         path[0] = startRow;
         path[1] = startCol;
@@ -63,15 +75,12 @@ public class ShortestPathWithKeysAndDoors {
 
         seen.add(startRow + "" + startCol);
 
-        if (grid[startRow][startCol].equals(END)) {
-            Util.copyArrayListsToList(candidatePath, paths);
-            return;
-        }
+
 
         exploreGrid1(grid, startRow - 1, startCol, candidatePath, paths, seen);
+        exploreGrid1(grid, startRow , startCol + 1, candidatePath, paths, seen);
         exploreGrid1(grid, startRow + 1, startCol, candidatePath, paths, seen);
         exploreGrid1(grid, startRow , startCol - 1, candidatePath, paths, seen);
-        exploreGrid1(grid, startRow , startCol + 1, candidatePath, paths, seen);
         removeLast(candidatePath, seen);
     }
 
@@ -92,21 +101,19 @@ public class ShortestPathWithKeysAndDoors {
             return false;
         }
 
+        String str = endRow + "" + endCol;
         if (seen.contains(endRow + "" + endCol)) {
             return false;
         }
 
         if (grid[endRow][endCol].equals(LAND) ||
+            grid[endRow][endCol].equals(START) ||
             keys.contains(grid[endRow][endCol]) ||
             pathHasKey(grid, endRow, endCol, candidatePath)) {
             return true;
         }
 
-//        if (doors.contains(grid[endRow][endCol]) && pathHasKey(grid, endRow, endCol, candidatePath)) {
-//            return true;
-//        }
-
-         return true;
+         return false;
     }
 
     private boolean inBounds(String[][] grid, int row, int col) {
