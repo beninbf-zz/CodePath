@@ -56,6 +56,14 @@ public class GraphProblems {
             return Arrays.asList("-1");
         }
 
+        if (start.equals(stop)) {
+            for (String word : dictionary) {
+                if (isNeighbor(word, start)) {
+                    return Arrays.asList(start, word, stop);
+                }
+            }
+        }
+
         ArrayList<String> totalWords = new ArrayList<>();
         totalWords.add(start);
         for (String word : dictionary) {
