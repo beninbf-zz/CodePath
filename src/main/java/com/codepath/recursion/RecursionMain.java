@@ -1,9 +1,12 @@
 package main.java.com.codepath.recursion;
 
-public class Main {
+public class RecursionMain {
     public static void main(String[] args) {
         RecursionProblems recursionProblems = new RecursionProblems();
         Permutations permutations = new Permutations();
+
+        int[] array = new int[]{1, 2, 3, 4};
+        permutations.permutationAlternateEvenOddNumber(array);
 
 //        String test = "test";
 //
@@ -54,9 +57,24 @@ public class Main {
         //recursionProblems.permutationsMyWay("abc");
         //permutations.permutations(word);
 
-        int[] array = {2, 10, 20};
+        //int[] array = {2, 10, 20};
 
         //System.out.println(recursionProblems.findAllWellFormedBrackets(2));
-        System.out.println(recursionProblems.subSetSum(array, 0));
+        //System.out.println(recursionProblems.subSetSum(array, 0));
+
+        int[][] grid = {{10, 20},
+                        {25, 4}};
+
+        int[][] grid1 = {{10, 20, 5, 10, 450},
+                         {25, 4, 12, 17, 123},
+                        {25, 4, 14, 15, 345}};
+
+        int[][] grid2 = {{1, 1, 1, 1},
+            {1, 1, 1, 1},
+            {1, 1, 1, 1}};
+
+        System.out.println(recursionProblems.maxPath(grid));
+        System.out.println(recursionProblems.maxPathAlternate(grid));
+
     }
 }

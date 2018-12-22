@@ -29,6 +29,18 @@ public class Util {
         }
     }
 
+    public static void print2DArray(String[][] grid) {
+        for (int i = 0; i < grid.length; i++) {
+            System.out.print("[ ");
+            for (int j= 0; j < grid[0].length; j++) {
+                System.out.print(grid[i][j] + " ");
+            }
+            System.out.print("]");
+            System.out.println();
+        }
+    }
+
+
     public String join(List<String> list, String delimeter) {
         if (list == null || list.size() == 0) {
             return null;
@@ -65,6 +77,20 @@ public class Util {
         destination.add(temp);
     }
 
+    public static String[][] buildGrid(String[] grid) {
+        int rows = grid.length;
+        int cols = grid[0].length();
+        String[][] board = new String[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                String rowStr = grid[i];
+                board[i][j] = String.valueOf(rowStr.charAt(j));
+            }
+        }
+        return board;
+    }
+
     public static <S, T extends Iterable<S>> void print(T list) {
         System.out.print("[");
         for(Object element: list) {
@@ -86,4 +112,25 @@ public class Util {
         return difference;
     }
 
+    /**
+     * Method was written for the IK webs interface
+     * @param path
+     * @param result
+     */
+    public static void covertToArray(ArrayList<int[]> path, int[][] result) {
+        for (int i = 0; i < path.size(); i++) {
+            int[] coordinate = path.get(i);
+            result[i] = coordinate;
+        }
+    }
+
+    public static void swap(int[] array, int i, int j) {
+        if (array == null || array.length == 0) {
+            return;
+        }
+
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] =  temp;
+    }
 }

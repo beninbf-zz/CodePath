@@ -1,5 +1,7 @@
 package main.java.com.codepath.recursion;
 
+import main.java.com.codepath.util.Util;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -549,14 +551,57 @@ public class RecursionProblems {
 
         // If last element is greater than
         // sum, then ignore it
-        if (set[n-1] > sum)
-            return isSubsetSum1(set, n-1, sum);
+        if (set[n - 1] > sum)
+            return isSubsetSum1(set, n - 1, sum);
 
         /* else, check if sum can be obtained
         by any of the following
             (a) including the last element
             (b) excluding the last element */
-        return isSubsetSum1(set, n-1, sum) ||
-            isSubsetSum1(set, n-1, sum-set[n-1]);
+        return isSubsetSum1(set, n - 1, sum) ||
+            isSubsetSum1(set, n - 1, sum - set[n - 1]);
+    }
+
+    public int maxPath(int[][] grid) {
+        int[] max = new int[1];
+        max[0] = 0;
+        int maxSoFar = 0;
+        maxPath(grid, 0, 0, maxSoFar, max);
+        return max[0];
+    }
+
+    private void maxPath(int[][] grid, int row, int col, int maxSoFar, int[] max) {
+        if (row >= grid.length || col >= grid[0].length) {
+            return;
+        }
+
+        if ((row == grid.length - 1) && (col == grid[0].length - 1)) {
+            maxSoFar += grid[row][col];
+            if (maxSoFar > max[0]) {
+                max[0] = maxSoFar;
+            }
+        }
+
+        maxPath(grid, row + 1, col, maxSoFar + grid[row][col], max);
+        maxPath(grid, row, col + 1, maxSoFar + grid[row][col], max);
+    }
+
+    public int maxPathAlternate(int[][] grid) {
+        return maxPathAlternate(grid, 0, 0);
+    }
+
+    private int maxPathAlternate(int[][] grid, int row, int col) {
+
+        if (row >= grid.length || col >= grid[0].length) {
+            return 0;
+        }
+
+        if ((row == grid.length - 1) && (col == grid[0].length - 1)) {
+            return grid[row][col];
+        }
+
+        int maxDown = maxPathAlternate(grid, row + 1, col);
+        int maxRight = maxPathAlternate(grid, row, col + 1);
+        return grid[row][col] + Math.max(maxDown, maxRight);
     }
 }
