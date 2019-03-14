@@ -18,6 +18,27 @@ public class Util {
         System.out.println();
     }
 
+    public static int sum(Integer[] array) {
+        int total = 0;
+
+
+        for(Integer number: array) {
+            if (number != null) {
+                total += number.intValue();
+            }
+        }
+        return total;
+    }
+
+    public static void print(Object[] array) {
+        System.out.print("[");
+        for(int i = 0; i < array.length - 1; i++) {
+            System.out.print(array[i] + ", ");
+        }
+        System.out.print(array[array.length - 1]+"]");
+        System.out.println();
+    }
+
     public static void print2DArray(int[][] grid) {
         for (int i = 0; i < grid.length; i++) {
             System.out.print("[ ");
@@ -29,7 +50,16 @@ public class Util {
         }
     }
 
-    public static void print2DArray(String[][] grid) {
+    public static void print(char[] array) {
+        System.out.print("[");
+        for(int i = 0; i < array.length - 1; i++) {
+            System.out.print(array[i] + ", ");
+        }
+        System.out.print(array[array.length - 1]+"]");
+        System.out.println();
+    }
+
+    public static void print2DArray(Object[][] grid) {
         for (int i = 0; i < grid.length; i++) {
             System.out.print("[ ");
             for (int j= 0; j < grid[0].length; j++) {
@@ -75,6 +105,35 @@ public class Util {
             temp.add(newArray);
         }
         destination.add(temp);
+    }
+
+//    public static void copy(Object[][] source, Object[][] destination) {
+//        for (int i = 0; i < source.length; i++) {
+//           System.arraycopy(source[i], 0, destination[i], 0, source.length);
+//        }
+//    }
+
+    public static void copy(Boolean[][] source, Boolean[][] destination) {
+        for (int i = 0; i < source.length; i++) {
+            System.arraycopy(source[i], 0, destination[i], 0, source.length);
+        }
+    }
+
+    public static void copy(Object[][] source, Object[][] destination) {
+        if (source == null || destination == null) {
+            throw new IllegalArgumentException("Source and destination must be non null");
+        }
+
+        if (source.length != destination.length && source[0].length != destination[0].length) {
+            throw new IllegalArgumentException("Source and destination must have the same dimensions");
+        }
+
+        if (source.getClass() != destination.getClass()) {
+            throw new IllegalArgumentException("Source and destination must be of same class");
+        }
+        for (int i = 0; i < source.length; i++) {
+            System.arraycopy(source[i], 0, destination[i], 0, source.length);
+        }
     }
 
     public static String[][] buildGrid(String[] grid) {
@@ -132,5 +191,31 @@ public class Util {
         int temp = array[i];
         array[i] = array[j];
         array[j] =  temp;
+    }
+
+    public static void swap(char[] array, int i, int j) {
+        if (array == null || array.length == 0) {
+            return;
+        }
+
+        char temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+
+    public static String getString(String[] row) {
+        StringBuffer sb = new StringBuffer();
+        for (String s: row) {
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
+    public static String getString(char[] row) {
+        StringBuffer sb = new StringBuffer();
+        for (Character c: row) {
+            sb.append(c);
+        }
+        return sb.toString();
     }
 }

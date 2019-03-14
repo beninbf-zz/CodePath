@@ -3,6 +3,7 @@ package main.java.com.codepath.graphs;
 import main.java.com.codepath.objects.Cell;
 
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class GraphsMain {
     public static void main(String[] args) {
@@ -34,5 +35,18 @@ public class GraphsMain {
 
 
 //        System.out.println(path);
+
+        PriorityQueue<Integer> list = new PriorityQueue<>();
+
+        list.add(21);
+        list.add(3);
+        list.add(233);
+        list.add(1);
+
+
+
+        while(!list.isEmpty()) {
+            System.out.println(list.poll());
+        }
     }
 }

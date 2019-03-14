@@ -1,6 +1,7 @@
 package main.java.com.codepath.graphs;
 
 import main.java.com.codepath.objects.Cell;
+import main.java.com.codepath.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,6 +146,18 @@ public class ShortestPathWithKeysAndDoors {
         int keyRing = 0;
         exploreGrid(grid, startCoordinates[0], startCoordinates[1], keyRing, candidatePath, shortestPath, visited);
 
+
+//        int index = 0;
+//        int[][] result = new int[shortestPath.size()][];
+//        for (Cell cell: shortestPath) {
+//            result[index] = new int[2];
+//            result[index][0] = cell.row;
+//            result[index][1] = cell.col;
+//            index++;
+//        }
+//
+//        Util.print2DArray(result);
+
         return shortestPath;
     }
 
@@ -236,8 +249,9 @@ public class ShortestPathWithKeysAndDoors {
 
     private static boolean[][] clearVisited(boolean[][] visited) {
         boolean[][] clearedVisited = new boolean[visited.length][];
-        for (int y = 0; y < clearedVisited.length; y++)
+        for (int y = 0; y < clearedVisited.length; y++) {
             clearedVisited[y] = new boolean[visited[y].length];
+        }
         return clearedVisited;
     }
 

@@ -4,6 +4,7 @@ import main.java.com.codepath.util.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -378,16 +379,18 @@ public class RecursionProblems {
         if (n == 0) {
             System.out.println(prefix);
         } else {
-//            printDecimalNumbers(n - 1, prefix + "0");
-//            printDecimalNumbers(n - 1, prefix + "1");
-//            printDecimalNumbers(n - 1, prefix + "2");
-//            printDecimalNumbers(n - 1, prefix + "3");
-//            printDecimalNumbers(n - 1, prefix + "4");
-//            printDecimalNumbers(n - 1, prefix + "5");
-//            printDecimalNumbers(n - 1, prefix + "6");
-//            printDecimalNumbers(n - 1, prefix + "7");
-//            printDecimalNumbers(n - 1, prefix + "8");
-//            printDecimalNumbers(n - 1, prefix + "9");
+            /*
+            printDecimalNumbers(n - 1, prefix + "0");
+            printDecimalNumbers(n - 1, prefix + "1");
+            printDecimalNumbers(n - 1, prefix + "2");
+            printDecimalNumbers(n - 1, prefix + "3");
+            printDecimalNumbers(n - 1, prefix + "4");
+            printDecimalNumbers(n - 1, prefix + "5");
+            printDecimalNumbers(n - 1, prefix + "6");
+            printDecimalNumbers(n - 1, prefix + "7");
+            printDecimalNumbers(n - 1, prefix + "8");
+            printDecimalNumbers(n - 1, prefix + "9");
+            */
 
             for (int i = 0; i < 10; i++) {
                 printDecimalNumbers(n - 1, prefix + String.valueOf(i));
@@ -467,44 +470,6 @@ public class RecursionProblems {
         }
     }
 
-    public boolean mySubSetSum(int[] array, int sum) {
-        if (array.length == 1) {
-            return array[0] == sum;
-        }
-        return mySubSetSum(array, array.length, sum);
-    }
-
-    private boolean mySubSetSum(int[] array, int n, int sum) {
-        if (sum == 0) {
-            return true;
-        } else if (n == 0 && sum != 0) {
-            return false;
-        }
-
-        return mySubSetSum(array, n - 1, sum) || mySubSetSum(array, n - 1, sum - array[n - 1]);
-    }
-
-    public boolean subSetSum(int[] array, int sum) {
-        if (array.length == 1) {
-            return array[0] == sum;
-        }
-        return subSetSum(array, array.length, sum);
-    }
-
-    private boolean subSetSum(int[] array, int n, int sum) {
-
-        if (n == 0 && sum != 0) {
-            return false;
-        } else if (n == 0 && sum > 0) {
-            return false;
-        }
-
-        if (sum == 0) {
-            return true;
-        }
-
-        return subSetSum(array, n - 1, sum - array[n - 1]) || subSetSum(array, n - 1, sum - array[n - 1]);
-    }
 
     public String[] findAllWellFormedBrackets(int n) {
         String s = "";
@@ -534,43 +499,34 @@ public class RecursionProblems {
         if (rightBracket > 0) {
             findAllWellFormedBrackets(leftBracket, rightBracket - 1, s + ")", results);
         }
-
     }
 
-    public boolean isSubsetSum1(int set[], int sum) {
-        return isSubsetSum1(set, set.length, sum);
-    }
-
-    private boolean isSubsetSum1(int set[],
-                               int n, int sum) {
-        // Base Cases
-        if (sum == 0)
-            return true;
-        if (n == 0 && sum != 0)
-            return false;
-
-        // If last element is greater than
-        // sum, then ignore it
-        if (set[n - 1] > sum)
-            return isSubsetSum1(set, n - 1, sum);
-
-        /* else, check if sum can be obtained
-        by any of the following
-            (a) including the last element
-            (b) excluding the last element */
-        return isSubsetSum1(set, n - 1, sum) ||
-            isSubsetSum1(set, n - 1, sum - set[n - 1]);
-    }
-
+    /**
+     * maxPath. Given a 2D grid with postive integers, find the maximum path through the grid starting at
+     * the upper most left cell and ending at the bottom most right cell.
+     *
+     * The following implementation is correct, however unconventional. What this approach does, is declare
+     * a 1-D array to store the value of the math path. This value is passed to the helper function
+     * which traverses every possible path of the array.
+     *
+     * Every recursive call makes two decisions either go right, or down. What we end up with is an exhaustive
+     * search, moving through every path of the grid.
+     *
+     * We also pass in another variable, maxSoFar. Everytime we reach our destination, we check to see if the
+     * Current max is greater or less than the maxSoFar. If maxSoFar is greater, then we reset the max value.
+     *
+     * @param grid
+     * @return
+     */
     public int maxPath(int[][] grid) {
         int[] max = new int[1];
         max[0] = 0;
         int maxSoFar = 0;
-        maxPath(grid, 0, 0, maxSoFar, max);
+        maxPathHelper(grid, 0, 0, maxSoFar, max);
         return max[0];
     }
 
-    private void maxPath(int[][] grid, int row, int col, int maxSoFar, int[] max) {
+    private void maxPathHelper(int[][] grid, int row, int col, int maxSoFar, int[] max) {
         if (row >= grid.length || col >= grid[0].length) {
             return;
         }
@@ -582,15 +538,47 @@ public class RecursionProblems {
             }
         }
 
-        maxPath(grid, row + 1, col, maxSoFar + grid[row][col], max);
-        maxPath(grid, row, col + 1, maxSoFar + grid[row][col], max);
+        maxPathHelper(grid, row + 1, col, maxSoFar + grid[row][col], max);
+        maxPathHelper(grid, row, col + 1, maxSoFar + grid[row][col], max);
     }
 
+    /**
+     * This solution is the more optimal way of doing this problem. It uses less memory and the helper
+     * function returns the max value as opposed to just updating an object with the max value.
+     *
+     * If we think about this carefully, the solution for this can be completely deduced by the base cases.
+     * If we are outside the bound of the grid, well we obviously need to return and stop searching.
+     *
+     * But what value should we return? Well, if we don't want to consider a path that has taken us outside
+     * of the grid, then just return zero.
+     *
+     * The other base case, just says, hey...when we have reached our destination, just return the value of that cell.
+     *
+     * Given that? how might we deduce the maximum value of the path? Well, there are only two ways to get to the
+     * destination cell. Either from the upper cell, or the leftward cell. To find the max path, how about we just
+     * take the max of those two cells, and add to the value of the cell we are at?
+     *
+     * Then, because we want the max, just keep returning those values. The max of the left, or from above, plus
+     * the value of the cell we are currently at.
+     *
+     * This is the most optimal solution, and makes this problem a prime candidate for a Dynamic programming solution.
+     *
+     * The data set, the GRID, isn't changing, and we have many overlapping sub problems.
+     *
+     * Because we are making 2 decisions per cell, the running time is 2 ^ (n) were n is the number of cell.
+     *
+     * Technicall that means 2^(rows + cols). thats the running time.
+     *
+     * Space complexity is the size of the grip O(r + c).
+     *
+     * @param grid
+     * @return int the value of the max path
+     */
     public int maxPathAlternate(int[][] grid) {
-        return maxPathAlternate(grid, 0, 0);
+        return maxPathAlternateHelper(grid, 0, 0);
     }
 
-    private int maxPathAlternate(int[][] grid, int row, int col) {
+    private int maxPathAlternateHelper(int[][] grid, int row, int col) {
 
         if (row >= grid.length || col >= grid[0].length) {
             return 0;
@@ -600,8 +588,96 @@ public class RecursionProblems {
             return grid[row][col];
         }
 
-        int maxDown = maxPathAlternate(grid, row + 1, col);
-        int maxRight = maxPathAlternate(grid, row, col + 1);
+        /* The "leaf" most node calls, will hit the base case, and return 0 from the cells
+         * just outside the bounds of the array.
+         * Thats why its important to have the first base case, the first if statement, BEFORE
+         * the base case where we return the value of the destination cell.
+         * We need to return those zero's so that our little math.max equation properly returns
+         * the max path at cell [grid.length - 1][grid[0].length - 1] as the actual value of that cell
+         * essentially doing [grid.length - 1][grid[0].length - 1] + Math.Max(0, 0);
+         */
+        int maxDown = maxPathAlternateHelper(grid, row + 1, col);
+        int maxRight = maxPathAlternateHelper(grid, row, col + 1);
         return grid[row][col] + Math.max(maxDown, maxRight);
+    }
+
+    /**
+     * Given a number in the form of a string, print all combination of the operators in between each character.
+     * "", "+", "*"
+     *
+     * For the string 22, the resulting strings should be [22, 2+2, 2*2]
+     *
+     * For the string 123, the resulting strings should be
+     *
+     * 123
+     * 12+3
+     * 12x3
+     * 1+23
+     * 1+2+3
+     * 1+2x3
+     * 1x23
+     * 1x2+3
+     * 1x2x3
+     *
+     * Because we must insert these operators in between each characters, that means there are n - 1
+     * spots to insert characters at. And there are 3 options. So the max number of combinations are
+     * 3 ^ (n - 1).
+     *
+     * @param number
+     */
+    public String[] printOperationCombinations(String number, long target) {
+        if (number == null || number.isEmpty()) {
+            return new String[]{};
+        }
+        Double exponent = new Double(number.length() - 1);
+        Double numberOfExpressions = Math.pow(3d, exponent);
+        List<String> expressions = new ArrayList<>(numberOfExpressions.intValue());
+        printOperationCombinationsHelper(number, number.length(), target, 0,  0, expressions);
+        return expressions.toArray(new String[0]);
+    }
+
+    private void printOperationCombinationsHelper(String expression, int length, long target, int i, int offset, List<String> numberOfExpressions) {
+        if (i + offset == length - 1) {
+            long value = evaluateAdditionMultiplicationExpression(expression);
+            if (value == target) {
+                numberOfExpressions.add(expression);
+            }
+            return;
+        }
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(expression);
+
+        sb.insert(i + 1, "");
+        printOperationCombinationsHelper(sb.toString(), length, target, i + 1, offset, numberOfExpressions);
+
+        sb.insert(i + offset + 1, "+");
+        String additionString = sb.toString();
+        printOperationCombinationsHelper(additionString, additionString.length(), target, i + 1, offset + 1, numberOfExpressions);
+        sb.deleteCharAt(i + offset + 1);
+
+        sb.insert(i + offset + 1, "*");
+        String multiString = sb.toString();
+        printOperationCombinationsHelper(multiString, multiString.length(), target, i + 1, offset + 1, numberOfExpressions);
+        sb.deleteCharAt(i + offset + 1);
+    }
+
+    public long evaluateAdditionMultiplicationExpression(String value) {
+        long result = 0;
+        String[] values = value.split("\\+");
+
+        for (int i = 0; i < values.length; i++) {
+            String[] multiplication = values[i].split("\\*");
+            Long productVal = null;
+            if (multiplication.length >= 1) {
+                productVal = Long.valueOf(multiplication[0]);
+            }
+            for (int j = 1; j < multiplication.length; j++) {
+                productVal = Math.multiplyExact(productVal, Long.valueOf(multiplication[j]));
+            }
+            result += productVal;
+        }
+
+        return result;
     }
 }
