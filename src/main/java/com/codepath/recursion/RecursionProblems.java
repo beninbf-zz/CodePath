@@ -5,6 +5,7 @@ import main.java.com.codepath.util.Util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 
 /**
@@ -470,34 +471,165 @@ public class RecursionProblems {
         }
     }
 
-
-    public String[] findAllWellFormedBrackets(int n) {
-        String s = "";
-        ArrayList<String> results = new ArrayList<>();
-        int leftBracket = n;
-        int rightBracket = n;
-        findAllWellFormedBrackets(leftBracket, rightBracket, s, results);
-        String[] stringArray = Arrays.copyOf(results.toArray(), results.size(), String[].class);
-        return stringArray;
+    /**
+     * Given an integer n, find all well formed brackets of length 2 * n.
+     * Finding "all" well formed brackets means an exhaustive search where recursion is the optimal
+     * approach.
+     *
+     * We do this in two steps, we first find all well formed brackets, and then we evaluate each
+     * expression checking to see if its well balanced.
+     *
+     * SPACE COMPLEXITY: The depth of the recursion tree will be 2 * n. We then have an additional
+     * n of space taken up because of the stack we are using to evaluate the string. The overall space
+     * complexity is O(n).
+     *
+     * RUNTIME COMPLEXITY: Given that every recursive call makes 2 calls, we have at minimum O(2^n). Considering
+     * we also have to evaluate the expression that an additional O(n), so thats O(2^n * n).
+     *
+     * This can be made more efficient, by only recursing in certain cases.
+     *
+     * @param n
+     * @return String[] well formed brackets of length 2 * n
+     */
+    public String[] findAllWellFormedBracketsInEff(int n) {
+        List<String> expressions = new ArrayList<>();
+        findAllWellFormedBracketsHelper(2 * n, "", expressions);
+        return expressions.toArray(new String[0]);
     }
 
-    public void findAllWellFormedBrackets(int leftBracket, int rightBracket, String s, ArrayList results) {
+    private void findAllWellFormedBracketsHelper(int n, String expression, List<String> expressions) {
+        if (n == 0) {
+            if (areBracketsWellBalanced(expression)) {
+                expressions.add(expression);
+            }
+            return;
+        }
+        findAllWellFormedBracketsHelper(n - 1, expression + "(", expressions);
+        findAllWellFormedBracketsHelper(n - 1, expression + ")", expressions);
+    }
 
-        if (leftBracket == 0 && rightBracket == 0) {
+    /**
+     * Evalautes if the string has well formed brackets, by using a stack.
+     *
+     * The rationale is that, for a well balanced string, we will push the open brackets on to a stack.
+     * If we reach a character that isn't an open bracket, meaning is a close bracket, then we pop the
+     * open bracket from the stack.
+     *
+     * If, by the time we iterate through the entire string, the stack is empty, then we know if we have
+     * had a matching close bracket for every open bracket, and popped all of the open brackets from
+     * the stack.
+     *
+     * If, however, the stack is empty, before we finish iterating through the entire stack, then we know
+     * we don't have matching close brackets for every open bracket.
+     *
+     * We iterate through the string, and if the character is an open bracket, we push it on to the stack.
+     * If the character is not an open bracket, we check to see if the stack is empty. If its not empty
+     * we pop the value from the stack.
+     *
+     * If its well balanced, then the character we pop should be a close bracket. If, while moving through
+     * the String, the stack is empty, then we know its not well balanced, because we haven't gotten to the
+     * end.
+     *
+     * If we finish moving through the string, then we return whether or not its empty.
+     *
+     * SPACE COMPLEXITY: O(n) for the space consumed by the stack for every character.
+     *
+     * RUN TIME COMPLEXITY: O(n) for the time to move through the entire string.
+     *
+     * @param expression
+     * @return boolean
+     */
+    public boolean areBracketsWellBalanced(String expression) {
+        if (expression == null || expression.trim().isEmpty()) {
+            return false;
+        }
+
+        char openBracket = '(';
+
+        Stack<Character> openBracketStack = new Stack<>();
+        int length = expression.length();
+        for (int i = 0; i < length; i++) {
+            Character item = expression.charAt(i);
+            if (item == openBracket) {
+                openBracketStack.push(item);
+            } else {
+                if (!openBracketStack.isEmpty()) {
+                    openBracketStack.pop();
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return openBracketStack.isEmpty();
+    }
+
+    /**
+     * This represents a more efficient way of finding all well formed brackets of a string
+     * of length 2 * n.
+     *
+     * In the inefficient solution, we generate all bracket expressions of length 2 * n, and then we
+     * check to see if they are well formed, which incurs more time and memory.
+     *
+     * In the official implementation we do not generate all expressions. We only recurse, to keep
+     * generating bracket expressions, if the number of open brackets less than or equal to the number
+     * of close brackets. Considering we want expressions to be well formed, we know we should have
+     * 2 open brackets and 2 close brackets for a well formed string.
+     *
+     * If both open and close brackets are zero, then we know we have a well formed expression. If we still have
+     * more open brackets, then we keep recursing, if we still have more close brackets then we keep recursing,
+     * if the number of open brackets, is greater than the number of close brackets, then we know we should stop
+     * because we can not generate a well balanced expression.
+     *
+     * The thing to remember, is because we are keeping track of the number of open and close brackets,
+     * We only decrement the open bracket, when we use the open bracket, and only decrement the open bracket
+     * when we choose the close bracket.
+     *
+     * This is more easily seen by looking at the recursion tree.
+     *
+     *
+     * if n = 2, then generate all expressions of length = 2 * n
+     *
+     *                                2,2 ""
+     *                           /
+     *                         1, 2, "("
+     *                      /          \
+     *                   0, 2,"(("       1, 1, "()
+     *                       \             /          \
+     *                       0, 1, "(()"  0,1 "(()"   1, 0, "(()" <-- (Bad, impossible to be well formed so stop)
+     *                                       \
+     *                           \         0,0, "(())
+     *                           "(())"
+     *
+     * @param n
+     * @return
+     */
+    public String[] findAllWellFormedBracketsEff(int n) {
+        String s = "";
+        List<String> results = new ArrayList<>();
+        int openBracket = n;
+        int closeBracket = n;
+        findAllWellFormedBrackets(openBracket, closeBracket, s, results);
+        return results.toArray(new String[0]);
+    }
+
+    public void findAllWellFormedBrackets(int openBracket, int closeBracket, String s, List<String> results) {
+
+        if (openBracket == 0 && closeBracket == 0) {
             results.add(s);
             return;
         }
 
-        if (leftBracket > rightBracket) {
+        if (openBracket > closeBracket) {
             return;
         }
 
-        if (leftBracket > 0) {
-            findAllWellFormedBrackets(leftBracket - 1, rightBracket, s + "(", results);
+        if (openBracket > 0) {
+            findAllWellFormedBrackets(openBracket - 1, closeBracket, s + "(", results);
         }
 
-        if (rightBracket > 0) {
-            findAllWellFormedBrackets(leftBracket, rightBracket - 1, s + ")", results);
+        if (closeBracket > 0) {
+            findAllWellFormedBrackets(openBracket, closeBracket - 1, s + ")", results);
         }
     }
 
@@ -623,20 +755,37 @@ public class RecursionProblems {
      * spots to insert characters at. And there are 3 options. So the max number of combinations are
      * 3 ^ (n - 1).
      *
+     * Because this is an exhaustive search, it should be solved with recursion. Essentially we have
+     * to make 3 decisions for every position in the string.
+     *
+     * The decision to insert "", "+", and "*". The combination of all of these decisions inserted
+     * into our string, represent the expressions that we are looking for.
+     *
+     * The implemention below uses a StringBuffer, instantiating a new instance for every call
+     * stack (because we want to maintain state). Not that it matters in this case, but we use
+     * a StringBuffer as opposed to a StringBuilder because the StringBuffer is thread safe,
+     * while the StringBuilder is not (however the StringBuilder is faster because it doesn't
+     * obtain any locks).
+     *
+     * The last bit of work to do, is, once we have generated a valid expression, to then evaulate it.
+     *
+     * Because this expression is not in post or prefix notation, and we have the added bonus of only
+     * having "+" and "*", so a simple routine of splitting by "+", and then "*" will do.
+     *
      * @param number
      */
-    public String[] printOperationCombinations(String number, long target) {
+    public String[] generate_all_expressions(String number, long target) {
         if (number == null || number.isEmpty()) {
             return new String[]{};
         }
         Double exponent = new Double(number.length() - 1);
         Double numberOfExpressions = Math.pow(3d, exponent);
         List<String> expressions = new ArrayList<>(numberOfExpressions.intValue());
-        printOperationCombinationsHelper(number, number.length(), target, 0,  0, expressions);
+        generate_all_expressionsHelper(number, number.length(), target, 0,  0, expressions);
         return expressions.toArray(new String[0]);
     }
 
-    private void printOperationCombinationsHelper(String expression, int length, long target, int i, int offset, List<String> numberOfExpressions) {
+    private void generate_all_expressionsHelper(String expression, int length, long target, int i, int offset, List<String> numberOfExpressions) {
         if (i + offset == length - 1) {
             long value = evaluateAdditionMultiplicationExpression(expression);
             if (value == target) {
@@ -649,16 +798,16 @@ public class RecursionProblems {
         sb.append(expression);
 
         sb.insert(i + 1, "");
-        printOperationCombinationsHelper(sb.toString(), length, target, i + 1, offset, numberOfExpressions);
+        generate_all_expressionsHelper(sb.toString(), length, target, i + 1, offset, numberOfExpressions);
 
         sb.insert(i + offset + 1, "+");
         String additionString = sb.toString();
-        printOperationCombinationsHelper(additionString, additionString.length(), target, i + 1, offset + 1, numberOfExpressions);
+        generate_all_expressionsHelper(additionString, additionString.length(), target, i + 1, offset + 1, numberOfExpressions);
         sb.deleteCharAt(i + offset + 1);
 
         sb.insert(i + offset + 1, "*");
         String multiString = sb.toString();
-        printOperationCombinationsHelper(multiString, multiString.length(), target, i + 1, offset + 1, numberOfExpressions);
+        generate_all_expressionsHelper(multiString, multiString.length(), target, i + 1, offset + 1, numberOfExpressions);
         sb.deleteCharAt(i + offset + 1);
     }
 
@@ -679,5 +828,123 @@ public class RecursionProblems {
         }
 
         return result;
+    }
+
+    /**
+     * Find out how many Binary search trees can be made given n nodes.
+     *
+     * For this problem, we have to start out with the base case.
+     *
+     * For n = 0, we have a tree with no nodes, so thats a null tree, that means for n = 0, we have
+     * 1 tree, the null pointer.
+     *
+     * f(0) = 1
+     *
+     * for n = 1, we only have one node, the root, so thats one tree.
+     * f(1) =  1
+     *
+     * for n = 2, we have the following
+     *
+     *             root
+     *           /
+     *         left
+     *
+     * And then we have
+     *
+     *             root
+     *                  \
+     *                   right
+     *
+     * So thats two trees, f(2) = 2 trees
+     *
+     * for n = 3, its more complicated.
+     *
+     *   1 tree      root
+     *              /   \
+     *            left  right
+     *
+     *
+     *  2         root
+     *           /
+     *         left
+     *        /
+     *      left
+     *
+     *
+     * 3          root
+     *               \
+     *               right
+     *                 \
+     *                 right
+     *
+     *  4         root
+     *              \
+     *               right
+     *               /
+     *            left
+     *
+     *
+     *  5             root
+     *                /
+     *             left
+     *                \
+     *                right
+     *
+     *  We have 5 possible trees. f(3) = 5, these are essentially are base cases, and we can figure out
+     *  all other trees from here.
+     *
+     *  Lets illustrate n = 4
+     *
+     *            root
+     *               \
+     *              (the other 3 nodes)
+     *
+     * In the above case, we now the possible trees from the left (where the left child is null) is just 1 tree
+     * and the possible cases on the right, where there are three nodes, is 3. So that f(0) * f(3) or
+     * 1 * 3 possibilities.
+     *
+     *
+     *             root
+     *            /    \
+     *          node  (the other 2 nodes)
+     *
+     * Again, we know the total number of possibilities from the left subtree is 1 node, from the right with 2 nodes,
+     * we know from the base base, that there are two possible tree. so thats f(1) * f(2)
+     *
+     *
+     *                   root
+     *                /       \
+     *  (the other 2 nodes)     one node
+     *
+     *  From our bases cases we know we have 2 possible trees on the left, and 1 tree on the right. So thats
+     *  f(2) * f(10
+     *
+     * We then sum up all of these possibilities
+     *
+     *  f(4) = f(3) * f(0) + f(2) * f(1) + f(1) * f(3);
+     *  f(4) =  5 * 1 + 2 * 1 + 1 * 5 = 14
+     *
+     *  All other trees can be calculated in the same way. Considering we need to find all possible
+     *  trees given n nodes, we need an exhaustive search, so we will use recursion.
+     *
+     * @param n
+     * @return
+     */
+    public long howManyBsts(int n) {
+        if (n == 0 || n == 1) {
+            return 1l;
+        } else if (n == 2) {
+            return 2l;
+        } else if (n == 3) {
+            return 5l;
+        }
+
+        long total = 0;
+        for (int i = n; i > 0; i--) {
+            long value = howManyBsts(i - 1);
+            long otherValue = howManyBsts(n - i);
+            total += value * otherValue;
+        }
+        return total;
     }
 }

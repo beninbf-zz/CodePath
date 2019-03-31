@@ -91,6 +91,44 @@ public class SubSets {
         printSubSetsHelper(array, subSets, i + 1);
     }
 
+    public boolean isSumInSubset(long[] arr, long sum) {
+        if (arr == null || arr.length == 0) {
+            return false;
+        }
+
+        Long[] subSet = new Long[arr.length];
+        return isSumInSubetHelper(arr, subSet, sum, 0);
+    }
+
+    private boolean isSumInSubetHelper(long[] arr, Long[] subSet, long sum, int index) {
+        if (index == arr.length) {
+            Util.print(subSet);
+            long possibleSum = 0l;
+            int numNulls = 0;
+            for (int i = 0; i < subSet.length; i++) {
+                if (subSet[i] != null) {
+                    possibleSum += subSet[i].longValue();
+                } else {
+                    numNulls++;
+                }
+            }
+
+            if (numNulls == subSet.length) {
+                return false;
+            }
+            return possibleSum == sum;
+        }
+
+        subSet[index] = null;
+
+        boolean isNotIncluded = isSumInSubetHelper(arr, subSet, sum, index + 1);
+        subSet[index] = arr[index];
+        boolean isIncluded = isSumInSubetHelper(arr, subSet, sum, index + 1);
+        return isIncluded || isNotIncluded;
+    }
+
+
+
     /**
      * Ik solution to return all subsets of a string
      * @param s string

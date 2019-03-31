@@ -16,11 +16,25 @@ public class RecursionMain {
 //        System.out.println(palindrome.isPalindrome("addda"));
 //        System.out.println(palindrome.isPalindromeWithPointers("a"));
 
-        palindrome.decomposePalindrome("a");
+        //palindrome.decomposePalindrome("a");
+
+        long[] set = new long[]{10l, -10l};
+        System.out.println(subSets.isSumInSubset(set, 0));
 
 
         Permutations permutations = new Permutations();
 
+        //System.out.println(recursionProblems.howManyBsts(5));
+
+//        String[] brackets = recursionProblems.findAllWellFormedBracketsInEff(2);
+//        Util.print(brackets);
+
+//        for (String s: brackets) {
+//            System.out.print(s + "is balanced: ");
+//            System.out.println(recursionProblems.areBracketsWellBalanced(s));
+//        }
+
+       // recursionProblems.areBracketsWellBalanced("(())");
         //recursionProblems.printSubSets("tdc");
         //System.out.println(recursionProblems.generatePowerSet("tdc"));
         //String[] answer = subSets.generate_all_subsets("tdc");

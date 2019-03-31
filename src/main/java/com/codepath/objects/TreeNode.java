@@ -1,6 +1,6 @@
 package main.java.com.codepath.objects;
 
-public class TreeNode<T> {
+public class TreeNode<T extends Comparable> {
     private T value;
     private TreeNode<T> left;
     private TreeNode<T> right;

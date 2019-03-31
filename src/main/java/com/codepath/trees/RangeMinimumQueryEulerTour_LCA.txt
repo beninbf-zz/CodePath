@@ -1,0 +1,45 @@
+#define inf 10002020
+void dfs(Node * head, int current_level, int * lev, int * first_occurence, int * euler, int & counter)
+{
+    if( head == NULL )
+        return ;
+    int current_node = head->data ;
+    euler[counter] = current_node ;     // making up the euler-tour array !!
+    lev[ current_node ] = current_level ; // storing level as well
+    if( first_occurence[ current_node ] == -1 )    // storing first occurence too !!
+        first_occurence[ current_node ] = counter ;
+    counter++;
+    dfs( head->left, current_level+1, lev, first_occurence, euler, counter) ;
+    if( head->left != NULL )
+        euler[ counter++ ] = current_node ;
+    dfs( head->right, current_level+1, lev, first_occurence, euler, counter) ;
+    if( head->right != NULL )
+        euler[ counter++ ] = current_node ;
+
+}
+
+int lca( Node * head , Node * a, Node * b )
+{
+    int euler[200020] ,lev[100020] , first_occurence[100020];
+    // size of euler array will be twice in size !!
+    memset( first_occurence,-1,sizeof first_occurence );    // initialize all the first occurence with -1
+    int counter = 1 ;  // counter for creating euler tour array
+    dfs( head , 1 ,lev, first_occurence, euler,counter);  // PRECOMPUTES euler tour, level, and the first occurences
+    int aa = a->data ;
+    int bb = b->data ;
+    int first_occurence_aa = first_occurence[aa] ;
+    int first_occurence_bb = first_occurence[bb] ;
+    int mini = min(first_occurence_aa,first_occurence_bb),
+                                             maxi = max(first_occurence_bb,first_occurence_aa) ;
+    int var = inf,answer;
+    for( int i = mini ; i<= maxi ;i++ )   // just a range minimum query
+    {
+        if( var > lev[ euler[i] ] )
+        {
+            answer = euler[i] ;
+            var = lev[ euler[i] ] ;
+        }
+    }
+    return answer;
+    // we can also use some data-structure to calculate the range minimum more efficiently !!
+}

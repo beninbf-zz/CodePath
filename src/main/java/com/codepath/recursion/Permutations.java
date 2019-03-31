@@ -390,11 +390,9 @@ public class Permutations {
 
 
         String additionString = additionBuffer.toString();
-        //System.out.println("additionString : "+ additionString);
         generate_all_expressionsHelper(additionString.toCharArray(), target, 0, results);
 
         String multiplicationString = multiplicationBuffer.toString();
-        //System.out.println("multiplicationString : "+ multiplicationString);
         generate_all_expressionsHelper(multiplicationString.toCharArray(), target, 0, results);
         return results.toArray(new String[0]);
     }
