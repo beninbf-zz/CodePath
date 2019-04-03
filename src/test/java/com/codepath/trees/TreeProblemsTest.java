@@ -1,9 +1,13 @@
 package test.java.com.codepath.trees;
 
 import main.java.com.codepath.objects.TreeNode;
+import main.java.com.codepath.trees.InOrderIterator;
 import main.java.com.codepath.trees.TreeProblems;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import static org.junit.Assert.assertTrue;
 
@@ -132,6 +136,52 @@ public class TreeProblemsTest {
         testBstCreation(postOrderNodes, postOrder);
     }
 
+    @Test
+    public void testDeleteNodeFromBST() {
+        TreeNode<Integer> root = getBST();
+        testObj.inOrderRecTraversal(root);
+        System.out.println();
+        TreeNode<Integer> newRoot = testObj.deleteBstNode(root, 30);
+        testObj.inOrderRecTraversal(newRoot);
+    }
+
+    @Test
+    public void testInsertIntoBST() {
+        TreeNode<Integer> root = null;
+        for (int i = 0; i < 100; i = i + 10) {
+            root = testObj.insertNodeIntoBST(root, i);
+        }
+        testObj.inOrderRecTraversal(root);
+
+        assertTrue("Tree should be balanced", testObj.isBalanced(root));
+    }
+
+    @Test
+    public void testIsBalanced() {
+        TreeNode<Integer> root = new TreeNode<>(30);
+        TreeNode<Integer> twentyFive = new TreeNode<>(25);
+        TreeNode<Integer> twenty = new TreeNode<>(20);
+        TreeNode<Integer> ten = new TreeNode<>(10);
+        TreeNode<Integer> five = new TreeNode<>(5);
+        root.setLeft(twentyFive);
+        twentyFive.setLeft(twenty);
+        twenty.setLeft(ten);
+        ten.setLeft(five);
+
+        TreeNode<Integer> otherRoot = new TreeNode<>(30);
+        TreeNode<Integer> thrityFive = new TreeNode<>(35);
+        TreeNode<Integer> fourty = new TreeNode<>(40);
+        TreeNode<Integer> fourtyFive = new TreeNode<>(45);
+        TreeNode<Integer> fifty = new TreeNode<>(50);
+        otherRoot.setRight(thrityFive);
+        thrityFive.setRight(fourty);
+        fourty.setRight(fourtyFive);
+        fourtyFive.setRight(fifty);
+
+        assertFalse("tree should not be balanced", testObj.isBalanced(root));
+        assertFalse("tree should not be balanced", testObj.isBalanced(otherRoot));
+    }
+
     private void testBstCreation(TreeNode[] array1, TreeNode[] array2) {
         if (array1 == null || array2 == null) {
             throw new IllegalArgumentException("both arrays should be non null");
@@ -201,6 +251,21 @@ public class TreeProblemsTest {
         testObj.inOrderRecTraversal(result);
     }
 
+    @Test
+    public void testInOrderIterator() {
+        TreeNode<Integer> root = getBST();
+
+        TreeNode[] nodes = testObj.getInOrderNodes(root);
+        InOrderIterator itr = new InOrderIterator(root);
+
+        int i = 0;
+        while (itr.hasNext()) {
+            TreeNode node = itr.next();
+            assertEquals("nodes should be equal", nodes[i].getValue(), node.getValue());
+            i++;
+        }
+    }
+
     private TreeNode<Integer> getATree() {
         TreeNode<Integer> aRoot = new TreeNode<Integer>(4);
         TreeNode<Integer> aRootTwo = new TreeNode<Integer>(2);
@@ -242,9 +307,40 @@ public class TreeProblemsTest {
 
         bRootSix.setLeft(bRootSixLeft);
         bRootSix.setRight(bRootSixRight);
+
+        return bRoot;
+    }
+
+    private TreeNode<Integer> getBST() {
+        TreeNode<Integer> bRoot = new TreeNode<Integer>(20);
+        TreeNode<Integer> bRootTwo = new TreeNode<Integer>(10);
+        TreeNode<Integer> bRootSix = new TreeNode<Integer>(30);
+
+        bRoot.setLeft(bRootTwo);
+        bRoot.setRight(bRootSix);
+
+        TreeNode<Integer> bRootTwoLeft = new TreeNode<Integer>(5);
+        TreeNode<Integer> bRootTwoRight = new TreeNode<Integer>(15);
+
+        bRootTwo.setLeft(bRootTwoLeft);
+        bRootTwo.setRight(bRootTwoRight);
+
+        TreeNode<Integer> bRootSixLeft = new TreeNode<Integer>(25);
+        TreeNode<Integer> bRootSixRight = new TreeNode<Integer>(35);
+
+        bRootSix.setLeft(bRootSixLeft);
+        bRootSix.setRight(bRootSixRight);
+
+        TreeNode<Integer> thrityThree = new TreeNode<Integer>(33);
+        TreeNode<Integer> fourty = new TreeNode<Integer>(40);
+
+        bRootSixRight.setLeft(thrityThree);
+        bRootSixRight.setRight(fourty);
+
         return bRoot;
     }
 }
+
 
 
     /*

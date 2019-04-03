@@ -203,6 +203,17 @@ public class TreeProblems {
         return findMin(root.getRight());
     }
 
+    public TreeNode<Integer> findMaxNode(TreeNode<Integer> root) {
+        if (root == null) {
+            return null;
+        }
+        if (root.getRight() == null) {
+            return root;
+        }
+
+        return findMaxNode(root.getRight());
+    }
+
     public int findHeight(TreeNode<Integer> root) {
         if (root == null) {
             return 0;
@@ -2159,4 +2170,210 @@ public class TreeProblems {
         }
         throw new IllegalArgumentException("the treeNode has to be in the array");
     }
+
+    /**
+     * deleteBstNode - Deleting a node from a binary search tree means removing the node from the
+     * tree while maintaining the ordered property of the binary search tree.
+     *
+     * To do this we need to handle 3 cases.
+     *
+     * 1) when we delete a leaf node
+     * 2) when we delete a node with one child
+     * 3) when we delete a node with 2 children
+     *
+     * 1) when we delete a leaf node - this is the simplest case. That means, when we see that our
+     * root is equal to our target value, we just set root = null, and there for we will have
+     * disappeared this node
+     *
+     * 2) When we delete a node with one child, that is also simple. That just means we return that one child
+     * which will effectively disappear that root.
+     *
+     * 3) This is the most complicated case: We need to be sure that we maintain the binary search property.
+     * And we don't want to lose any of the right or left subtrees of the node that we are trying to delete.
+     * To keep those sub trees, those descendant, and maintain the BST property, we have have 2 choices.
+     * We can either take the maximum node of the left subtree, and overrwite the node we wish to delete
+     * OR we can take the minimum node of the left subtree, and overrwrite the node we wish to delete.
+     *
+     * But we are not done there. Once we have copied the value to the current root we wish to delete, we
+     * then have to delete that max or min node that we originally copied from, so that we don't have
+     * duplicate nodes. In order to do this, we simply call our delete function again, because we have now
+     * reduced this problem to case 1, becaue the max or min nodes for any subtree, will always be a leaf
+     * node.
+     *
+     * One more thing, remember to return the root with each call stack so that we keep the tree intact.
+     * @param root root of tree
+     * @param target the value we wish to delete
+     * @return root
+     */
+    public TreeNode<Integer> deleteBstNode(TreeNode<Integer> root, Integer target) {
+        if (root == null) {
+            return root;
+        }
+
+        if (target.compareTo(root.getValue()) < 0) {
+            root.setLeft(deleteBstNode(root.getLeft(), target));
+        } else if (target.compareTo(root.getValue()) > 0) {
+            root.setRight(deleteBstNode(root.getRight(), target));
+        } else {
+            if (root.getLeft() == null && root.getRight() == null) {
+                root = null;
+            } else if (root.getLeft() != null && root.getRight() == null) {
+                root = root.getLeft();
+            } else if (root.getRight() != null && root.getLeft() == null) {
+                root = root.getRight();
+            } else {
+                TreeNode<Integer> node = findMaxNode(root.getLeft());
+                root.setValue(node.getValue());
+                root.setLeft(deleteBstNode(root.getLeft(), node.getValue()));
+            }
+        }
+        return root;
+    }
+
+    /**
+     * insertNodeIntoBST - For this implementation of a Binary Search Tree
+     * we are going to use an AVL tree. An AVL tree is a height balanced tree.
+     * It works by consistently checking the height of each left and right subtrees.
+     *
+     * When the height of the left and right subtrees is greater than 1, then we most rebalance.
+     *
+     * We we balance the tree, by looking at 4 cases
+     *
+     * 1) RR tree, where
+     *
+     *      Node
+     *         \
+     *          Node
+     *             \
+     *              Node
+     *
+     * 2) RL tree, where
+     *
+     *      Node
+     *         \
+     *          Node
+     *          /
+     *       Node
+     *
+     * 3) LL tree, where
+     *
+     *      Node
+     *     /
+     *   Node
+     *   /
+     * Node
+     *
+     * 4) LR tree, where
+     *
+     *      Node
+     *      /
+     *    Node
+     *       \
+     *       Node
+     *
+     * We rotate the trees as necessary, preserving the BST property.
+     * @param root root of tree
+     * @param value value we wish to insert
+     * @return root of tree
+     */
+    public TreeNode<Integer> insertNodeIntoBST(TreeNode<Integer> root, Integer value) {
+        if (root == null) {
+            root = new TreeNode<Integer>(value);
+        } else if (value.compareTo(root.getValue()) < 0) {
+            root.setLeft(insertNodeIntoBST(root.getLeft(), value));
+        } else if (value.compareTo(root.getValue()) > 0) {
+            root.setRight(insertNodeIntoBST(root.getRight(), value));
+        } else {
+            // equals values so do nothing. try not to allow duplicates in a bst
+        }
+
+        int leftHeight = findHeight(root.getLeft());
+        int rightHeight = findHeight(root.getRight());
+
+        int diff = Math.abs(leftHeight - rightHeight);
+        if (diff > 1) { // need to rotate tree
+            /*
+             * First we need to identify the kinds of rotations
+             * There are 4 kinds, and we only perform three root rotations
+             * RR, LL, RL, LR
+             */
+            if (root.getLeft() != null && root.getLeft().getLeft() != null) { // LL tree
+                root = rotateLL(root);
+            } else if (root.getRight() != null && root.getRight().getRight() != null) { // RR tree
+                root = rotateRR(root);
+            } else if (root.getRight() != null && root.getRight().getLeft() != null) {
+                root = rotateLR(root);
+            } else { // must be RL tree
+                root = rotateRL(root);
+            }
+        }
+        return root;
+    }
+
+    private TreeNode<Integer> rotateRR(TreeNode<Integer> root) {
+        TreeNode<Integer> newRoot = root.getRight();
+        newRoot.setLeft(root);
+        root.setRight(null);
+        return newRoot;
+    }
+
+    private TreeNode<Integer> rotateLL(TreeNode<Integer> root) {
+        TreeNode<Integer> newRoot = root.getLeft();
+        newRoot.setRight(root);
+        root.setLeft(null);
+        return newRoot;
+    }
+
+    private TreeNode<Integer> rotateLR(TreeNode<Integer> root) {
+        TreeNode<Integer> newRoot = root.getLeft().getRight();
+        newRoot.setLeft(root.getLeft());
+        newRoot.setRight(root);
+        root.getLeft().setRight(null);
+        root.setLeft(null);
+        return newRoot;
+    }
+
+    private TreeNode<Integer> rotateRL(TreeNode<Integer> root) {
+        TreeNode<Integer> newRoot = root.getRight().getLeft();
+        newRoot.setLeft(root);
+        newRoot.setRight(root.getRight());
+        root.getRight().setLeft(null);
+        root.setRight(null);
+        return newRoot;
+    }
+
+    /**
+     * IsBalanced - this method checks to see if a Binary Tree is balanced. In order to do
+     * this is must check every left and right subtree until it finds one where the left height
+     * and right height differ by more than one.
+     *
+     * It performs this check bottom up. We recurse all the way to the bottom of the tree to the left,
+     * then the right. When we reach the bottom and begin to move back up the tree (and call stack)
+     * we check the height of the left and right subtree of every root.
+     *Td
+     * The difference between the heights is greater than one, then we know the tree is not balanced,
+     * so we should return false.
+     *
+     * @param root root of the tree
+     * @return boolean
+     */
+    public boolean isBalanced(TreeNode<Integer> root) {
+        if (root == null) {
+            return true;
+        }
+
+        boolean isLeftBalanced = isBalanced(root.getLeft());
+        boolean isRightBalanced = isBalanced(root.getRight());
+
+        int leftHeight = findHeight(root.getLeft());
+        int rightHeight = findHeight(root.getRight());
+
+        if (Math.abs(leftHeight - rightHeight) > 1) {
+            return false;
+        }
+
+        return isLeftBalanced && isRightBalanced;
+    }
+
+
 }
