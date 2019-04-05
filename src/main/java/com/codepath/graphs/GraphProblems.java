@@ -4,13 +4,16 @@ package main.java.com.codepath.graphs;
 import main.java.com.codepath.objects.Vertex;
 import main.java.com.codepath.util.Util;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -165,4 +168,39 @@ public class GraphProblems {
         return false;
     }
 
+    /**
+     * dijkstrasAlgorithm - Below is an implementation of dijkstra's algorithm, which
+     * calculates the shortest path to each node from a given source. The most
+     * difficult part is actually building the graph. Remember, we need to pull the element
+     * with the smallest weight each time. I make use of an ArrayDeque, and then use the
+     * Collections.min method to select the small element from the queue.
+     *
+     * RUNTIME: Because we have to choose minimum from, and we are using collections.min
+     * that call takes linear time, so O(v) where v is the number of vertices.
+     * We are also moving over the degree of v, for every vertex. That summation
+     * comes to 2 |E| which is O(E). So the total run time is O(V + E)
+     *
+     * SPACE: is O(1) because are not using any addition memory, we are just adding
+     * the vertex references to the solution set.
+     *
+     * @param source source vertex of the graph
+     * @param graph graph, a list of vertices
+     */
+    public void dijkstrasAlgorithm(Vertex<String> source, List<Vertex<String>> graph) {
+        Set<Vertex<String>> solutionSet = new HashSet<>();
+        source.weight = 0;
+
+        Queue<Vertex<String>> pQueue = new ArrayDeque<>(graph);
+        while (!pQueue.isEmpty()) {
+            Vertex<String> vertex = Collections.min(pQueue);
+            solutionSet.add(vertex);
+            pQueue.remove(vertex);
+            for (Vertex<String> v : vertex.getNeigbhors()) {
+                if (!solutionSet.contains(v)) {
+                    int value = vertex.weight + vertex.edges.get(v);
+                    v.weight = Math.min(v.weight, value);
+                }
+            }
+        }
+    }
 }

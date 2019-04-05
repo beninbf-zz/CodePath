@@ -2,11 +2,14 @@ package test.java.com.codepath.graphs;
 
 import main.java.com.codepath.graphs.ShortestPathWithKeysAndDoors;
 import main.java.com.codepath.objects.Cell;
+import main.java.com.codepath.objects.Vertex;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import static org.junit.Assert.*;
 
@@ -73,5 +76,9 @@ public class ShortestPathWithKeysAndDoorsTest {
             assertEquals(String.format("col should be equal for index=%s", i), cell.col, result[i][1]);
             i++;
         }
+    }
+
+    public void testDijkstrasAlgorithm() {
+        Queue<Vertex<String>> queue = new PriorityQueue<>();
     }
 }

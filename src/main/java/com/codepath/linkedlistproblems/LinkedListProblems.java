@@ -39,7 +39,7 @@ public class LinkedListProblems {
      * @return the linked list node k steps away from head
      */
     public LinkedListNode fastForward(LinkedListNode head, int k) {
-        if (head == null || k < 0) {
+        if (head == null || k <= 0) {
             return head;
         }
 

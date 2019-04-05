@@ -154,7 +154,7 @@ public class TechScreensTest {
     public void testGetStringFromField() {
         Person parent = new Person("Johns Dad", "Doe Dad", 65, null);
         Person person = new Person("John", "doe", 30, parent);
-        
+
         String result = testObj.getJsonString(person);
         System.out.println(result);
     }
