@@ -1,17 +1,23 @@
 package test.java.com.codepath.techscreens;
 
 import main.java.com.codepath.objects.Person;
+import main.java.com.codepath.objects.Position;
+import main.java.com.codepath.objects.StackRoxNode;
 import main.java.com.codepath.techscreens.TechScreens;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TechScreensTest {
 
@@ -23,7 +29,7 @@ public class TechScreensTest {
     }
 
     @Test
-    public void testGetFirstBooking() {
+    public void testSonder_GetFirstBooking() {
         String bookingsInput = "4:8 19:35 80:160";
         int current_date = 35;
         int stay_length = 46;
@@ -52,7 +58,7 @@ public class TechScreensTest {
 
 
     @Test
-    public void testGetLargestAllOnesSquareSubmatrix1() {
+    public void testExabeam_GetLargestAllOnesSquareSubmatrix1() {
         List<Integer> row0 = Arrays.asList(1, 1, 0);
         List<Integer> row1 = Arrays.asList(1, 1, 0);
         List<Integer> row2 = Arrays.asList(1, 1, 1);
@@ -67,7 +73,7 @@ public class TechScreensTest {
     }
 
     @Test
-    public void testGetLargestAllOnesSquareSubmatrix2() {
+    public void testExabeam_GetLargestAllOnesSquareSubmatrix2() {
         List<Integer> row0 = Arrays.asList(0, 0, 0);
         List<Integer> row1 = Arrays.asList(1, 1, 0);
         List<Integer> row2 = Arrays.asList(1, 1, 1);
@@ -82,7 +88,7 @@ public class TechScreensTest {
     }
 
     @Test
-    public void testGetLargestAllOnesSquareSubmatrix3() {
+    public void testExabeam_GetLargestAllOnesSquareSubmatrix3() {
         List<Integer> row0 = Arrays.asList(1, 1, 0, 0, 0);
         List<Integer> row1 = Arrays.asList(0, 1, 1, 1, 0);
         List<Integer> row2 = Arrays.asList(0, 1, 1, 1, 0);
@@ -101,7 +107,7 @@ public class TechScreensTest {
     }
 
     @Test
-    public void testGetLargestAllOnesSquareSubmatrix4() {
+    public void testExabeam_GetLargestAllOnesSquareSubmatrix4() {
 
         List<Integer> row0 = Arrays.asList(0, 0, 0);
         List<Integer> row1 = Arrays.asList(0, 1, 1);
@@ -117,7 +123,7 @@ public class TechScreensTest {
     }
 
     @Test
-    public void testGetLargestAllOnesSquareSubmatrix5() {
+    public void testExabeam_GetLargestAllOnesSquareSubmatrix5() {
         List<Integer> row0 = Arrays.asList(0, 0, 0);
         List<Integer> row1 = Arrays.asList(0, 1, 0);
         List<Integer> row2 = Arrays.asList(0, 0, 0);
@@ -132,7 +138,7 @@ public class TechScreensTest {
     }
 
     @Test
-    public void testGetLargestMatrixAllOnes() {
+    public void testExabeam_GetLargestMatrixAllOnes() {
         List<Integer> row0 = Arrays.asList(1, 1, 1, 1, 1);
         List<Integer> row1 = Arrays.asList(1, 1, 1, 0, 0);
         List<Integer> row2 = Arrays.asList(1, 1, 1, 0, 0);
@@ -151,7 +157,7 @@ public class TechScreensTest {
     }
 
     @Test
-    public void testGetStringFromField() {
+    public void testDyDx_GetStringFromField() {
         Person parent = new Person("Johns Dad", "Doe Dad", 65, null);
         Person person = new Person("John", "doe", 30, parent);
 
@@ -160,7 +166,7 @@ public class TechScreensTest {
     }
 
     @Test
-    public void findNodesWithZeroParents() {
+    public void testZume_findNodesWithZeroParents() {
         int[][] parentChildPairs = new int[][] {
                 {1, 3}, {2, 3}, {3, 6}, {5, 6}, {5, 7},
                 {4, 5}, {4, 8}, {8, 10}
@@ -175,7 +181,7 @@ public class TechScreensTest {
     }
 
     @Test
-    public void findNodesWithOneParents() {
+    public void testZume_findNodesWithOneParents() {
         int[][] parentChildPairs = new int[][] {
             {1, 3}, {2, 3}, {3, 6}, {5, 6}, {5, 7},
             {4, 5}, {4, 8}, {8, 10}
@@ -187,5 +193,96 @@ public class TechScreensTest {
         for(int i = 0; i < ans.length; i++) {
             assertEquals("items should be equal", answer.get(i).intValue(), ans[i].intValue());
         }
+    }
+
+    @Test
+    public void testQuizlet_SameSchema() {
+         Map<String, Object> FIRST = new HashMap() {{
+                put("a", "hello");
+                put("b", 1);
+         }};
+
+        Map<String, Object> SECOND = new HashMap() {{
+                put("a", "world");
+                put("b", 2);
+        }};
+
+        Map<String, Object> THIRD = new HashMap() {{
+            put("a", "hello");
+            put("b", "1");
+        }};
+
+       Map<String, Object> FOURTH = new HashMap() {{
+           put("a", "hello");
+       }};
+
+        Map<String, Object> FIFTH = new HashMap() {{
+            put("a", 1);
+        }};
+
+        Map<String, Object> SIXTH = new HashMap() {{
+            put("a", 1);
+            put("b", 2);
+        }};
+
+        assertTrue("Schemas should be the same", testObj.sameSchema(Arrays.asList(FIRST, SECOND)));
+        assertFalse("Schemas should NOT be the same", testObj.sameSchema(Arrays.asList(FIRST, THIRD)));
+        assertFalse("Schemas should be the same", testObj.sameSchema(Arrays.asList(THIRD, FOURTH)));
+        assertFalse("Schemas should NOT be the same", testObj.sameSchema(Arrays.asList(FIRST, FIFTH)));
+        assertFalse("Schemas should NOT be the same", testObj.sameSchema(Arrays.asList(FIFTH, SIXTH)));
+    }
+
+    @Test
+    public void testStackRox_GetUniquePrefixes() {
+        List<StackRoxNode> nodes = new ArrayList<>(Arrays.asList(
+            new StackRoxNode("4", "ABCD"),
+            new StackRoxNode("1", "ABC"),
+            new StackRoxNode("2", "AB"),
+            new StackRoxNode("3", "B")
+        ));
+        Map<String, String> results = testObj.getUniquePrefixes(nodes);
+        for(String key: results.keySet()) {
+            System.out.println(results.get(key));
+        }
+    }
+
+    @Test
+    public void testSignalFx_removeDuplicates() {
+        List<Integer> input = Arrays.asList(3, 6, 2, 3, 6, 5, 2, 3);
+        List<Integer> result = testObj.getUniqueValuesEff(input);
+        List<Integer> answer = Arrays.asList(3, 6, 2, 5, -1, -1, -1, -1);
+        int length = result.size();
+        for (int i = 0; i < length; i++) {
+            assertEquals("Values should be equal", result.get(i), answer.get(i));
+        }
+    }
+
+    @Test
+    public void testDarkStore_GetPositions() {
+        Position[] AMZN = new Position[]{new Position(LocalDate.parse("2019-04-01"), 200),
+            new Position(LocalDate.parse("2019-04-04"), 400)};
+        Position[] GOOG = new Position[]{new Position(LocalDate.parse("2019-04-02"), 500),
+            new Position(LocalDate.parse("2019-04-03"), 700)};
+        Position[] MSFT = new Position[]{new Position(LocalDate.parse("2019-04-01"), 400),
+            new Position(LocalDate.parse("2019-04-02"), 200),
+            new Position(LocalDate.parse("2019-04-04"), 600)};
+
+        Position[][] portfolio = new Position[][]{AMZN, GOOG, MSFT};
+        Position[] totals = testObj.getTotalsFromPortfolio(portfolio);
+
+        System.out.println(Arrays.toString(totals));
+
+        Position[] YAHOO = new Position[]{new Position(LocalDate.parse("2019-04-02"), 200),
+            new Position(LocalDate.parse("2019-04-04"), 300)};
+        Position[] APPL = new Position[]{new Position(LocalDate.parse("2019-04-02"), 200),
+            new Position(LocalDate.parse("2019-04-03"), 100)};
+        Position[] GE = new Position[]{new Position(LocalDate.parse("2019-04-01"), 500),
+            new Position(LocalDate.parse("2019-04-03"), 700)};
+
+
+        Position[][] portfolio1 = new Position[][]{YAHOO, APPL, GE};
+        Position[] moreTotals = testObj.getTotalsFromPortfolio(portfolio1);
+
+        System.out.println(Arrays.toString(moreTotals));
     }
 }
