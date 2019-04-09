@@ -30,7 +30,7 @@ public class Util {
         return total;
     }
 
-    public static void print(Object[] array) {
+    public static <T> void print(T[] array) {
         System.out.print("[");
         for(int i = 0; i < array.length - 1; i++) {
             System.out.print(array[i] + ", ");

@@ -1,9 +1,10 @@
 package test.java.com.codepath.techscreens;
 
-import main.java.com.codepath.objects.Person;
-import main.java.com.codepath.objects.Position;
-import main.java.com.codepath.objects.StackRoxNode;
+import main.java.com.codepath.techscreens.objects.Person;
+import main.java.com.codepath.techscreens.objects.Position;
+import main.java.com.codepath.techscreens.objects.StackRoxNode;
 import main.java.com.codepath.techscreens.TechScreens;
+import main.java.com.codepath.techscreens.objects.ZerosRectangle;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -284,5 +285,104 @@ public class TechScreensTest {
         Position[] moreTotals = testObj.getTotalsFromPortfolio(portfolio1);
 
         System.out.println(Arrays.toString(moreTotals));
+    }
+
+    @Test
+    public void testZumeViaKarat_DomainsClicks() {
+        int[][] image1 = {
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 0, 0, 0, 1},
+            {1, 1, 1, 0, 0, 0, 1},
+            {1, 1, 1, 1, 1, 1, 1}
+        };
+
+        ZerosRectangle image1Result = testObj.findRectangleOfZeros(image1);
+        assertEquals("Start row should be 2", image1Result.beginning.row, 2);
+        assertEquals("Start col should be 3", image1Result.beginning.col, 3);
+        assertEquals("Width should be 3", image1Result.width, 3);
+        assertEquals("Height should be 2", image1Result.height, 2);
+
+        int[][] image2 = {
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 0}
+        };
+
+        ZerosRectangle image2Result = testObj.findRectangleOfZeros(image2);
+        assertEquals("Start row should be 4", image2Result.beginning.row, 4);
+        assertEquals("Start col should be 6", image2Result.beginning.col, 6);
+        assertEquals("Width should be 1", image2Result.width, 1);
+        assertEquals("Height should be 1", image2Result.height, 1);
+
+        int[][] image3 = {
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 0, 0},
+            {1, 1, 1, 1, 1, 0, 0}
+        };
+
+        ZerosRectangle image3Result = testObj.findRectangleOfZeros(image3);
+        assertEquals("Start row should be 3", image3Result.beginning.row, 3);
+        assertEquals("Start col should be 5", image3Result.beginning.col, 5);
+        assertEquals("Width should be 2", image3Result.width, 2);
+        assertEquals("Height should be 2", image3Result.height, 2);
+
+        int[][] image4 = {
+            {0, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1}
+        };
+
+        ZerosRectangle image4Result = testObj.findRectangleOfZeros(image4);
+        System.out.println(image4Result);
+        assertEquals("Start row should be 1", image4Result.beginning.row, 0);
+        assertEquals("Start col should be 1", image4Result.beginning.col, 0);
+        assertEquals("Width should be 1", image4Result.width, 1);
+        assertEquals("Height should be 1", image4Result.height, 1);
+
+        int[][] image5 = {
+            {0}
+        };
+
+        ZerosRectangle image5Result = testObj.findRectangleOfZeros(image5);
+        assertEquals("Start row should be 1", image5Result.beginning.row, 0);
+        assertEquals("Start col should be 1", image5Result.beginning.col, 0);
+        assertEquals("Width should be 1", image5Result.width, 1);
+        assertEquals("Height should be 1", image5Result.height, 1);
+    }
+
+    @Test
+    public void testRobloxViaKarat_DomainClicks() {
+        String[] counts = {
+            "900,google.com",
+            "60,mail.yahoo.com",
+            "10,mobile.sports.yahoo.com",
+            "40,sports.yahoo.com",
+            "300,yahoo.com",
+            "10,stackoverflow.com",
+            "2,en.wikipedia.org",
+            "1,es.wikipedia.org",
+            "1,mobile.sports"
+        };
+
+        Map<String, Integer> results = testObj.aggregateCounts(counts);
+        assertEquals(".com should be 1320", 1320, results.get("com").intValue());
+        assertEquals("stackoverflow.com should be 10", 10, results.get("stackoverflow.com").intValue());
+        assertEquals("sports.yahoo.com should be 50", 50, results.get("sports.yahoo.com").intValue());
+        assertEquals("google.com should be 900", 900, results.get("google.com").intValue());
+        assertEquals("sports should be 1", 1, results.get("sports").intValue());
+        assertEquals("org should be 3", 3, results.get("org").intValue());
+        assertEquals("wikipedia.org should be 3", 3, results.get("wikipedia.org").intValue());
+        assertEquals("mobile.sports should be 1", 1, results.get("mobile.sports").intValue());
+        assertEquals("es.wikipedia.org should be 1", 1, results.get("es.wikipedia.org").intValue());
+        assertEquals("en.wikipedia.org should be 2", 2, results.get("en.wikipedia.org").intValue());
+        assertEquals("mail.yahoo.com should be 10", 10, results.get("mobile.sports.yahoo.com").intValue());
+        assertEquals("yahoo.com should be 410", 410, results.get("yahoo.com").intValue());
     }
 }

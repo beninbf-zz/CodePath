@@ -1,9 +1,10 @@
 package main.java.com.codepath.techscreens;
 
-import main.java.com.codepath.objects.Person;
-import main.java.com.codepath.objects.Position;
-import main.java.com.codepath.objects.StackRoxNode;
+import main.java.com.codepath.techscreens.objects.Person;
+import main.java.com.codepath.techscreens.objects.Position;
+import main.java.com.codepath.techscreens.objects.StackRoxNode;
 import main.java.com.codepath.techscreens.objects.Booking;
+import main.java.com.codepath.techscreens.objects.ZerosRectangle;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -889,6 +890,137 @@ arr[i][j] ∈ {0, 1} (0 denotes black pixel and 1 denotes white pixel)
             System.out.print(item + " ");
         }
         System.out.println();
+    }
+
+    /**
+     * This tech screen was the follow up to my Zume tech screen. It went well,
+     * I had one bug, and one hint from the interview managed to help me fix it.
+     *
+     * Imagine we have an image. We'll represent this image as a simple 2D array where every pixel is a 1 or a 0.
+     * The image you get is known to have a single rectangle of 0s on a background of 1s.
+     *
+     * Write a function that takes in the image and returns the coordinates of the rectangle
+     * of 0's -- either top-left and bottom-right; or top-left, width, and height.
+     *
+     * findRectangle(image1) =>
+     *    x: 3, y: 2, width: 3, height: 2
+     *    2,3 3,5 -- row,column of the top-left and bottom-right corners
+     *
+     * @param image 2 - D array of zeros and ones
+     * @return dimensions and start of zeros rectangle
+     */
+    public ZerosRectangle findRectangleOfZeros(int[][] image) {
+        ZerosRectangle result = new ZerosRectangle();
+        int rows = image.length;
+        int cols = image[0].length;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (image[i][j] == 0 && result.beginning == null) {
+                    result.createBeginningCell(i, j);
+                } else if (image[i][j] == 0) {
+                    result.width += 1;
+                    if ( ((j + 1) < cols && image[i][j + 1] == 1) || (j + 1) == cols) {
+                        countColumnZeros(image, i + 1, j, result);
+                        return result;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public void countColumnZeros(int[][] image, int row, int col, ZerosRectangle result) {
+        int length = image.length;
+        for (int i = row; i < length; i++) {
+            if (image[i][col] == 0) {
+                result.height += 1;
+            } else {
+                return;
+            }
+        }
+    }
+
+    /**
+     * This problem presented me with a lot of issues even though its not really difficult.
+     * I had troubles breaking down the problem and seeing how simple the solution was.
+     * From the outset of the problem it appeared as if it required a recursive
+     * dfs solution, but it was much more simple than that. I'm not sure why it was
+     * so hard to see the simplicity for what it was.
+     *
+     *
+     * You are in charge of a display advertising program. Your ads are displayed on websites all
+     * over the internet. You have some CSV input data that counts how many times that users
+     * have clicked on an ad on each individual domain. Every line consists of a click count
+     * and a domain name, like this:
+     *
+     * counts = [ "900,google.com",
+     *      "60,mail.yahoo.com",
+     *      "10,mobile.sports.yahoo.com",
+     *      "40,sports.yahoo.com",
+     *      "300,yahoo.com",
+     *      "10,stackoverflow.com",
+     *      "2,en.wikipedia.org",
+     *      "1,es.wikipedia.org",
+     *      "1,mobile.sports" ]
+     *
+     * Write a function that takes this input as a parameter and returns a data structure containing
+     * the number of clicks that were recorded on each domain AND each sub domain under it.
+     * For example, a click on "mail.yahoo.com" counts toward the totals for "mail.yahoo.com",
+     * "yahoo.com", and "com". (Sub domains are added to the left of their parent domain.
+     * So "mail" and "mail.yahoo" are not valid domains. Note that "mobile.sports" appears
+     * as a separate domain as the last item of the input.)
+     *
+     * Sample output (in any order/format):
+     *
+     * calculateClicksByDomain(counts)
+     * 1320    com
+     *  900    google.com
+     *  410    yahoo.com
+     *   60    mail.yahoo.com
+     *   10    mobile.sports.yahoo.com
+     *   50    sports.yahoo.com
+     *   10    stackoverflow.com
+     *    3    org
+     *    3    wikipedia.org
+     *    2    en.wikipedia.org
+     *    1    es.wikipedia.org
+     *    1    mobile.sports
+     *    1    sports
+     *
+     *
+     * @param counts String array
+     * @return Map of domains and their counts
+     */
+    public Map<String,Integer> aggregateCounts(String[] counts) {
+        Map<String,Integer> results = new HashMap<>();
+        for (String s: counts) {
+            String[] items = s.split(",");
+
+            int count = Integer.valueOf(items[0]);
+            List<String> domains = getDomains(items[1]);
+            for (String domain: domains) {
+                if (!results.containsKey(domain)) {
+                    results.put(domain, count);
+                } else {
+                    Integer currentCount = results.get(domain);
+                    results.put(domain, Integer.sum(currentCount, count));
+                }
+            }
+        }
+
+        return results;
+    }
+
+    public List<String> getDomains(String domain) {
+        int length = domain.length();
+        List<String> subDomains = new ArrayList<>();
+        for (int i = length - 1; i >= 0; i--) {
+            if(domain.charAt(i) ==  '.') {
+                subDomains.add(domain.substring(i + 1, length));
+            }
+        }
+        subDomains.add(domain);
+        return subDomains;
     }
 }
 

@@ -1,4 +1,4 @@
-package main.java.com.codepath.objects;
+package main.java.com.codepath.techscreens.objects;
 
 public class StackRoxNode {
 

@@ -203,4 +203,114 @@ public class GraphProblems {
             }
         }
     }
+
+    /**
+     * This is an application of BFS algorithm for finding the shortest path between two
+     * nodes in a graph. In stead of finding the shortest path from a source to all nodes,
+     * we just find the shortest path from a start to a target. We use a hashmap to store
+     * the path, and set a visited bool to make sure we don't visit nodes twice.
+     *
+     * Because there maybe multiple paths from our start to our target, we have to remember that we want
+     * the shortest one. So before adding a subsequent vertex to the path, we should first check to
+     * see if its already in our hashmap, if we don't we will end up overwriting it, because putting
+     * something in a hashmap with the same key results in overrwriting the original value.
+     *
+     * We then construct the path using a list, and continuously inserting at the beginning of the list
+     * so that we don't have to reverse it.
+     *
+     * Its basically just moving through a linked list using the hashmap to move Vertex to Vertex.
+     *
+     * @param start vertex
+     * @param target target vertex
+     * @return shortest path between start and target list of nodes
+     */
+    public List<Vertex> findShortestPathBetweenTwoVertices(Vertex start, Vertex target) {
+        if (start == null || target == null) {
+            return null;
+        }
+
+        Queue<Vertex> queue = new LinkedList<>();
+        Map<String, Vertex> path = new HashMap<>();
+        queue.add(start);
+
+        while (!queue.isEmpty()) {
+            Vertex current = queue.poll();
+            current.visited = true;
+            if (current.label.equals(target.label)) {
+                break;
+            }
+            List<Vertex> children = current.getNeigbhors();
+            for (Vertex child : children) {
+                if (child.visited == false && !path.containsKey(child.label)) {
+                    path.put(String.valueOf(child.label), current);
+                    queue.add(child);
+                }
+            }
+        }
+
+        if (path.get(String.valueOf(target.label)) == null) {
+            return null;
+        }
+
+        Vertex current = target;
+        List<Vertex> result = new LinkedList<>();
+        while (current != null) {
+            result.add(0, current);
+            Vertex next = path.get(String.valueOf(current.label));
+            current = next;
+        }
+        return result;
+    }
+
+    public List<Vertex> primsAlgorithmMST(List<Vertex> graph) {
+        Set<String> visited = new HashSet<>();
+        Vertex start = graph.get(0);
+        List<Vertex> mst = new ArrayList<>();
+
+        List<Vertex> queue = new ArrayList<>();
+        queue.add(start);
+        mst.add(start);
+        visited.add(String.valueOf(start.getLabel()));
+        while (visited.size() != graph.size()) {
+            Vertex current = getMinimumEdgeVertex(queue, visited);
+            visited.add(String.valueOf(current.getLabel()));
+            List<Vertex> neighbors = current.getNeigbhors();
+            for (Vertex child : neighbors) {
+                if (!visited.contains(String.valueOf(child.getLabel()))) {
+                    if (!queue.contains(child)) {
+                        queue.add(child);
+                    }
+                }
+            }
+            mst.add(current);
+        }
+        return mst;
+    }
+
+    public Vertex getMinimumEdgeVertex(List<Vertex> vertices, Set<String> visited) {
+        Vertex minimumVertexEdge = null;
+        Map.Entry minimumEdge = null;
+        for (Vertex candidate: vertices) {
+            Set<Map.Entry> entrySet = candidate.edges.entrySet();
+            for (Map.Entry entry : entrySet) {
+                Vertex candidatedVertex = (Vertex) entry.getKey();
+                if (!visited.contains(candidatedVertex.getLabel())) {
+                    if (minimumEdge == null) {
+                        minimumEdge = entry;
+                    } else {
+                        Integer entryValue = (Integer) entry.getValue();
+                        Integer minimumEdgeValue = (Integer) minimumEdge.getValue();
+                        if (entryValue.compareTo(minimumEdgeValue) < 0) {
+                            minimumEdge = entry;
+                        }
+                    }
+                }
+            }
+            if (minimumEdge != null) {
+                minimumVertexEdge = (Vertex) minimumEdge.getKey();
+            }
+        }
+        return minimumVertexEdge;
+    }
+
 }

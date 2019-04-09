@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Vertex<T> implements Comparable<Vertex<T>> {
+public class Vertex<T extends Comparable<T>> implements Comparable<Vertex<T>> {
     public List<Vertex<T>> neighbors = new ArrayList<>();
     public Map<Vertex<T>, Integer> edges = new HashMap<>();
     public T label;
@@ -18,6 +18,12 @@ public class Vertex<T> implements Comparable<Vertex<T>> {
         this.color = Color.WHITE;
     }
 
+    public Vertex(T label, int weight) {
+        this.label = label;
+        this.color = Color.WHITE;
+        this.weight = weight;
+    }
+
     public void addNeighbors(List<Vertex<T>> neighbors) {
         this.neighbors.addAll(neighbors);
     }
@@ -28,6 +34,10 @@ public class Vertex<T> implements Comparable<Vertex<T>> {
 
     public void addEdges(Vertex<T> neighbor, Integer weight) {
         edges.put(neighbor, weight);
+        addNeighbor(neighbor);
+
+        neighbor.edges.put(this, weight);
+        neighbor.addNeighbor(this);
     }
 
     /**
@@ -84,7 +94,11 @@ public class Vertex<T> implements Comparable<Vertex<T>> {
 
     @Override
     public int compareTo(Vertex<T> other) {
-        return this.weight - other.weight;
+        if (this.weight != null && other.weight != null) {
+            return this.weight - other.weight;
+        } else {
+            return this.label.compareTo(other.getLabel());
+        }
     }
 
     @Override

@@ -63,6 +63,87 @@ public class GraphProblemsTest {
     }
 
     @Test
+    public void testGetShortestPathBetweenTwoVertices() {
+        Vertex<String> oneVertex= new Vertex<>("1");
+        Vertex<String> twoVertex = new Vertex<>("2");
+        Vertex<String> threeVertex = new Vertex<>("3");
+        Vertex<String> fourVertex = new Vertex<>("4");
+        Vertex<String> fiveVertex = new Vertex<>("5");
+
+        oneVertex.addNeighbor(threeVertex);
+        oneVertex.addNeighbor(twoVertex);
+        twoVertex.addNeighbor(fiveVertex);
+        fourVertex.addNeighbor(oneVertex);
+        fourVertex.addNeighbor(threeVertex);
+        fiveVertex.addNeighbor(fourVertex);
+
+        List<Vertex> result = testObj.findShortestPathBetweenTwoVertices(twoVertex, threeVertex);
+        String[] answer = new String[]{"2", "5", "4", "3"};
+
+        for (int i = 0; i < answer.length; i++) {
+            assertTrue("should be equal", result.get(i).label.equals(answer[i]));
+        }
+    }
+
+    @Test
+    public void testGetMinimumEdgeVertex() {
+        Vertex<String> aVertex = new Vertex<>("A");
+        Vertex<String> dVertex = new Vertex<>("D");
+        Vertex<String> cVertex = new Vertex<>("C");
+        Vertex<String> bVertex = new Vertex<>("B");
+        Vertex<String> eVertex = new Vertex<>("E");
+
+        aVertex.addEdges(dVertex, 3);
+        aVertex.addEdges(cVertex, 3);
+        aVertex.addEdges(bVertex, 2);
+
+        List<Vertex> graph = Arrays.asList(aVertex);
+
+        Set<String> visited = new HashSet<>();
+
+        Vertex<String> minimum = testObj.getMinimumEdgeVertex(graph, visited);
+        assertEquals("Should be vertex b", "B", minimum.getLabel());
+
+        bVertex.addEdges(cVertex, 4);
+        bVertex.addEdges(eVertex, 3);
+
+        visited.add(aVertex.getLabel());
+        visited.add(bVertex.getLabel());
+        List<Vertex> newGraph = Arrays.asList(aVertex, bVertex);
+        Vertex<String> nextMinimum = testObj.getMinimumEdgeVertex(newGraph, visited);
+
+        assertEquals("next minimum should be 3", "C", nextMinimum.getLabel());
+    }
+
+    @Test
+    public void testPrimsAlgorithm() {
+        Vertex<String> aVertex = new Vertex<>("A");
+        Vertex<String> dVertex = new Vertex<>("D");
+        Vertex<String> cVertex = new Vertex<>("C");
+        Vertex<String> bVertex = new Vertex<>("B");
+        Vertex<String> eVertex = new Vertex<>("E");
+        Vertex<String> fVertex = new Vertex<>("F");
+        Vertex<String> gVertex = new Vertex<>("G");
+
+        aVertex.addEdges(dVertex, 3);
+        aVertex.addEdges(cVertex, 3);
+        aVertex.addEdges(bVertex, 2);
+        bVertex.addEdges(cVertex, 4);
+        bVertex.addEdges(eVertex, 3);
+        cVertex.addEdges(dVertex, 5);
+        cVertex.addEdges(eVertex, 1);
+        cVertex.addEdges(fVertex, 6);
+        dVertex.addEdges(fVertex, 7);
+        eVertex.addEdges(fVertex, 8);
+        fVertex.addEdges(gVertex, 9);
+
+        List<Vertex> graph = new ArrayList<>(Arrays.asList(aVertex, bVertex, cVertex, dVertex, eVertex, fVertex));
+
+        List<Vertex> minimumSpanningTree  = testObj.primsAlgorithmMST(graph);
+    }
+
+
+    @Test
     public void priorityQueue() {
         Queue<String> queue = new PriorityQueue<>();
         queue.add("Z");
@@ -98,7 +179,6 @@ public class GraphProblemsTest {
     }
 
     private List<Vertex<String>> getGraph() {
-
         Vertex<String> aSource = new Vertex<>("A");
         Vertex<String> bVertex = new Vertex<>("B");
         Vertex<String> cVertex = new Vertex<>("C");
@@ -106,66 +186,30 @@ public class GraphProblemsTest {
         Vertex<String> eVertex = new Vertex<>("E");
         Vertex<String> fVertex = new Vertex<>("F");
 
-
-        Set<Vertex<String>> set = new HashSet<>();
-
-        set.add(aSource);
-        set.add(bVertex);
-
-//        if (set.contains(bVertex)) {
-//            System.out.println("working");
-//        } else {
-//            System.out.println("not working");
-//        }
-//
-//        if (!set.contains(cVertex)) {
-//            System.out.println("working");
-//        }
-
-
-
-        addEdge(aSource, bVertex, 3);
-        addEdge(aSource, cVertex, 1);
-        addEdge(aSource, dVertex, 2);
-        addEdge(dVertex, eVertex, 1);
-        addEdge(eVertex, cVertex, 4);
-        addEdge(cVertex, fVertex, 2);
-
-        //aSource.weight = 0;
-        //bVertex.weight = 10;
+        aSource.addEdges(bVertex, 3);
+        aSource.addEdges(cVertex, 1);
+        aSource.addEdges(dVertex, 2);
+        dVertex.addEdges(eVertex, 1);
+        eVertex.addEdges(cVertex, 4);
+        cVertex.addEdges(fVertex, 2);
 
         List<Vertex<String>> graph = new ArrayList<>(Arrays.asList(aSource, bVertex, cVertex, dVertex, eVertex, fVertex));
-
-        //Queue<Vertex<String>> queue = new LinkedList<>(graph);
-
-        //Queue<Vertex<String>> arrayDeque = new ArrayDeque<>(graph);
-
-//        while (!arrayDeque.isEmpty()) {
-//            //Vertex<String> item = queueGreater.poll();
-//
-//
-//            Vertex<String> item = Collections.min(arrayDeque);
-//            arrayDeque.remove(item);
-//
-//            //queue.remo.
-//            if (item.label.equals("C")) {
-//                item.weight = 1;
-//            }
-//            System.out.println(item);
-//
-//            //arrayDeque.remove(item);
-//
-//        }
-
         return graph;
     }
 
-    private void addEdge(Vertex vertex1, Vertex vertex2, int weight) {
-        vertex1.addEdges(vertex2, weight);
-        vertex1.addNeighbor(vertex2);
+    private void getDirectedGraph() {
+        Vertex<String> oneVertex= new Vertex<>("1");
+        Vertex<String> twoVertex = new Vertex<>("2");
+        Vertex<String> threeVertex = new Vertex<>("3");
+        Vertex<String> fourVertex = new Vertex<>("4");
+        Vertex<String> fiveVertex = new Vertex<>("5");
 
-        vertex2.addEdges(vertex1, weight);
-        vertex2.addNeighbor(vertex1);
+        oneVertex.addNeighbor(threeVertex);
+        oneVertex.addNeighbor(twoVertex);
+        twoVertex.addNeighbor(fiveVertex);
+        fourVertex.addNeighbor(oneVertex);
+        fourVertex.addNeighbor(threeVertex);
+        fiveVertex.addNeighbor(fourVertex);
     }
 
 
