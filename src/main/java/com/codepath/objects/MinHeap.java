@@ -368,7 +368,22 @@ public class MinHeap<T> {
                 break;
             }
         }
-        //return updatedNode.key;
+    }
+
+    public boolean contains(T key) {
+        return positionMap.containsKey(key);
+    }
+
+    /**
+     * Get the weight of given key
+     */
+    public Integer getWeight(T key) {
+        Integer position = positionMap.get(key);
+        if( position == null ) {
+            return null;
+        } else {
+            return backingArray.get(position).weight;
+        }
     }
 
     /**

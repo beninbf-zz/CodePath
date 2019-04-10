@@ -1,6 +1,8 @@
 package test.java.com.codepath.graphs;
 
 import main.java.com.codepath.graphs.GraphProblems;
+import main.java.com.codepath.objects.Cell;
+import main.java.com.codepath.objects.Edge;
 import main.java.com.codepath.objects.Vertex;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,36 +88,6 @@ public class GraphProblemsTest {
     }
 
     @Test
-    public void testGetMinimumEdgeVertex() {
-        Vertex<String> aVertex = new Vertex<>("A");
-        Vertex<String> dVertex = new Vertex<>("D");
-        Vertex<String> cVertex = new Vertex<>("C");
-        Vertex<String> bVertex = new Vertex<>("B");
-        Vertex<String> eVertex = new Vertex<>("E");
-
-        aVertex.addEdges(dVertex, 3);
-        aVertex.addEdges(cVertex, 3);
-        aVertex.addEdges(bVertex, 2);
-
-        List<Vertex> graph = Arrays.asList(aVertex);
-
-        Set<String> visited = new HashSet<>();
-
-        Vertex<String> minimum = testObj.getMinimumEdgeVertex(graph, visited);
-        assertEquals("Should be vertex b", "B", minimum.getLabel());
-
-        bVertex.addEdges(cVertex, 4);
-        bVertex.addEdges(eVertex, 3);
-
-        visited.add(aVertex.getLabel());
-        visited.add(bVertex.getLabel());
-        List<Vertex> newGraph = Arrays.asList(aVertex, bVertex);
-        Vertex<String> nextMinimum = testObj.getMinimumEdgeVertex(newGraph, visited);
-
-        assertEquals("next minimum should be 3", "C", nextMinimum.getLabel());
-    }
-
-    @Test
     public void testPrimsAlgorithm() {
         Vertex<String> aVertex = new Vertex<>("A");
         Vertex<String> dVertex = new Vertex<>("D");
@@ -137,11 +109,64 @@ public class GraphProblemsTest {
         eVertex.addEdges(fVertex, 8);
         fVertex.addEdges(gVertex, 9);
 
-        List<Vertex> graph = new ArrayList<>(Arrays.asList(aVertex, bVertex, cVertex, dVertex, eVertex, fVertex));
+        List<Vertex> graph = new ArrayList<>(Arrays.asList(aVertex, bVertex, cVertex, dVertex, eVertex, fVertex, gVertex));
 
-        List<Vertex> minimumSpanningTree  = testObj.primsAlgorithmMST(graph);
+        List<Edge> minimumSpanningTree  = testObj.primsAlgorithmMST(graph);
+        System.out.println(minimumSpanningTree);
     }
 
+    @Test
+    public void testPrimsAlgorithm1() {
+        Vertex<String> aVertex = new Vertex<>("A");
+        Vertex<String> dVertex = new Vertex<>("D");
+        Vertex<String> cVertex = new Vertex<>("C");
+        Vertex<String> bVertex = new Vertex<>("B");
+        Vertex<String> eVertex = new Vertex<>("E");
+        Vertex<String> fVertex = new Vertex<>("F");
+
+        aVertex.addEdges(dVertex, 1);
+        aVertex.addEdges(bVertex, 3);
+        bVertex.addEdges(dVertex, 3);
+        bVertex.addEdges(cVertex, 1);
+        dVertex.addEdges(eVertex, 6);
+        cVertex.addEdges(dVertex, 1);
+        cVertex.addEdges(fVertex, 4);
+        cVertex.addEdges(eVertex, 5);
+        eVertex.addEdges(fVertex, 2);
+
+        List<Vertex> graph = new ArrayList<>(Arrays.asList(aVertex, bVertex, cVertex, dVertex, eVertex, fVertex));
+
+        List<Edge> minimumSpanningTree  = testObj.primsAlgorithmMST(graph);
+        System.out.println(minimumSpanningTree);
+    }
+
+    @Test
+    public void testKnightsTour() {
+//        int ans= testObj.knightsTour(1, 1, 0, 0, 0, 0);
+//        assertEquals("Should be 0", 0, ans);
+
+        int ans1 = testObj.knightsTour(5, 5, 0, 0, 4, 1);
+        assertEquals("Should be 3", 3, ans1);
+
+//        int ans2 = testObj.knightsTour(33333, 3, 333, 0, 33332, 2);
+//        assertEquals("Should be 16501", 16501, ans2);
+
+    }
+
+
+    @Test
+    public void getKnightNeighborCells() {
+        Cell cell = new Cell(0, 0);
+        List<Cell> neighbors = testObj.getKnightNeighborCells(5, 5, cell);
+
+        System.out.println(neighbors);
+        assertEquals("Should only have 2 neighbors", 2, neighbors.size());
+
+        List<Cell> neighbors1 = testObj.getKnightNeighborCells(5, 5, new Cell(3, 3));
+        System.out.println(neighbors1);
+        assertEquals("Should only have 4 neighbors", 4, neighbors1.size());
+
+    }
 
     @Test
     public void priorityQueue() {

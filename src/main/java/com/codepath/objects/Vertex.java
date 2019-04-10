@@ -40,6 +40,10 @@ public class Vertex<T extends Comparable<T>> implements Comparable<Vertex<T>> {
         neighbor.addNeighbor(this);
     }
 
+    public Integer getEdgeWeight(Vertex<T> neighbor) {
+        return edges.get(neighbor);
+    }
+
     /**
      * Gets neighbors.
      *

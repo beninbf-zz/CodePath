@@ -126,39 +126,6 @@ public class TechScreens {
         return bookings[bookings.length  - 1].checkOut;
     }
 
-    /*
-    Casey has a square image made up of black and white pixels represented as 0 and 1 respectively.  As part of an image analysis process, Casey needs to determine the size of the largest square area of white pixels.  Given a 2-dimensional square matrix that represents the image, write a function to determine the length of a side of the largest square area made up of white pixels.
-
-
-
-For example, the n x n = 5 x 5 matrix of pixels is represented as arr = [[1,1,1,1,1], [1,1,1,0,0], [1,1,1,0,0], [1,1,1,0,0], [1,1,1,1,1].  A diagram of the matrix is:
-
-1 1 1 1 1
-1 1 1 0 0
-1 1 1 0 0
-1 1 1 0 0
-1 1 1 1 1
-The largest square sub-matrix is 3 x 3 in size starting at position (0, 0), (1, 0) or (2, 0). The expected return value is 3.
-
-
-Function Description
-
-Complete the function largestMatrix in the editor below. The function must return width of the largest square sub-matrix of white pixels.
-
-
-
-largestMatrix has the following parameter:
-
-    arr[arr[0][0],...arr[n-1][n-1]]:  a 2D array of integers
-
-
-
-Constraints
-
-1 ≤ n ≤ 500
-arr[i][j] ∈ {0, 1} (0 denotes black pixel and 1 denotes white pixel)
-     */
-
     /**
      * This tech screen was from a company called Exabeam. The problem statement is as follows
      *
@@ -1021,6 +988,53 @@ arr[i][j] ∈ {0, 1} (0 denotes black pixel and 1 denotes white pixel)
         }
         subDomains.add(domain);
         return subDomains;
+    }
+
+    /**
+     * Given an array of integers, return the smallest non negative
+     * integer, not in the array. Can't return 0, but must be at least 1
+     *
+     * input: [1, 3, 4, 2, 1, 6]
+     * output: 5
+     *
+     * This is an interesting problem with a number of different solutions.
+     * The simplest is to search through the array, storing numbers that are larger
+     * greater than 0. Store the integers in a Set
+     *
+     * If, the set is empty that means there were no positive integers so we can
+     * simply return 1, as the largest non negative integer missing.
+     *
+     * If the set is not empty, then we simply check, from 1 to the max number in
+     * the input. The first number the set doesn't contain, is the smallest missing number.
+     *
+     * If we make it through the entire set, and nothing is missing, then that means
+     * we should return the max number + 1.
+     *
+     * RUNTIME: O(N)
+     * SPACE: O(N)
+     * @param A input array of integers
+     * @return smallest missing positive integer
+     */
+    public int findSmallestMissingPositiveInteger(int[] A) {
+        Set<Integer> integers = new HashSet<>(A.length);
+        int max = Arrays.stream(A).max().getAsInt();
+        for (int i = 0; i < A.length; i++) {
+            if (A[i] > 0) {
+                integers.add(A[i]);
+            }
+        }
+
+        if (integers.isEmpty()) {
+            return 1;
+        }
+
+        for (int i = 1; i < max; i++){
+            if (!integers.contains(i)) {
+                return i;
+            }
+        }
+
+        return max + 1;
     }
 }
 

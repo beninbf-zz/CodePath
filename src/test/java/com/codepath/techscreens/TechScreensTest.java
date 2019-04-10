@@ -385,4 +385,17 @@ public class TechScreensTest {
         assertEquals("mail.yahoo.com should be 10", 10, results.get("mobile.sports.yahoo.com").intValue());
         assertEquals("yahoo.com should be 410", 410, results.get("yahoo.com").intValue());
     }
+
+    @Test
+    public void testFindSmallestMissingPositiveInteger() {
+        int[] A = new int[]{1, 3, 4, 6, 2, 1};
+        int ans = testObj.findSmallestMissingPostiveInteger(A);
+        assertEquals("Answer should be 5", 5, ans);
+
+
+        int[] A1 = new int[]{-1, -3};
+        int ans1 = testObj.findSmallestMissingPostiveInteger(A1);
+        assertEquals("Answer should be 1", 1, ans1);
+
+    }
 }

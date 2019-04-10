@@ -1,6 +1,9 @@
 package main.java.com.codepath.graphs;
 
 
+import main.java.com.codepath.objects.Cell;
+import main.java.com.codepath.objects.Edge;
+import main.java.com.codepath.objects.MinHeap;
 import main.java.com.codepath.objects.Vertex;
 import main.java.com.codepath.util.Util;
 
@@ -262,55 +265,238 @@ public class GraphProblems {
         return result;
     }
 
-    public List<Vertex> primsAlgorithmMST(List<Vertex> graph) {
-        Set<String> visited = new HashSet<>();
-        Vertex start = graph.get(0);
-        List<Vertex> mst = new ArrayList<>();
+    /**
+     * primsAlgorithmMST
+     * The following is an implementation of prim's algorithm. The first thing to understand
+     * is what exactly we are going to return with regarding the execution of Prim's Algorithm.
+     *
+     * Considering we are building a minimum spanning tree from an existing Graph, which is to
+     * say a series of edges in a graph such that all nodes are connected and the sum of those
+     * edges is the least weight possible, we need to return a list of edges.
+     *
+     * We see that will be at most V - 1 edges.
+     *
+     * Prim's algorithm works like so. First we start with any arbitrary node. Then given that nodes
+     * children, we select the least weight edge. This is the start of our MST. Given the two nodes
+     * connected by 1 edge in our MST, we then look at all of the edges of those two nodes
+     * and then select the least edge. Keep doing this, keeping in mind NOT to create a cycle.
+     *
+     * We do this until we have build a minimum spanning tree. The difficult part to this problem
+     * was knowing how to continuously choose the least edge of the graph over and over again.
+     * We do that operation by making a data structure. We construct a Minimum Heap, such that
+     * the smallest element is always at the root. When we remove the root, the min heap maintains
+     * its heap property by shuffling its values around such that the minimum is always at the root,
+     * there by allowing us to remove the minimum element in constant time.
+     *
+     * We often have to update the edge weights, as we explore new lower weight edges. This values must
+     * also be updated in our minHeap, and then the values in the minheap have to be reshuffled to maintain
+     * the heap property. The plain english code the algorithm goes as follows
+     *
+     * 1) Create an empty list, which we will use to store our edges of the MST
+     * 2) Create an edge map, which will store the vertices and the edges they map to
+     * 3) Create a min heap
+     * 4) Load all vertices into the min heap, which their weights initially set to infinity,
+     * with the exception of our start node, which will be 0.
+     *
+     * 5) As long as the heap is not empty, we do the following
+     *    a. Extract the minimum value from the min heap
+     *    b. if that node minimum node, has an edge in our edge map, that add it to our result list
+     *    c. For all of the neighbors of this minimum node
+     *         i. Check if the minheap contains the neighbor
+     *         ii. If it does, then get its edge weight with our current node
+     *         iii. If the edge weight, is less than the weight we have for that node in our minheap
+     *              then update the edge weight in the heap.
+     *              Then add that edge to our edge map
+     *     d. After exploring all neighbors, we then go back up the top of the for loop
+     *     e. extract the next minimum node. And see if there is an edge for it, in our edge map
+     *         i. if there is then that means that is one edge formed by our MST, so add it to our
+     *         results. Repeat step c-e, until the min heap is empty
+     *
+     * Our results represent the edges of our minimum spanning tree.
+     *
+     * SPACE COMPLEXITY: We are storing all of the vertices in the heap, so its al least O(V).
+     * We are also storing the edges in an Edge map, which is an additional O(E), so thats O(E + V)
+     *
+     * RUN TIME: Considering we are using a binary heap, we can extract the min in O(1) time,
+     * perform a contains in O(1) time, and decrease a value in O(log v) time.
+     *
+     * We essentially have to sum up the degree for nodes, which is the Sum of Degree i, for all
+     * v in V (all vertices in the graph), that sum is 2 |E| or O(E). We also have to decrease the
+     * neigbhor vertex each time we find a lower weight, so that makes a running time of O(E log V).
+     *
+     *
+     * @param graph graph input
+     * @return list of edges
+     */
+    public List<Edge> primsAlgorithmMST(List<Vertex> graph) {
+        List<Edge> edgesOfMst = new ArrayList<>();
+        Map<Vertex, Edge> edgeMap = new HashMap<>();
+        MinHeap<Vertex> minHeap = new MinHeap<>();
 
-        List<Vertex> queue = new ArrayList<>();
-        queue.add(start);
-        mst.add(start);
-        visited.add(String.valueOf(start.getLabel()));
-        while (visited.size() != graph.size()) {
-            Vertex current = getMinimumEdgeVertex(queue, visited);
-            visited.add(String.valueOf(current.getLabel()));
+        Vertex start = graph.get(0);
+        start.weight = 0;
+
+        for (Vertex v: graph) {
+            minHeap.add(v, v.weight);
+        }
+
+        while (!minHeap.isEmpty()) {
+            Vertex current = minHeap.extractMin(); // O(1)
+            if (edgeMap.containsKey(current)) {
+                edgesOfMst.add(edgeMap.get(current));
+            }
             List<Vertex> neighbors = current.getNeigbhors();
-            for (Vertex child : neighbors) {
-                if (!visited.contains(String.valueOf(child.getLabel()))) {
-                    if (!queue.contains(child)) {
-                        queue.add(child);
+            for (Vertex neighbor: neighbors) { // sum of degree i, equals O(E)
+                if (minHeap.contains(neighbor)) { // O(1)
+                    int edgeWeight = current.getEdgeWeight(neighbor);
+                    if (edgeWeight < minHeap.getWeight(neighbor).intValue()) {
+                        minHeap.decrease(neighbor, edgeWeight); // O(log V)
+                        Edge edge = new Edge(current, neighbor, edgeWeight);
+                        edgeMap.put(neighbor, edge);
                     }
                 }
             }
-            mst.add(current);
         }
-        return mst;
+        return edgesOfMst;
     }
 
-    public Vertex getMinimumEdgeVertex(List<Vertex> vertices, Set<String> visited) {
-        Vertex minimumVertexEdge = null;
-        Map.Entry minimumEdge = null;
-        for (Vertex candidate: vertices) {
-            Set<Map.Entry> entrySet = candidate.edges.entrySet();
-            for (Map.Entry entry : entrySet) {
-                Vertex candidatedVertex = (Vertex) entry.getKey();
-                if (!visited.contains(candidatedVertex.getLabel())) {
-                    if (minimumEdge == null) {
-                        minimumEdge = entry;
-                    } else {
-                        Integer entryValue = (Integer) entry.getValue();
-                        Integer minimumEdgeValue = (Integer) minimumEdge.getValue();
-                        if (entryValue.compareTo(minimumEdgeValue) < 0) {
-                            minimumEdge = entry;
+    /**
+     * Knights tour
+     *
+     * This problem is an application of BFS, my implementation is correct, but also slow for large test cases.
+     *
+     * Essentially the "neighbors" of any given cell represent the indices in the chessboard that correspond with
+     * the moves that the "knight" can make in the game of chess. Those moves are outlined in the method
+     * getKnightNeighborCells. I was essentially creating a list of neighbors and then, for every neighbor,
+     * if I hadn't already seen it, then I was adding its path to a map.
+     *
+     * There is a quicker way of getting the neighbors though. Since we know that the moves have to correspond
+     * to the rules of the knight character in chess, we could just keep two arrays of the move combinations,
+     * then iterate through each combination, checking to see if its a valid move.
+     *
+     * This is much faster, than creating a list of up to 8 cell objects each time.
+     *
+     * The problem asked for returning the shortest path, so what I did was stored the path in a map,
+     * essentially mapping a neighbor (or child) node to its parent. Then when the queue was empty
+     * I would move back through the map, the same way one would with a linked list, and then count
+     * + 1 each time to get the path length.
+     *
+     * While this works, that should only be done, if the actual path is required. It is not in this case,
+     * all we need to do is get the path length. We can do that in the while loop, by simply saying,
+     * take the length that I've already gone to get to my parent, and 1 to it, for each neighbor.
+     * When we finally get to our target cell, we know to just return that number.
+     *
+     * We store the lengths to get to each cell in a 2-D array. We can also make use of this array
+     * to check whether or not we have visited that cell already, thereby eliminating our need
+     * for a HashSet. This over all is much faster.
+     *
+     * SPACE COMPLEXITY: O(rows * cols) for the 2-D array
+     * RUNTIME COMPLEXITY: O(rows * cols) because we could potentially have rows * cols Cells in our queue
+     *
+     * @param rowDimension the row dimension of the chess board
+     * @param colDimension the col dimension of the chess board
+     * @param startRow the start row
+     * @param startCol the start col
+     * @param endRow the target row
+     * @param endCol the target column
+     * @return the length of the shortest path to the target for a knight
+     */
+    public int knightsTour(int rowDimension, int colDimension, int startRow, int startCol, int endRow, int endCol) {
+        if (rowDimension == 0 && colDimension == 0) {
+            return -1;
+        }
+
+        if (startRow == endRow && startCol == endCol) {
+            return 0;
+        }
+
+        return knightTourHelper(rowDimension, colDimension, startRow, startCol, endRow, endCol);
+    }
+
+    public int knightTourHelper(int rowDimension, int colDimension, int startRow, int startCol, int endRow, int endCol) {
+        Queue<Cell> cellQueue = new LinkedList<>();
+        int[] knightMoveRow = new int[]{-2, -2, -1, 1, 2, 2, 1, -1};
+        int[] knightMoveCol = new int[]{-1, 1, 2, 2, 1, -1, -2, -2};
+
+        int[][] distance = new int[rowDimension][colDimension];
+
+        Cell start = new Cell(startRow, startCol);
+        cellQueue.add(start);
+        int count = 0;
+
+        Cell target = null;
+        while (!cellQueue.isEmpty()) {
+            Cell parentCell = cellQueue.poll();
+            if (target != null) {
+                break;
+            }
+
+            for (int i = 0; i < 8; i++) {
+                int neighborRow = parentCell.row + knightMoveRow[i];
+                int neighborCol = parentCell.col + knightMoveCol[i];
+                if (isValidMove(neighborRow, rowDimension, neighborCol, colDimension)) {
+                    if (distance[neighborRow][neighborCol] == 0) {
+                        cellQueue.add(new Cell(neighborRow, neighborCol));
+                        distance[neighborRow][neighborCol] =
+                            distance[parentCell.row][parentCell.col] + 1;
+
+                        if (neighborRow == endRow && neighborCol == endCol) {
+                            count = distance[neighborRow][neighborCol];
                         }
                     }
                 }
             }
-            if (minimumEdge != null) {
-                minimumVertexEdge = (Vertex) minimumEdge.getKey();
-            }
         }
-        return minimumVertexEdge;
+
+        if (count == 0) {
+            return -1;
+        }
+        return count;
     }
 
+    public boolean isValidMove(int row, int rowDimension, int col, int colDimension) {
+        return (row >= 0 && row < rowDimension) && (col >= 0 && col < colDimension);
+    }
+
+    public List<Cell> getKnightNeighborCells(int rowDimension, int colDimension, Cell cell) {
+        List<Cell> neighbors = new ArrayList<>(8);
+
+        // 2 down and 1 right
+        if (cell.row + 2 < rowDimension && cell.col + 1 < colDimension) {
+            neighbors.add(new Cell(cell.row + 2, cell.col + 1));
+        }
+        // 2 down 1 left
+        if (cell.row + 2 < rowDimension&& cell.col - 1 >= 0) {
+            neighbors.add(new Cell(cell.row + 2, cell.col - 1));
+        }
+
+        // 2 right 1 down
+        if (cell.col + 2 < colDimension && cell.row + 1 < rowDimension) {
+            neighbors.add(new Cell(cell.row + 1, cell.col + 2));
+        }
+        // 2 right 1 up
+        if (cell.col + 2 < colDimension && cell.row - 1 >= 0) {
+            neighbors.add(new Cell(cell.row - 1, cell.col + 2));
+        }
+
+        // 2 left 1 down
+        if (cell.col - 2 >= 0 && cell.row + 1 < rowDimension) {
+            neighbors.add(new Cell( cell.row + 1, cell.col - 2));
+        }
+        // 2 left 1 up
+        if (cell.col - 2 >= 0 && cell.row - 1 >= 0) {
+            neighbors.add(new Cell(cell.row - 1, cell.col - 2));
+        }
+
+        // 2 up 1 right
+        if (cell.row - 2 >= 0 && cell.col + 1 < colDimension) {
+            neighbors.add(new Cell( cell.row - 2, cell.col + 1));
+        }
+        // 2 up 1 left
+        if (cell.row - 2 >= 0 && cell.col - 1 >= 0) {
+            neighbors.add(new Cell(cell.row - 2, cell.col - 1));
+        }
+
+        return neighbors;
+    }
 }
