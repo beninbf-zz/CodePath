@@ -32,12 +32,16 @@ public class Vertex<T extends Comparable<T>> implements Comparable<Vertex<T>> {
         this.neighbors.add(neighbor);
     }
 
-    public void addEdges(Vertex<T> neighbor, Integer weight) {
-        edges.put(neighbor, weight);
-        addNeighbor(neighbor);
+    public void addEdges(Vertex<T> neighbor, Integer weight, boolean isUndirected) {
+        if (!edges.containsKey(neighbor)) {
+            edges.put(neighbor, weight);
+            addNeighbor(neighbor);
+        }
 
-        neighbor.edges.put(this, weight);
-        neighbor.addNeighbor(this);
+        if (isUndirected) {
+            neighbor.edges.put(this, weight);
+            neighbor.addNeighbor(this);
+        }
     }
 
     public Integer getEdgeWeight(Vertex<T> neighbor) {

@@ -4,6 +4,7 @@ import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
 import main.java.com.codepath.techscreens.objects.StackRoxNode;
 import main.java.com.codepath.techscreens.objects.Booking;
+import main.java.com.codepath.techscreens.objects.StudentCoursePair;
 import main.java.com.codepath.techscreens.objects.ZerosRectangle;
 
 import java.lang.reflect.Array;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +32,8 @@ public class TechScreens {
     private final static Set<String> protectedTypes = new HashSet<>(Arrays.asList("String", "Integer", "Double", "Float"));
 
     /**
+     * Sonder
+     *
      * This problem was given during a tech screening. The company was call Sonder.
      * An Airbnb type company. The problem statement below is given a series of bookings
      * in the form of "4:8 19:35 80:160", a current_date, i.e. 4, and stay_length, i.e. 1
@@ -355,7 +359,7 @@ public class TechScreens {
 
 
     /**
-     * This tech screen was provided by Karat by way of the Zume company
+     * Karat by way of the Zume company
      *
      * Suppose we have some input data describing a graph of relationships between parents and children over multiple generations.
      * The data is formatted as a list of (parent, child) pairs, where each individual is assigned a unique integer identifier.
@@ -563,7 +567,7 @@ public class TechScreens {
 
     /**
      *
-     * Tech Screen is from Stack Rox
+     * Tech Screen is from StackRox
      *
      * Input:
      * 1 => [A B C]
@@ -603,6 +607,8 @@ public class TechScreens {
     }
 
     /**
+     * SignalFx
+     *
      * This tech screen was given by signal Fx. It wasn't that hard, but it exposed a limitation
      * of mine regarding find duplicates, without using extra memory as well as re-organizing
      * information in array.
@@ -664,6 +670,8 @@ public class TechScreens {
     }
 
     /**
+     *
+     * Dark store tech screen
      *
      * RUNTIME COMPLEXITY:
      * For the initial bucket map, the run time O(m * n) where m is the number of assets
@@ -860,6 +868,8 @@ public class TechScreens {
     }
 
     /**
+     * Tech screen from Zume:
+     *
      * This tech screen was the follow up to my Zume tech screen. It went well,
      * I had one bug, and one hint from the interview managed to help me fix it.
      *
@@ -908,6 +918,8 @@ public class TechScreens {
     }
 
     /**
+     * Karat via Roblox:
+     *
      * This problem presented me with a lot of issues even though its not really difficult.
      * I had troubles breaking down the problem and seeing how simple the solution was.
      * From the outset of the problem it appeared as if it required a recursive
@@ -991,6 +1003,7 @@ public class TechScreens {
     }
 
     /**
+     * Test from Codility for Wayfair
      * Given an array of integers, return the smallest non negative
      * integer, not in the array. Can't return 0, but must be at least 1
      *
@@ -1035,6 +1048,114 @@ public class TechScreens {
         }
 
         return max + 1;
+    }
+
+    /**
+     *
+     * My second tech screen with Karat via Roblox. Again...I fucked it up.
+     *
+     * I definitely need practice on problems that require a lot of hash maps.
+     * I didn't exactly understand how taking the approach I had chosen was going to work
+     * but I thought it was mostly there and it really bit me in the ass. The approach
+     * I initially took was mapping classes to students, this seemed promising,
+     * but I couldn't make it work.
+     *
+     * BEFORE CODING ANYTHING...make sure I have the right approach first.
+     *
+     * After struggling after the tech screen I switched up it up. In this case all I had
+     * to do was build a hash map with students mapped to their courses. Then to find the
+     * over lap, I just had to iterate over the keys (the students)
+     * for each student, and compare student to student with a for loop. My problem was, I didn't
+     * know how to generate these pairs, but it should of been obvious. Its just a double for loop.
+     * Pairing each student with the other.
+     *
+     * We would simply skip keys that matched, and make sure we didn't generate the same pair
+     * twice by storing students we had already paired in a HashMap with students mapping
+     * to a set of students that it had been paired with.
+     *
+     * Once I realized that was the correct approach to take, writing the code wasn't complicated.
+     *
+     * FUCKING GODDDAMNIT!!
+     *
+     * You are a developer for a university. Your current project is to develop a system for students
+     * to find courses they share with friends. The university has a system for querying courses students
+     * are enrolled in, returned as a list of (ID, course) pairs. Write a function that takes in a list
+     * of (student ID number, course name) pairs and returns, for every pair of students, a list of all courses
+     * they share.
+     * Sample Input:
+     * student_course_pairs = [["58", "Software Design"],
+     * ["58", "Linear Algebra"],
+     *   ["94", "Art History"],
+     *   ["94", "Operating Systems"],
+     *   ["17", "Software Design"],
+     *   ["58", "Mechanics"],
+     *   ["58", "Economics"],
+     *   ["17", "Linear Algebra"],
+     *   ["17", "Political Science"],
+     *   ["94", "Economics"]
+     *   ]
+     *   Sample Output (pseudocode, in any order)
+     *
+     *   find_pairs(student_course_pairs) => {
+     * [58, 17]: ["Software Design", "Linear Algebra"]
+     * [58, 94]: ["Economics"]
+     * [17, 94]: []
+     * }
+     */
+    public List<StudentCoursePair> find_pairs(String[][] input) {
+        List<StudentCoursePair> results = new ArrayList<>();
+        Map<String, Set<String>> studentsToClasses = new HashMap<>();
+        for (int i = 0; i < input.length; i++) {
+            if (!studentsToClasses.containsKey(input[i][0])) {
+                Set<String> classes = new HashSet<>();
+                classes.add(input[i][1]);
+                studentsToClasses.put(input[i][0], classes);
+            } else {
+                Set<String> classes = studentsToClasses.get(input[i][0]);
+                classes.add(input[i][1]);
+            }
+        }
+
+        Map<String, Set<String>> alreadyCoupled = new HashMap<>();
+        for (String key : studentsToClasses.keySet()) {
+            Set<String> classes = studentsToClasses.get(key);
+            for (String otherKey: studentsToClasses.keySet()) {
+                if (key.equals(otherKey)) {
+                    continue;
+                }
+
+
+                if (alreadyCoupled.containsKey(otherKey)) {
+                    Set<String> setOfCoupledStudents = alreadyCoupled.get(otherKey);
+                    if (setOfCoupledStudents.contains(key)) {
+                        continue;
+                    }
+                }
+                Set<String> otherClasses = studentsToClasses.get(otherKey);
+                List<String> classesForPair = new ArrayList<>();
+                for (String schoolClass: classes) {
+                    if (otherClasses.contains(schoolClass)) {
+                        classesForPair.add(schoolClass);
+                    }
+                }
+
+                if (!alreadyCoupled.containsKey(key)) {
+                    Set<String> coupledStudents = new HashSet<>();
+                    coupledStudents.add(otherKey);
+                    alreadyCoupled.put(key, coupledStudents);
+                } else {
+                    Set<String> coupledStudents = alreadyCoupled.get(key);
+                    coupledStudents.add(otherKey);
+                }
+
+                StudentCoursePair pair = new StudentCoursePair();
+                pair.students.add(key);
+                pair.students.add(otherKey);
+                pair.classes.addAll(classesForPair);
+                results.add(pair);
+            }
+        }
+        return results;
     }
 }
 

@@ -2,6 +2,7 @@ package main.java.com.codepath.graphs;
 
 
 import main.java.com.codepath.objects.Cell;
+import main.java.com.codepath.objects.Color;
 import main.java.com.codepath.objects.Edge;
 import main.java.com.codepath.objects.MinHeap;
 import main.java.com.codepath.objects.Vertex;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class GraphProblems {
@@ -53,92 +55,147 @@ public class GraphProblems {
         }
     }
 
-    public List<String> wordLadder(String start, String stop, String[] dictionary) {
-        if (dictionary.length == 0) {
+    /**
+     * You are given a dictionary of words named words, and two strings named start and stop.
+     * All given strings have equal length. Dictionary words are not in any particular order,
+     * there may be duplicates, too.
+     *
+     * You need to find the shortest possible sequence of strings (two or more) such that:
+     *
+     * First string is start.
+     * Last string is stop.
+     * Every string (except the first one) differs from the previous one by exactly one character.
+     * Every string (except, possibly, first and last ones) are in the dictionary of words.
+     *
+     * If two or more such sequences exist, any one of them is a correct answer.
+     *
+     * If no such sequence is there to be found, [“-1”] (a sequence of one string, “-1”)
+     * is the correct answer.
+     *
+     * There are three arguments:
+     *
+     * Array of strings words,
+     * String start,
+     * String stop.
+     *
+     * This word transformation algorithm is another graphing problem. The key take away is that
+     * we want to find the shortest number of words in a transformation to get from a start word
+     * to a stop word. The key word being "shortest" should give away that this should be done
+     * with a BFS implementation.
+     *
+     * Also the problem description says that every word in the dictionary differs from the "previous"
+     * one by exactly one character. That explains that two words differing by one character should in
+     * effect create an edge between two words. In other words, a words neighbors in a graph will only
+     * differ by one character.
+     *
+     * With that said there are two ways to build the graph for this algorithm.
+     *
+     * 1) For each and every word in the dictionary, check to see which are exactly one character different.
+     * if they're is character different, then that will constitute a neighbor, so that word will be added to
+     * the neighbors list of the other word. When all of the words in the dictionary including the stop and start
+     * have been assembled into a list of vertices, all with their appropriate neighbors, we then simply run
+     * BFS, saving the current node and the children nodes in map. At the end of BFS, we will use the map to
+     * recreate the path from the start to the stop.
+     *
+     * RUNTIME COMPLEXITY: Doing it this way, building the graph is quite expensive. Its
+     * O(numberOfWordsInDictionary * numberOfWordsInDictionary * numberOfCharactersInLongestWord)
+     *
+     * The number Of Characters In tne Longest Word is due to the isNeighbor method which has to compare
+     * all of the characters in two strings.
+     *
+     * After that we run we BFS, the interior loop is the sum of the degree of a vertex for all vertices
+     * in the graph which is O(E), where E is the number of words one character away from a given word,
+     * the edges.
+     *
+     * The running time here is dominated by O(numberOfWordsInDictionary * numberOfWordsInDictionary
+     * * numberOfCharactersInLongestWord)
+     *
+     * SPACE COMPLEXITY: O(N) where N is the number of words in the dictionary.
+     *
+     * 2) (in wordLadderEff) If the number of words in the dictionary is large, then we need another way to determine the edges.
+     * The other option we can use, given that we know that words that are neighbors only differ by one character
+     * is, for every word in the dictionary (including the start and stop) generate all possible words, that differ
+     * by one character. For this newly generated, then check to see if its in the dictionary, if it is, then we
+     * know we have a neighbor, so then we can simply save that word and the original (untransformed word) in a
+     * map, which we can use to generate a path later.
+     *
+     * Every word that we find, that is a neighbor, we will add into the queue, and continue to run BFS.
+     *
+     * RUNTIME COMPLEXITY: for every word in the dictionary, we generate each possible string with at most
+     * one character changed. That one character changed at each position in the String. So there are
+     * O(wordLength * 26) different strings when we change a character at one position. But we have to
+     * do that for every position in the word, so that becomes O(wordLength * wordLength * 26). We might
+     * end up doing this for every word in the dictionary so that becomes
+     * so thats O(wordLength * wordLength * 26 * number of words in the dictionary). In this case
+     * if the average word length in the dictionary is high, this solution will be slow.
+     *
+     * SPACE COMPLEXITY: O(N) where N is the number of words in the dictionary, considering we
+     * create an additional hash map and hash set.
+     *
+     * @param start initial word
+     * @param stop target word
+     * @param words dictionary of words for transformation
+     * @return list of words for transformation
+     */
+    public String[] wordLadder(String start, String stop, String[] words) {
+        if (words.length == 0) {
             if (isNeighbor(start, stop)) {
-                return Arrays.asList(start, stop);
+                return new String[]{start, stop};
             }
-            return Arrays.asList("-1");
+            return new String[] {"-1"};
         }
 
         if (start.equals(stop)) {
-            for (String word : dictionary) {
+            for (String word : words) {
                 if (isNeighbor(word, start)) {
-                    return Arrays.asList(start, word, stop);
-                } else {
-                    return Arrays.asList("-1");
+                    return new String[]{start, word, stop};
                 }
             }
+            return new String[] {"-1"};
         }
 
-        ArrayList<String> totalWords = new ArrayList<>();
+        ArrayList<String> totalWords = new ArrayList<>(words.length + 2);
         totalWords.add(start);
-        for (String word : dictionary) {
-            totalWords.add(word);
-        }
+        totalWords.addAll(Arrays.asList(words));
         totalWords.add(stop);
 
-        Map<String, Vertex<String>> lookUp = new HashMap<String, Vertex<String>>();
-        List<Vertex<String>> graph = buildGraphOther(totalWords, lookUp);
-        Map<String, Vertex<String>> previous = new HashMap<>();
-        Vertex<String> startVertex = graph.get(0);
+        List<Vertex<String>> graph = buildWordLadderGraph(totalWords);
+
+        Map<Vertex<String>, Vertex<String>> pathMap = new HashMap<>();
         Vertex<String> stopVertex = graph.get(graph.size() - 1);
 
-        LinkedList<Vertex<String>> q = new LinkedList<Vertex<String>>();
-        q.addFirst(startVertex);
-
-        startVertex.setVisited(true);
+        Queue<Vertex<String>> q = new LinkedList<>();
+        q.add(graph.get(0));
         while (!q.isEmpty()) {
-            Vertex<String> current = q.pollFirst();
+            Vertex<String> current = q.poll();
+            current.setVisited(true);
             for (Vertex neighbor: current.getNeigbhors()) {
                 if (!neighbor.isVisited()) {
                     neighbor.setVisited(true);
-                    q.add(lookUp.get(neighbor.getLabel()));
-                    previous.put((String) neighbor.getLabel(), current);
+                    q.add(neighbor);
+                    pathMap.put(neighbor, current);
                 }
             }
         }
 
-        List<String> path = buildPath(previous, startVertex, stopVertex);
+        List<String> path = buildPath(pathMap, stopVertex);
         if (path.size() == 1) {
-            return Arrays.asList("-1");
+            return new String[]{"-1"};
         }
-        return path;
+        return path.toArray(new String[0]);
     }
 
-    private List<Vertex<String>> buildGraph(List<String> allWords, Map<String, Vertex<String>> lookUp) {
-        List<Vertex<String>> adjlist = new ArrayList<>();
+    private List<Vertex<String>> buildWordLadderGraph(List<String> allWords) {
+        List<Vertex<String>> graph = new ArrayList<>();
         for (String word : allWords) {
             Vertex<String> vertex = new Vertex<>(word);
-            List<Vertex<String>> neighbors = new ArrayList<Vertex<String>>();
-            vertex.setNeigbhors(neighbors);
-            for (String otherWord: allWords) {
-                if (word.equals(otherWord)) {
-                    continue;
-                } else {
-                    if (isNeighbor(word, otherWord))  {
-                        Vertex<String> neighbor = new Vertex<>(otherWord);
-                        vertex.getNeigbhors().add(neighbor);
-                    }
-                }
-            }
-            adjlist.add(vertex);
-            lookUp.put(vertex.getLabel(), vertex);
-        }
-        return adjlist;
-    }
-
-    private List<Vertex<String>> buildGraphOther(List<String> allWords, Map<String, Vertex<String>> lookUp) {
-        List<Vertex<String>> adjlist = new ArrayList<>();
-        for (String word : allWords) {
-            Vertex<String> vertex = new Vertex<>(word);
-            adjlist.add(vertex);
+            graph.add(vertex);
         }
 
-        for (Vertex<String> vertex : adjlist) {
+        for (Vertex<String> vertex : graph) {
             List<Vertex<String>> neighbors = new ArrayList<>();
             vertex.setNeigbhors(neighbors);
-            for (Vertex<String> otherVertex : adjlist) {
+            for (Vertex<String> otherVertex : graph) {
                 if (vertex.getLabel().equals(otherVertex.getLabel())) {
                     continue;
                 } else {
@@ -147,20 +204,122 @@ public class GraphProblems {
                     }
                 }
             }
-            lookUp.put(vertex.getLabel(), vertex);
         }
-        return adjlist;
+        return graph;
     }
 
-    private List<String> buildPath(Map<String, Vertex<String>> previous, Vertex<String> startVertex, Vertex<String> stopVertex) {
-        List<String> path = new ArrayList<>();
+    private List<String> buildPath(Map<Vertex<String>, Vertex<String>> pathMap, Vertex<String> stopVertex) {
+        List<String> path = new LinkedList<>();
         path.add(stopVertex.getLabel());
-        Vertex<String> current = previous.get(stopVertex.getLabel());
+        Vertex<String> current = pathMap.get(stopVertex);
         while (current != null) {
-            path.add(current.getLabel());
-            current = previous.get(current.getLabel());
+            path.add(0, current.getLabel());
+            current = pathMap.get(current);
         }
 
+        return path;
+    }
+
+    /**
+     * 2) (in wordLadderEff) If the number of words in the dictionary is large, then we need another way to determine the edges.
+     * The other option we can use, given that we know that words that are neighbors only differ by one character
+     * is, for every word in the dictionary (including the start and stop) generate all possible words, that differ
+     * by one character. For this newly generated, then check to see if its in the dictionary, if it is, then we
+     * know we have a neighbor, so then we can simply save that word and the original (untransformed word) in a
+     * map, which we can use to generate a path later.
+     *
+     * Every word that we find, that is a neighbor, we will add into the queue, and continue to run BFS.
+     *
+     * RUNTIME COMPLEXITY: for every word in the dictionary, we generate each possible string with at most
+     * one character changed. That one character changed at each position in the String. So there are
+     * O(wordLength * 26) different strings when we change a character at one position. But we have to
+     * do that for every position in the word, so that becomes O(wordLength * wordLength * 26). We might
+     * end up doing this for every word in the dictionary so that becomes
+     * so thats O(wordLength * wordLength * 26 * number of words in the dictionary). In this case
+     * if the average word length in the dictionary is high, this solution will be slow.
+     *
+     * SPACE COMPLEXITY: O(N) where N is the number of words in the dictionary, considering we
+     * create an additional hash map and hash set.
+     *
+     * @param start start word
+     * @param stop stop word
+     * @param words dictionary of words
+     * @return
+     */
+    public String[] wordLadderEff(String start, String stop, String[] words) {
+        if (words.length == 0) {
+            if (isNeighbor(start, stop)) {
+                return new String[]{start, stop};
+            }
+            return new String[] {"-1"};
+        }
+
+        if (start.equals(stop)) {
+            for (String word : words) {
+                if (isNeighbor(word, start)) {
+                    return new String[]{start, word, stop};
+                }
+            }
+            return new String[] {"-1"};
+        }
+
+        Set<String> totalWords = new HashSet<>(words.length);
+        totalWords.add(start);
+        totalWords.addAll(Arrays.asList(words));
+        totalWords.add(stop);
+
+        Queue<String> queue = new LinkedList<>();
+        Set<String> seen = new HashSet<>(words.length);
+        Map<String, String> pathMap = new HashMap<>(words.length);
+
+        queue.add(start);
+        while (!queue.isEmpty()) {
+            String word = queue.poll();
+            buildWordLadderGraphEff(seen, word, totalWords, queue, pathMap);
+        }
+
+        List<String> path = buildPathEff(pathMap, start, stop);
+        if (path.size() == 1) {
+            return new String[]{"-1"};
+        }
+        return path.toArray(new String[0]);
+    }
+
+    private void buildWordLadderGraphEff(Set<String> seen, String word, Set<String> allWords, Queue<String> queue, Map<String, String> pathMap) {
+        StringBuffer sb = new StringBuffer(word);
+        for (int i = 0; i < word.length(); i++) {
+            for (char ch = 'a'; ch <= 'z'; ch++) {
+                if (ch == word.charAt(i)) {
+                    continue;
+                }
+
+                char original = word.charAt(i);
+                sb.setCharAt(i, ch);
+                String transform = sb.toString();
+
+                if (allWords.contains(transform)) {
+                    if (!seen.contains(transform)) {
+                        queue.add(transform);
+                        seen.add(transform);
+                        pathMap.put(transform, word);
+                    }
+                }
+                sb.setCharAt(i, original);
+            }
+        }
+    }
+
+    private List<String> buildPathEff(Map<String, String> pathMap, String start, String stop) {
+        List<String> path = new LinkedList<>();
+        path.add(stop);
+        String current = pathMap.get(stop);
+        while (current != null) {
+            path.add(0, current);
+            if (current.equals(start)) {
+                break;
+            }
+            current = pathMap.get(current);
+        }
         return path;
     }
 
@@ -498,5 +657,176 @@ public class GraphProblems {
         }
 
         return neighbors;
+    }
+
+    /**
+     * Alien Dictionary
+     *
+     * This problem is very interesting. Understanding the problem is the most difficult part.
+     *
+     * Problem statement:
+     *
+     * Given a sorted dictionary in an alien language, you have to find the order of characters in
+     * that language. The input is an array of strings in sorted order which denotes the dictionary
+     * of the alien language.
+     *
+     * We have to return a string, that is ordered, denoting the order of characters in the alien
+     * language. The length of the output string will be the number of different characters in the
+     * input dictionary.
+     *
+     * This problem is very interesting because in order to solve it, in order to apply any graphing
+     * algorithms whatsoever, we must first understand the nature of a dictionary. Understanding the
+     * nature of a dictionary initially give me problems.
+     *
+     * There are 2 things we must first understand about the nature of a dictionary which relate
+     * to how we determine relationships between characters.
+     *
+     * In a dictionary between two adjacent words, one of the following must be true.
+     *
+     * 1) there is at least one letter different between the two words, "abcd", "abde"
+     * 2) One word is shorter than the other
+     *
+     * We know from the property of a dictionary that the index, of the very first mismatching characters
+     * denotes an ordering of characters. Example with "abcd" and "abde", we know that c must come before d.
+     *
+     * If we have two words where all of the characters are the same, but one word is longer, like "abc" and
+     * "abcd", then there is nothing we can really discern. However for words like "c" and "aaaa", we would
+     * know that c comes before a...but that is all we would know.
+     *
+     * The last thing to remember, and this is what confused me, is the following, that the characters after
+     * the first mismatch don't convey anything anything about the relationship between those characters after
+     * the first mismatch. How could that be? That didn't make sense to me, until I considered how one would order
+     * Strings of numbers. Example below
+     *
+     * "119"
+     * "120"
+     *
+     * If we look at the first mismatch, and lets just assume this is the ordering we are given (which happens
+     * to be the human english language :P) we would see that "1" come before "2". Ok cool, makes sense right.
+     * But now lets look at the next characters "9" and "0". Now because we know english, we know that 9 does not
+     * come before 0. Hence, it would not make any sense to put any value into the fact that its a mismatch with "0".
+     * Because its not our first mismatch, we can therefore ignore.
+     *
+     * This is actually intuitive because, because the characters of the alphabet are just like nummerical characters,
+     * they just happend to be base 26 as opposed to base 10. So we can see with this example that with "119"
+     * and "120", the only thing we could rightfully determine is that 1 comes before 2. For the characters after
+     * the first mismatch, we can discern nothing (if its an alien lauguage) about the ordering of the entire alphabet.
+     *
+     * Its only because we know english, that the 119 and 120, tells us that we certainly can't say 9 comes before 0.
+     *
+     * As soon as the problem asked for an ordering of characters, it should have screamed to us
+     *
+     * TOPLOGICAL SORT.
+     *
+     * What is a topological sort. A topological sort is an ordering of the verticies in a directed graph such that
+     * vertex A appears before vertex B for all directed edges A->B. Another way to think about it is that you're
+     * given a graph of dependencies and we want to order the vertices such that no dependencies are broken when
+     * going from left to right.
+     *
+     * If we can make a directed acyclic graph (DAG) then we can run a basic topological sort to get the ordering.
+     * Remember that topological sort only works on a DAG because to have an ordering means to have directed edges
+     * and we can't have a cycle because we wouldn't know where the order started and ended.
+     *
+     * This makes the implementation of building the graph much simpler than my original understanding.
+     *
+     * To make the graph, we must first figure out all of the vertices, which in this case corresponds to all of the
+     * unique characters in the dictionary.
+     *
+     * We then build the graph using the understanding of the dictionary that we described above
+     *
+     * Then we run topological sort on this DAG using DFS. Boom!
+     *
+     * RUNTIME: In order to find all of the unique characters we we have to check every word,
+     * and then add each character to a set to check for collisions. This is
+     * O(numberOfWords * numberOfCharactersInLargestWord) or O(total number of characters
+     *
+     * To build the graph we again do the same thing, where for each word we compare it with the
+     * next and move through each character so that's again O(numberOfWords * numberOfCharactersInLargestWord)
+     * which is the same as O(total number of characters)
+     *
+     * Running topological sort is typically O(V + E). Where every vertex is the unique character,
+     * and the edges are the number of different words so O(numberOfUnique characters + Number of different words)
+     *
+     * O(total number of characters) dominates.
+     *
+     * SPACE COMPLEXITY: We use an array list for the vertices so that O(V) where V is the number
+     * of unique characters. We also use a Set for the number of edges for a given vertex,
+     * which is O(the number of words), so thats O(numberOfUnique characters + the number of Words).
+     *
+     * We also have the total number of characters of the input, which dominates, so in total
+     * its O(total number of characters)
+     *
+     * @param words dictionary
+     * @return String representing order
+     */
+    public String alienDictionary(String[] words) {
+
+        Set<Character> uniqueCharacters = new HashSet<>();
+        Map<Character, Vertex<Character>> vertexMap = new HashMap<>();
+        for (String word: words) {
+            int length = word.length();
+            for (int i = 0; i < length; i++) {
+                if(!uniqueCharacters.contains(word.charAt(i))) {
+                    uniqueCharacters.add(word.charAt(i));
+                }
+            }
+        }
+
+        List<Vertex<Character>> vertices = new ArrayList<>(uniqueCharacters.size());
+        for (Character c: uniqueCharacters) {
+            Vertex v = new Vertex(c.toString());
+            vertices.add(v);
+            vertexMap.put(c, v);
+        }
+
+        buildAlienDictionaryGraph(words, vertexMap);
+
+        Stack<Vertex<Character>> ordering = new Stack<>();
+        for (Vertex<Character> vertex: vertices) {
+            if (vertex.color == Color.WHITE) {
+                topologicalSort(vertex, ordering);
+            }
+        }
+
+        StringBuffer sb = new StringBuffer();
+        while (!ordering.isEmpty()) {
+            sb.append(ordering.pop().label);
+        }
+        return sb.toString();
+    }
+
+    public void topologicalSort(Vertex<Character> vertex, Stack<Vertex<Character>> ordering) {
+        vertex.color = Color.GREY;
+        List<Vertex<Character>> neighbors = new ArrayList<>(vertex.edges.keySet());
+        for (Vertex<Character> nextVertex: neighbors) {
+            if (nextVertex.color == Color.WHITE) {
+                topologicalSort(nextVertex, ordering);
+            }
+        }
+        vertex.color = Color.BLACK;
+        ordering.push(vertex);
+    }
+
+    public void buildAlienDictionaryGraph(String[] input, Map<Character, Vertex<Character>> vertexMap) {
+        for (int i = 0; i < input.length - 1; i++) {
+            String word = input[i];
+            int wordLength = word.length();
+            String nextWord = input[i + 1];
+            int nextWordLength = nextWord.length();
+            for (int j = 0; j < wordLength; j++) {
+                if (j < nextWordLength) {
+                    Character one = word.charAt(j);
+                    Character two = nextWord.charAt(j);
+                    Vertex vertex = vertexMap.get(word.charAt(j));
+                    if (word.charAt(j) != nextWord.charAt(j)) {
+                        Vertex neighbor = vertexMap.get(nextWord.charAt(j));
+                        if (!neighbor.edges.containsKey(vertex)) {
+                            vertex.addEdges(neighbor, 0, false);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

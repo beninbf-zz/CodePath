@@ -1,9 +1,11 @@
 package test.java.com.codepath.techscreens;
 
+import main.java.com.codepath.techscreens.objects.NameNumberElement;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
 import main.java.com.codepath.techscreens.objects.StackRoxNode;
 import main.java.com.codepath.techscreens.TechScreens;
+import main.java.com.codepath.techscreens.objects.StudentCoursePair;
 import main.java.com.codepath.techscreens.objects.ZerosRectangle;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +13,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -389,13 +392,135 @@ public class TechScreensTest {
     @Test
     public void testFindSmallestMissingPositiveInteger() {
         int[] A = new int[]{1, 3, 4, 6, 2, 1};
-        int ans = testObj.findSmallestMissingPostiveInteger(A);
+        int ans = testObj.findSmallestMissingPositiveInteger(A);
         assertEquals("Answer should be 5", 5, ans);
 
 
         int[] A1 = new int[]{-1, -3};
-        int ans1 = testObj.findSmallestMissingPostiveInteger(A1);
+        int ans1 = testObj.findSmallestMissingPositiveInteger(A1);
         assertEquals("Answer should be 1", 1, ans1);
 
+    }
+
+    @Test
+    public void testVoidFindStudentCoursePairs() {
+        String[][] studentCoursePairs = {
+                {"58", "Software Design"},
+                {"58", "Linear Algebra"},
+                {"94", "Art History"},
+                {"94", "Operating Systems"},
+                {"17", "Software Design"},
+                {"58", "Mechanics"},
+                {"58", "Economics"},
+                {"17", "Linear Algebra"},
+                {"17", "Political Science"},
+                {"94", "Economics"}
+            };
+
+            List<StudentCoursePair> list = testObj.find_pairs(studentCoursePairs);
+
+        System.out.println("FROM MAIN");
+        for (StudentCoursePair p: list) {
+            System.out.println(p);
+        }
+    }
+
+    @Test
+    public void testUdemy() {
+        String[] input = {
+            "John one-billion-two-hundred-thousand",
+            "Alex five",
+            "Alex one",
+            "John two-hundred-thirty-four-thousand-five-hundred-sixty-seven",
+            "John thirty-three",
+            "John four-million-eight-thousand"
+        };
+
+        List<NameNumberElement> elements = new ArrayList<>();
+        for (String item: input) {
+            String[] values = item.split(" ");
+            NameNumberElement e = new NameNumberElement(values[0], values[1]);
+            elements.add(e);
+        }
+        Collections.sort(elements);
+        System.out.println(elements);
+    }
+
+    @Test
+    public void testUdemyGetNumber() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 234567", 234567, e.getNumber("two-hundred-thirty-four-thousand-five-hundred-sixty-seven"));
+    }
+
+    @Test
+    public void testUdemyGetNumber1() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 4500", 4500, e.getNumber("four-thousand-five-hundred"));
+    }
+
+    @Test
+    public void testUdemyGetNumber2() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 1000000", 1000000, e.getNumber("one-million"));
+    }
+
+    @Test
+    public void testUdemyGetNumber3() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 10000", 10000, e.getNumber("ten-thousand"));
+    }
+
+    @Test
+    public void testUdemyGetNumber4() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 10050", 10050, e.getNumber("ten-thousand-fifty"));
+    }
+
+    @Test
+    public void testUdemyGetNumber5() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 1550", 1550, e.getNumber("fifteen-hundred-fifty"));
+    }
+
+    @Test
+    public void testUdemyGetNumber6() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 50001", 50001, e.getNumber("fifty-thousand-one"));
+    }
+
+    @Test
+    public void testUdemyGetNumber7() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 450001", 450001, e.getNumber("four-hundred-fifty-thousand-one"));
+    }
+
+    @Test
+    public void testUdemyGetNumber8() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 450000", 450000, e.getNumber("four-hundred-fifty-thousand"));
+    }
+
+    @Test
+    public void testUdemyGetNumber9() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 892", 892, e.getNumber("eight-hundred-ninety-two"));
+    }
+
+    @Test
+    public void testUdemyGetNumber10() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 1400000", 1400000, e.getNumber("one-million-four-hundred-thousand"));
+    }
+
+    @Test
+    public void testUdemyGetNumber11() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 1462500", 1462500, e.getNumber("one-million-four-hundred-sixty-two-thousand-five-hundred"));
+    }
+
+    @Test
+    public void testUdemyGetNumber12() {
+        NameNumberElement e = new NameNumberElement("Alex", "five");
+        assertEquals("Should be 5", 5, e.getNumber("five"));
     }
 }

@@ -36,6 +36,63 @@ public class GraphProblemsTest {
 
     @Test
     public void wordLadder() {
+        String start = "bat";
+        String stop = "had";
+        String[] words = new String[]{"cat", "hat", "bad"};
+
+        String[] answer = testObj.wordLadder(start, stop, words);
+        String[] expectedAnswer = new String[] {"bat", "hat", "had"};
+        assertEquals("Length of answer should be 3", 3, answer.length);
+        for (int i = 0; i < expectedAnswer.length; i++) {
+            assertEquals("Strings should be equal", expectedAnswer[i], answer[i]);
+        }
+    }
+
+    @Test
+    public void wordLadderEff() {
+        String start = "bat";
+        String stop = "had";
+        String[] words = new String[]{"cat", "hat", "bad", "had"};
+
+        String[] answer = testObj.wordLadderEff(start, stop, words);
+        String[] expectedAnswer = new String[] {"bat", "hat", "had"};
+        assertEquals("Length of answer should be 3", 3, answer.length);
+
+        for (int i = 0; i < expectedAnswer.length; i++) {
+            assertEquals("Strings should be equal", expectedAnswer[i], answer[i]);
+        }
+    }
+
+    @Test
+    public void wordLadder2() {
+        String start = "y";
+        String stop = "x";
+        String[] words = new String[]{"a", "b", "c"};
+
+        String[] answer = testObj.wordLadderEff(start, stop, words);
+        String[] expectedAnswer = new String[] {"y", "x"};
+        assertEquals("Length of answer should be 2", 2, answer.length);
+
+        for (int i = 0; i < expectedAnswer.length; i++) {
+            assertEquals("Strings should be equal", expectedAnswer[i], answer[i]);
+        }
+    }
+
+
+
+    @Test
+    public void wordLadder1() {
+        String start = "cccc";
+        String stop = "cccc";
+        String[] words = new String[]{"cccw", "accc", "accw"};
+
+        String[] answer = testObj.wordLadder(start, stop, words);
+        String[] expectedAnswer = new String[] {"cccc", "cccw", "cccc"};
+        assertEquals("Length of answer should be 3", 3, answer.length);
+
+        for (int i = 0; i < expectedAnswer.length; i++) {
+            assertEquals("Strings should be equal", expectedAnswer[i], answer[i]);
+        }
     }
 
     @Test
@@ -97,17 +154,17 @@ public class GraphProblemsTest {
         Vertex<String> fVertex = new Vertex<>("F");
         Vertex<String> gVertex = new Vertex<>("G");
 
-        aVertex.addEdges(dVertex, 3);
-        aVertex.addEdges(cVertex, 3);
-        aVertex.addEdges(bVertex, 2);
-        bVertex.addEdges(cVertex, 4);
-        bVertex.addEdges(eVertex, 3);
-        cVertex.addEdges(dVertex, 5);
-        cVertex.addEdges(eVertex, 1);
-        cVertex.addEdges(fVertex, 6);
-        dVertex.addEdges(fVertex, 7);
-        eVertex.addEdges(fVertex, 8);
-        fVertex.addEdges(gVertex, 9);
+        aVertex.addEdges(dVertex, 3, true);
+        aVertex.addEdges(cVertex, 3, true);
+        aVertex.addEdges(bVertex, 2, true);
+        bVertex.addEdges(cVertex, 4, true);
+        bVertex.addEdges(eVertex, 3, true);
+        cVertex.addEdges(dVertex, 5, true);
+        cVertex.addEdges(eVertex, 1, true);
+        cVertex.addEdges(fVertex, 6, true);
+        dVertex.addEdges(fVertex, 7, true);
+        eVertex.addEdges(fVertex, 8, true);
+        fVertex.addEdges(gVertex, 9, true);
 
         List<Vertex> graph = new ArrayList<>(Arrays.asList(aVertex, bVertex, cVertex, dVertex, eVertex, fVertex, gVertex));
 
@@ -124,15 +181,15 @@ public class GraphProblemsTest {
         Vertex<String> eVertex = new Vertex<>("E");
         Vertex<String> fVertex = new Vertex<>("F");
 
-        aVertex.addEdges(dVertex, 1);
-        aVertex.addEdges(bVertex, 3);
-        bVertex.addEdges(dVertex, 3);
-        bVertex.addEdges(cVertex, 1);
-        dVertex.addEdges(eVertex, 6);
-        cVertex.addEdges(dVertex, 1);
-        cVertex.addEdges(fVertex, 4);
-        cVertex.addEdges(eVertex, 5);
-        eVertex.addEdges(fVertex, 2);
+        aVertex.addEdges(dVertex, 1, true);
+        aVertex.addEdges(bVertex, 3, true);
+        bVertex.addEdges(dVertex, 3, true);
+        bVertex.addEdges(cVertex, 1, true);
+        dVertex.addEdges(eVertex, 6, true);
+        cVertex.addEdges(dVertex, 1, true);
+        cVertex.addEdges(fVertex, 4, true);
+        cVertex.addEdges(eVertex, 5, true);
+        eVertex.addEdges(fVertex, 2, true);
 
         List<Vertex> graph = new ArrayList<>(Arrays.asList(aVertex, bVertex, cVertex, dVertex, eVertex, fVertex));
 
@@ -142,14 +199,14 @@ public class GraphProblemsTest {
 
     @Test
     public void testKnightsTour() {
-//        int ans= testObj.knightsTour(1, 1, 0, 0, 0, 0);
-//        assertEquals("Should be 0", 0, ans);
+        int ans= testObj.knightsTour(1, 1, 0, 0, 0, 0);
+        assertEquals("Should be 0", 0, ans);
 
         int ans1 = testObj.knightsTour(5, 5, 0, 0, 4, 1);
         assertEquals("Should be 3", 3, ans1);
 
-//        int ans2 = testObj.knightsTour(33333, 3, 333, 0, 33332, 2);
-//        assertEquals("Should be 16501", 16501, ans2);
+        int ans2 = testObj.knightsTour(33333, 3, 333, 0, 33332, 2);
+        assertEquals("Should be 16501", 16501, ans2);
 
     }
 
@@ -165,7 +222,13 @@ public class GraphProblemsTest {
         List<Cell> neighbors1 = testObj.getKnightNeighborCells(5, 5, new Cell(3, 3));
         System.out.println(neighbors1);
         assertEquals("Should only have 4 neighbors", 4, neighbors1.size());
+    }
 
+    @Test
+    public void alienDictionary() {
+        String[] input = new String[]{"baa", "abcd", "abca", "cab", "cad"};
+        String output = testObj.alienDictionary(input);
+        assertEquals("Ordering should be bdac", "bdac", output);
     }
 
     @Test
@@ -211,12 +274,12 @@ public class GraphProblemsTest {
         Vertex<String> eVertex = new Vertex<>("E");
         Vertex<String> fVertex = new Vertex<>("F");
 
-        aSource.addEdges(bVertex, 3);
-        aSource.addEdges(cVertex, 1);
-        aSource.addEdges(dVertex, 2);
-        dVertex.addEdges(eVertex, 1);
-        eVertex.addEdges(cVertex, 4);
-        cVertex.addEdges(fVertex, 2);
+        aSource.addEdges(bVertex, 3, true);
+        aSource.addEdges(cVertex, 1, true);
+        aSource.addEdges(dVertex, 2, true);
+        dVertex.addEdges(eVertex, 1, true);
+        eVertex.addEdges(cVertex, 4, true);
+        cVertex.addEdges(fVertex, 2, true);
 
         List<Vertex<String>> graph = new ArrayList<>(Arrays.asList(aSource, bVertex, cVertex, dVertex, eVertex, fVertex));
         return graph;

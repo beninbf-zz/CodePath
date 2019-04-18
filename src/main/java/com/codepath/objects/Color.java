@@ -6,5 +6,5 @@ package main.java.com.codepath.objects;
 public enum Color {
     WHITE,
     GREY,
-    PROCESSING
+    BLACK
 }
