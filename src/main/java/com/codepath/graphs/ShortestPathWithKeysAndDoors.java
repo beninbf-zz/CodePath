@@ -1,18 +1,15 @@
 package main.java.com.codepath.graphs;
 
-import com.sun.org.apache.bcel.internal.generic.LADD;
-import com.sun.org.apache.bcel.internal.generic.LAND;
 import main.java.com.codepath.objects.Cell;
 import main.java.com.codepath.objects.ShortestPathCell;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
+import java.util.Stack;
 
 /*
  * ShortestPathWithKeysAndDoors - The following represents my findings from the struggle of
@@ -157,6 +154,51 @@ public class ShortestPathWithKeysAndDoors {
         return shortestPath;
     }
 
+    /**
+     * The below implementation of finding the shortest path with doors and keys use
+     * a BFS implementation which is more efficient than using DFS.
+     *
+     * The approach is largely the same. We must remember the criteria for moving to a
+     * cell, making sure its not been visited, making sure its not water and is in bounds.
+     * If it land we can move there, if its a key, we can move there. However if its a door
+     * we must have that key to open. If we do find a key, then what that means is
+     * we could possibly have to "revisit" cells that we had not prior been able to visit it.
+     *
+     * This is the trick to the problem, because BFS could potentially run forever, if we just
+     * revisit the same cell over and over again. The trick here is to make it such that, even
+     * though we have picked up a key, that we technically never revisit the same cell....
+     * while still revisiting it. I know it sounds like bullshit, but there is a way you can accomplish
+     * this.
+     *
+     * We do this, my using a ShortestPathCell object, that has three fields; row, col, and keyRing.
+     * This means that each cell has the key ring that was used to potentially open it. We also,
+     * change the visited array, by adding another dimension to it, just for the keyRing.
+     *
+     * visited[row][col][keyRing].
+     *
+     * My storing the keyRing in a third dimension, we can revisit a cell in the 2-D grid, by essentially
+     * checking if we have visited cell grid[row][col], with that given "keyRing". So if
+     * visited[row][col][keyRing] == true, that means, we have already visited that location in our
+     * grid, with that particular keyRing, so don't visit it again.
+     *
+     * So what happens, if in a prior run of BFS, we have collected a key to a door, that we previously
+     * couldn't open. So now, if we get to that door again, we won't be asking can we visit this cell
+     * at row, col, and "originalKeyRing"...we will be asking, have we visited the cell
+     * row, col, and "newKeyRing". We generating the new key ring by using a bit mask (faster than using
+     * a set). we then check visited[row][col][newKeyRing] == false, which is another way of saying
+     * have we previously visited grid[row][col] with this new key ring. If we haven't then we can add it
+     * to our queue for later visitation.
+     *
+     * Essentially the addition of a third dimension to our visited matrix, and using the third dimension
+     * to store the key ring allows us to "re-visit" previous visited cells in the grid.
+     *
+     * IKweb says that the space and runtime is O(rows * cols * 2 ^ (# of keys)), but I don't understand
+     * that.
+     *
+     * It seems like it should be the number of O(rows * cols * # of keys). I need to check up on this.
+     * @param board
+     * @return
+     */
     public int[][] find_shortest_path(String[] board) {
         if (board == null) {
             return null;
@@ -169,8 +211,8 @@ public class ShortestPathWithKeysAndDoors {
             }
         }
 
-        boolean[][][] visited = new boolean[grid.length][grid[0].length][1024];
-        Map<ShortestPathCell, ShortestPathCell> pathMap = new HashMap<>();
+        boolean[][][] visited = new boolean[grid.length][grid[0].length][2048];
+        Map<ShortestPathCell, ShortestPathCell> pathMap = new HashMap<>(grid.length * grid[0].length);
 
         int[] end = findStartOrEnd(grid, END);
         int[] start = findStartOrEnd(grid, START);
@@ -178,19 +220,19 @@ public class ShortestPathWithKeysAndDoors {
         ShortestPathCell endCell = new ShortestPathCell(end[0], end[1], 0);
         ShortestPathCell destinationCell = exploreBfs(grid, visited, startCell, endCell, pathMap);
 
-        List<int[]> path = new ArrayList();
-        path.add(0, new int[]{destinationCell.row, destinationCell.col});
+        Stack<int[]> path = new Stack();
+        path.push(new int[]{destinationCell.row, destinationCell.col});
 
         ShortestPathCell current = pathMap.get(destinationCell);
         while (!(current.row == startCell.row && current.col == startCell.col) || current.keyRing != 0) {
-            path.add(0, new int[]{current.row, current.col});
+            path.push(new int[]{current.row, current.col});
             current = pathMap.get(current);
         }
-        path.add(0, new int[]{startCell.row, startCell.col});
+        path.push(new int[]{startCell.row, startCell.col});
         int[][] results = new int[path.size()][2];
         int i = 0;
-        for (int[] array: path) {
-            results[i] = array;
+        while (!path.isEmpty()) {
+            results[i] = path.pop();
             i++;
         }
         return results;
@@ -200,9 +242,6 @@ public class ShortestPathWithKeysAndDoors {
         queue.add(startCell);
         while (!queue.isEmpty()) {
             ShortestPathCell current = queue.poll();
-            if (current.row == 4 && current.col ==  2 && current.keyRing == 1) {
-                //System.out.println("ok");
-            }
             if (current.row == endCell.row && current.col == endCell.col) {
                 return current;
             }
@@ -230,10 +269,6 @@ public class ShortestPathWithKeysAndDoors {
         return neighbors;
     }
 
-    private boolean containsKey(int keyRing, int key) {
-        return (keyRing & key) == key;
-    }
-
     private boolean containsKeyOther(int keyRing, int key) {
         return ((keyRing >> key) & 1) == 1;
     }
@@ -244,31 +279,32 @@ public class ShortestPathWithKeysAndDoors {
     }
 
     private void addNeighbor(int row, int col, int keyRing, char[][] grid, List<ShortestPathCell> neighbors, boolean[][][] visited) {
-        if (isValid(row, col, grid)) {
-            if (row == 4 && col == 2 && keyRing == 3) {
-                System.out.println("l");
-            }
-            if (visited[row][col][keyRing]) {
-                return;
-            }
-            char ch = grid[row][col];
-            if (isDoor(ch)) {
-                int keyBit = ch - 'A';
-                int keyBitMask = 1 << keyBit;
-                if (containsKeyOther(keyRing, keyBit)) {
+        if (!isValid(row, col, grid)) {
+            return;
+        }
+
+        char ch = grid[row][col];
+        if (ch == WATER) {
+            return;
+        }
+
+        if (isDoor(ch)) {
+            int keyBit = ch - 'A';
+            if (containsKeyOther(keyRing, keyBit)) {
+                if (visited[row][col][keyRing] == false) {
                     neighbors.add(new ShortestPathCell(row, col, keyRing));
                 }
-            } else if (isKey(ch)) {
-                int keyBit = ch - 'a';
-                int keyBitMask = 1 << keyBit;
-                int newKeyRing = addKey(keyRing, keyBitMask);
-                if (visited[row][col][newKeyRing] == false) {
-                    neighbors.add(new ShortestPathCell(row, col, newKeyRing));
-                }
-            } else if (ch == LAND || ch == END) {
+            }
+        } else if (isKey(ch)) {
+            int keyBit = ch - 'a';
+            int keyBitMask = 1 << keyBit;
+            int newKeyRing = addKey(keyRing, keyBitMask);
+            if (visited[row][col][newKeyRing] == false) {
+                neighbors.add(new ShortestPathCell(row, col, newKeyRing));
+            }
+        } else if (ch == LAND || ch == END || ch == START) {
+            if (visited[row][col][keyRing] == false) {
                 neighbors.add(new ShortestPathCell(row, col, keyRing));
-            } else {
-                return;
             }
         }
     }

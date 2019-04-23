@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -596,9 +597,7 @@ public class GraphProblems {
                 if (isValidMove(neighborRow, rowDimension, neighborCol, colDimension)) {
                     if (distance[neighborRow][neighborCol] == 0) {
                         cellQueue.add(new Cell(neighborRow, neighborCol));
-                        distance[neighborRow][neighborCol] =
-                            distance[parentCell.row][parentCell.col] + 1;
-
+                        distance[neighborRow][neighborCol] = distance[parentCell.row][parentCell.col] + 1;
                         if (neighborRow == endRow && neighborCol == endCol) {
                             count = distance[neighborRow][neighborCol];
                         }
@@ -827,6 +826,126 @@ public class GraphProblems {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * zombieCluster
+     *
+     * This problem is just an iteration on finding the number of connected components. One of the
+     * wrinkles to this problem is the fact that we are given our graph in the form of an ADJ matrix
+     * as opposed to an adjacency list, so we just have to run DFS on a 2-D matrix, as opposed to
+     * a list of vertices with lists of neighbors.
+     *
+     * I had a little bit of difficulty because I first messed up writing the default version of
+     * DFS. I have to remember, that the out for loop, is the loop that runs over the vertices
+     * in the graph.
+     *
+     * The method call that should be inside of that for loop is the recursive dfs implementation
+     * where we go to all of the neighbors of every vertex connected with that vertex in the outer
+     * for loop.
+     *
+     * All of the vertices added in our component list, will represent one connected component. We
+     * then move on to the remaining unvisited vertices in our graph.
+     *
+     * In an ADJ matrix, that just means the outer for loop runs over the rows, while the inner
+     * dfs for loop runs across the columns. Each time it finds a connecting vertex, it take that
+     * column index, and then looks up that row in the dfs implementation.
+     *
+     * We must also remember, that in the outer for loop, we should first check that the vertex
+     * has not been visited. A vertex may have been visited by a prior recursive call. If it hasn't been
+     * visited then we call our dfs implementation, and inside that call immediately mark it as visited.
+     *
+     * As we move over the neighbors in the dfs call, we always check that it hasn't been visited before
+     * we actually recurse.
+     *
+     * RUNTIME COMPLEXITY: Its standard for connected components. We have O(V) where V is the number
+     * of rows for the outer for loop. The inner for loop, the dfs routines is again, the sum of the
+     * degree of each vertex for all vertexes in the graph, which is O(E) or the number of characters
+     * in each string. Because we only visit a vertex once, the total running time is O(V + E)
+     * or O(numberOfZombies + NumberOfZombieConnectionsForMostConnectedZombie);
+     *
+     * SPACE COMPLEXITY: We are using a visited array that is O(NumberOfZombies), and we are also using
+     * the stack given the recursive call, so thats at most O(NumberOfZombies).
+     *
+     * @param zombies String[] of zombie connections
+     * @return number of connected components.
+     */
+    public int zombieCluster(String[] zombies) {
+        boolean visited[] = new boolean[zombies.length];
+        int connectedComponentCount = 0;
+        for (int i = 0; i < zombies.length; i++) {
+            List<Integer> component = new ArrayList<>(zombies.length);
+            if (visited[i] == false) {
+                zombieClusterHelper(zombies, i, visited, component);
+                if (!component.isEmpty()) {
+                    connectedComponentCount++;
+                }
+            }
+        }
+        return connectedComponentCount;
+    }
+
+    private void zombieClusterHelper(String[] zombies, int row, boolean[] visited, List<Integer> component) {
+        visited[row] = true;
+        component.add(row);
+        String neighbors = zombies[row];
+        int length = neighbors.length();
+        for (int j = 0; j < length; j++) {
+            if (zombies[row].charAt(j) == '1') {
+                if (visited[j] == false) {
+                    zombieClusterHelper(zombies, j, visited, component);
+                }
+            }
+        }
+    }
+
+    /**
+     * Reverse edges of a strongly connected graph.
+     *
+     * This problem gave me quite a bit of problems, even though the solution is quite simple.
+     * Its literally nothing more than running DFS, and when the recursion starts to bottom out,
+     * as we build back up the stack, we just want to use the newVertex that was instantiated and inserted
+     * into the map, and add it to the list of the neighbor within the for loop. This effectively, adds the parent
+     * vertex to the list of neighbors for the given neighbor.
+     *
+     * buildGraph(Node)
+     *      create new node 1, insert into map with key being the label
+     *      1 - > {1: []} // for every neighbor of 1, recurse
+     *        2 -> {2: []}
+     *           3 -> {3: []}
+     *              4 -> {4: []}
+     *                  when we check to see if the neighbor of 4 is in our map, we will see that it is. so grab, that node
+     *                     get(neibhor of 4) which is 1
+     *                     now, for the entry 1, put 4 as its neighbor, so effectively we get
+     *                     1 -> {1: [4]}
+     *                     As we recurse back up the stack, we will effectively be updating the neighbors list of these new nodes
+     *                     for every neighbor
+     *
+     * This solution is simple while at the same time being clever.
+     *
+     * Runtime Complexity: Standard DFS, albeit a little more efficient because the the graph is strongly connected. O(V + E)
+     * Space Complexity: O(# of nodes) for the new nodes in the map.
+     * @param vertex
+     * @return
+     */
+    public Vertex<Integer> build_other_graph(Vertex<Integer> vertex) {
+        Map<Integer, Vertex> vertexMap = new HashMap<>();
+        build_other_graph_helper(vertex, vertexMap);
+        return vertexMap.get(vertex.label);
+    }
+
+    private void build_other_graph_helper(Vertex<Integer> vertex, Map<Integer, Vertex> vertexMap) {
+        Vertex<Integer> newVertex = new Vertex<>(vertex.getLabel());
+        vertexMap.put(vertex.label, newVertex);
+        List<Vertex<Integer>> neighbors = vertex.getNeigbhors();
+        for (Vertex<Integer> neighbor : neighbors) {
+            if (!vertexMap.containsKey(neighbor.label)) {
+                build_other_graph_helper(neighbor, vertexMap);
+            }
+            Vertex<Integer> reversedVertex = vertexMap.get(neighbor.label);
+            List<Vertex<Integer>> list = reversedVertex.getNeigbhors();
+            list.add(newVertex);
         }
     }
 }

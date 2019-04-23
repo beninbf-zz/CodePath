@@ -1,5 +1,6 @@
 package test.java.com.codepath.techscreens;
 
+import main.java.com.codepath.techscreens.objects.InstaCartMap;
 import main.java.com.codepath.techscreens.objects.NameNumberElement;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
@@ -522,5 +523,78 @@ public class TechScreensTest {
     public void testUdemyGetNumber12() {
         NameNumberElement e = new NameNumberElement("Alex", "five");
         assertEquals("Should be 5", 5, e.getNumber("five"));
+    }
+
+    @Test
+    public void testGlassDoor() {
+        int[] queue = {5, 5, 5, 10, 10};
+        assertTrue(testObj.sellIceCream(queue));
+    }
+
+    @Test
+    public void testGlassDoor1() {
+        int[] queue = {10, 10, 5};
+        assertFalse(testObj.sellIceCream(queue));
+    }
+
+    @Test
+    public void testGlassDoor2() {
+        int[] queue = {5, 5, 20, 5};
+        assertFalse(testObj.sellIceCream(queue));
+    }
+
+    @Test
+    public void testGlassDoor3() {
+        int[] queue = {5, 5, 5, 20, 5, 10};
+        assertTrue(testObj.sellIceCream(queue));
+    }
+
+    @Test
+    public void testGlassDoor4() {
+        int[] queue = {5, 5, 10, 10, 20};
+        assertFalse(testObj.sellIceCream(queue));
+    }
+
+    @Test
+    public void testGlassDoor5() {
+        int[] queue = {5, 10, 5, 20};
+        assertTrue(testObj.sellIceCream(queue));
+    }
+
+    @Test
+    public void testGlassDoor6() {
+        int[] queue = {5, 5, 5, 10, 10, 20};
+        assertTrue(testObj.sellIceCream(queue));
+    }
+
+    @Test
+    public void testGlassDoor7() {
+        int[] queue = {5, 5, 5, 5, 20};
+        assertTrue(testObj.sellIceCream(queue));
+    }
+
+    @Test
+    public void testMasterClass() {
+        assertEquals("Should be equal to igpay", "igpay", testObj.pigLatinTranslate("pig"));
+        assertEquals("Should be equal to eggay", "eggay", testObj.pigLatinTranslate("egg"));
+        assertEquals("Should be equal to Ellohay", "Ellohay", testObj.pigLatinTranslate("Hello"));
+        assertEquals("Should be equal to Orangeay", "Orangeay", testObj.pigLatinTranslate("Orange"));
+        assertEquals("Should be equal to Uckstray", "Uckstray", testObj.pigLatinTranslateImproved("Struck"));
+    }
+
+    @Test
+    public void testInstaCartMap() {
+        InstaCartMap instaCartMap = new InstaCartMap();
+        long timestamp = instaCartMap.set("foo", "bar");
+        try {
+            Thread.sleep(100);
+            instaCartMap.set("foo", "bar2");
+            assertEquals("Should be equal to bar", "bar", instaCartMap.get("foo", timestamp));
+            assertEquals("Should be equal to last entred value 'bar2'", "bar2", instaCartMap.get("foo"));
+            assertEquals("Should be equal to closest which is bar", "bar", instaCartMap.get("foo", timestamp + 49l));
+            assertEquals("Should be equal to closest which is bar", "bar", instaCartMap.get("foo", timestamp + 51l));
+        } catch (Exception ex) {
+            // do nothing
+        }
     }
 }

@@ -266,6 +266,46 @@ public class GraphProblemsTest {
 
     }
 
+    @Test
+    public void testZombieClusters() {
+        String[] zombies = {"1100", "1110", "0110", "0001"};
+        assertEquals("should be 2 connected components", 2, testObj.zombieCluster(zombies));
+    }
+
+    @Test
+    public void testZombieClusters1() {
+        String[] zombies = {"10000", "01000", "00100", "00010", "00001"};
+        assertEquals("should be 5 connected components", 5, testObj.zombieCluster(zombies));
+    }
+
+    @Test
+    public void testReverseStronglyConnectedGraph() {
+        Vertex<Integer> one =  new Vertex<>(1);
+        Vertex<Integer> two =  new Vertex<>(2);
+        Vertex<Integer> three =  new Vertex<>(3);
+
+        one.setNeigbhors(Arrays.asList(two));
+        two.setNeigbhors(Arrays.asList(three));
+        three.setNeigbhors(Arrays.asList(one));
+
+        Vertex<Integer> result = testObj.build_other_graph(two);
+    }
+
+    @Test
+    public void testReverseStronglyConnectedGraph2() {
+        Vertex<Integer> one =  new Vertex<>(1);
+        Vertex<Integer> two =  new Vertex<>(2);
+        Vertex<Integer> three =  new Vertex<>(3);
+        Vertex<Integer> four =  new Vertex<>(4);
+
+        one.setNeigbhors(Arrays.asList(two));
+        two.setNeigbhors(Arrays.asList(three));
+        three.setNeigbhors(Arrays.asList(four));
+        four.setNeigbhors(Arrays.asList(one));
+
+        Vertex<Integer> result = testObj.build_other_graph(one);
+    }
+
     private List<Vertex<String>> getGraph() {
         Vertex<String> aSource = new Vertex<>("A");
         Vertex<String> bVertex = new Vertex<>("B");
