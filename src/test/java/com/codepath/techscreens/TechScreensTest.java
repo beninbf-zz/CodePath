@@ -1,12 +1,15 @@
 package test.java.com.codepath.techscreens;
 
 import main.java.com.codepath.techscreens.objects.InstaCartMap;
+import main.java.com.codepath.techscreens.objects.MaxHeap;
+import main.java.com.codepath.techscreens.objects.Message;
 import main.java.com.codepath.techscreens.objects.MyMap;
 import main.java.com.codepath.techscreens.objects.NameNumberElement;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
 import main.java.com.codepath.techscreens.objects.StackRoxNode;
 import main.java.com.codepath.techscreens.TechScreens;
+import main.java.com.codepath.techscreens.objects.StatsCounter;
 import main.java.com.codepath.techscreens.objects.StudentCoursePair;
 import main.java.com.codepath.techscreens.objects.ZerosRectangle;
 import main.java.com.codepath.util.Util;
@@ -20,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -796,5 +800,26 @@ public class TechScreensTest {
         List<String> result8 = testObj.getBookMarks(bizNames2, "bur");
         System.out.println(result8);
         assertEquals(4, result8.size());
+    }
+
+    @Test
+    public void testSnapGetMax() {
+        final long MIN = 60000;
+        StatsCounter sc = new StatsCounter();
+
+        sc.register(new Message(1 * MIN, 1));
+        assertEquals("Should be 1", 1, sc.getMax());
+
+        sc.register(new Message(2 * MIN, 10));
+        assertEquals("Should be 10", 10, sc.getMax());
+
+        sc.register(new Message(5 * MIN, 4));
+        assertEquals("Should be 10", 10, sc.getMax());
+
+        sc.register(new Message(6 * MIN, 0));
+        assertEquals("Should be 10", 10, sc.getMax());
+
+        sc.register(new Message(13 * MIN, 2));
+        assertEquals("Should be 4", 4, sc.getMax());
     }
 }

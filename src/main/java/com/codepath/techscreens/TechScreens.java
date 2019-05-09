@@ -2053,9 +2053,223 @@ public class TechScreens {
                 results.remove(position.intValue());
             }
         }
-
         return results;
     }
+
+    /**
+     *
+     /*
+     * To execute Java, please define "static void main" on a class
+     * named Solution.
+     *
+     * If you need more classes, simply define them inline.
+     */
+
+//    class Solution {
+//        /**
+//         * function(filePath, byte[] array) => true, if array is in the filePath or else
+//         *
+//         */
+//        public boolean contains(String filePath, byte[] array) {
+//
+//            if (filePath == null) {
+//                return false;
+//            }
+//
+//            if (filePath.length == 0) {
+//                return false;
+//            }
+//
+//            if (array == null || array.length == 0) {
+//                return false;
+//            }
+//
+//            String contents = BufferReader(filePath);
+//            return contents.contains(new String(array));
+//        }
+//
+//        public boolean containsMoreEff(String filePath, byte[] array) {
+//
+//            if (filePath == null) {
+//                return false;
+//            }
+//
+//            if (filePath.length == 0) {
+//                return false;
+//            }
+//
+//            if (array == null || array.length == 0) {
+//                return false;
+//            }
+//
+//            // stream(filepath, starting index, number of bytes)
+//            // "Hello World my name is", "d my n"
+//            // 0   array.length
+//            // 1   array.length + 1
+//            // 2   array.length + 2
+//            int lowerBound = 0
+//            int upperBound = array.length;
+//            boolean eofFound = false;
+//            while (!eofFound) {
+//                byte[] chunk = stream(filepath, lowerBound, upperBound);
+//                if (isEquals(chunk, array)) {
+//                    return true;
+//                }
+//                lowerBound++;
+//                upperBound++;
+//                eofFound = containsEof(chunk)
+//            }
+//            return false;
+//        }
+//
+//        public boolean isEquals(byte[] array1, byte[] array2) {
+//
+//            if (array1 == null && array2 == null) {
+//                return true;
+//            }
+//
+//            if (array1 == null && array2 != null) {
+//                return false;
+//            }
+//
+//            if (array1 != null && array2 == null) {
+//                return false;
+//            }
+//
+//            if (array1.length != array2.length) {
+//                return false;
+//            }
+//
+//            for( int i = 0; i < array1.length; i++) {
+//                if (array1[i] != array2[i]) {
+//                    return false;
+//                }
+//                return true;
+//            }
+//
+//
+//
+//            public static void main(String[] args) {
+//                ArrayList<String> strings = new ArrayList<String>();
+//                strings.add("Hello, World!");
+//                strings.add("Welcome to CoderPad.");
+//                strings.add("This pad is running Java " + Runtime.version().feature());
+//
+//                for (String string : strings) {
+//                    System.out.println(string);
+//                }
+//            }
+//        }
+
+
+    /**
+     * DROP BOX Tech Screen
+     * function(filePath, byte[] array) => true, if array is in the filePath or else
+     *
+     */
+//    public boolean contains(String filePath, byte[] array) {
+//
+//        if (filePath == null) {
+//            return false;
+//        }
+//
+//        if (filePath.length == 0) {
+//            return false;
+//        }
+//
+//        if (array == null || array.length == 0) {
+//            return false;
+//        }
+//
+//        String contents = BufferReader(filePath);
+//        return contents.contains(new String(array));
+//    }
+
+//    public boolean containsMoreEff(String filePath, byte[] array) {
+//
+//        if (filePath == null) {
+//            return false;
+//        }
+//
+//        if (filePath.length == 0) {
+//            return false;
+//        }
+//
+//        if (array == null || array.length == 0) {
+//            return false;
+//        }
+//
+//        // stream(filepath, starting index, number of bytes)
+//        // "Hello World my name is", "d my n"
+//        // 0   array.length
+//        // 1   array.length + 1
+//        // 2   array.length + 2
+//        int lowerBound = 0
+//        int upperBound = array.length;
+//        boolean eofFound = false;
+//        // O(# of bytes of filePath contents)
+//        // (# of bytes in filePath contents * # of bytes in filePath contents)
+//
+//        while (!eofFound) {
+//            byte[] chunk = stream(filepath, lowerBound, upperBound); O(# of size search array)
+//            if (isEquals(chunk, array)) { // O(n) # of bytes in search array
+//                return true;
+//            }
+//            lowerBound++;
+//            upperBound++;
+//            eofFound = containsEof(chunk) // O(n) # of bytes in search array
+//        }
+//        return false;
+//    }
+
+  /*
+  RollingHash():
+      add_bytes(x) # adds x bytes to right side of a buffer in O(len(x)) time
+      remove_bytes(x) # removes x bytes from left side of a buffer in O(len(x)) time
+      hash()  # returns hash of buffer in O(1) time
+
+      boolean eofFound = false;
+      int x = array.length;
+      Buffer buff = new Buffer();
+      buff.add_bytes(x);
+      while (!buff.isEmpty()) {
+         byte[] chunk = buff.get(x)
+         if (chunk.hash() == array.hash()) {
+            return true;
+         }
+
+         buff.remvove(x);
+         buff.add_bytes(x);
+      }
+
+  */
+
+//    public boolean isEquals(byte[] array1, byte[] array2) {
+//
+//        if (array1 == null && array2 == null) {
+//            return true;
+//        }
+//
+//        if (array1 == null && array2 != null) {
+//            return false;
+//        }
+//
+//        if (array1 != null && array2 == null) {
+//            return false;
+//        }
+//
+//        if (array1.length != array2.length) {
+//            return false;
+//        }
+//
+//        for( int i = 0; i < array1.length; i++) {
+//            if (array1[i] != array2[i]) {
+//                return false;
+//            }
+//            return true;
+//        }
+
+
 }
 
 
