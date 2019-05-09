@@ -1,10 +1,10 @@
 package main.java.com.codepath.techscreens;
 
 import main.java.com.codepath.objects.Cell;
+import main.java.com.codepath.techscreens.objects.Booking;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
 import main.java.com.codepath.techscreens.objects.StackRoxNode;
-import main.java.com.codepath.techscreens.objects.Booking;
 import main.java.com.codepath.techscreens.objects.StudentCoursePair;
 import main.java.com.codepath.techscreens.objects.ZerosRectangle;
 
@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
