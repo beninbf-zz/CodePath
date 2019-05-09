@@ -1,5 +1,6 @@
 package main.java.com.codepath.techscreens;
 
+import main.java.com.codepath.objects.Cell;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
 import main.java.com.codepath.techscreens.objects.StackRoxNode;
@@ -16,8 +17,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 public class TechScreens {
@@ -1307,7 +1310,6 @@ public class TechScreens {
      * @return pig latin translation
      */
     public String pigLatinTranslateImproved(String word) {
-
         char[] charArray = word.toCharArray();
         StringBuffer sb = new StringBuffer();
         boolean isFirstUpper = isUpperCase(word.charAt(0));
@@ -1354,6 +1356,708 @@ public class TechScreens {
         array[x] = array[y];
         array[y] = temp;
     }
+
+
+    /**
+     * Tech screen from WeWork
+     *
+     * Suppose a array sorted in ascending order is rotated at some pivot unknown to you beforehand.
+     *
+     * (i.e., [0,1,2,4,5,6,7,8] might become [4,5,6,7,8,0,1,2]).
+     *
+     * You are given a target value to search. If found in the array return its index, otherwise return -1.
+     *
+     * You may assume no duplicate exists in the array.
+     *
+     * Your algorithm's runtime complexity must be in the order of O(log n).
+     *
+     * This problem problem gave me a great deal of difficulty because I hadn't reviewed how to do
+     * properly do a binary search. I was able to come up with algorithm, but my approach was flawed
+     * the idea is a play on binary search. The goal is to keep dividing the array in half
+     * looking for the sorted portion of the array. When you find the sorted portion
+     * and the target is in between the left and right values, then just run binarySearch.
+     *
+     * If not, then continue to recurse on the left and right half, until you find the
+     * sorted portion where your target is in between the left and right.
+     *
+     * The key to this problem as to start with the conditions for running binarySearch first.
+     * Then if you didn't find the necessary conditions to do such, then go ahead and apply the
+     * wrinkle to this problem, to keep searching for the sorted half of the array that contains
+     * your target.
+     *
+     * @param nums array of integers
+     * @param target integer
+     * @return the index of the integer or -1
+     */
+    public int findTargetInSplitArray(int[] nums, int target) {
+        return findTargetInSplitArrayHelper(nums, 0, nums.length - 1, target);
+    }
+
+    public int findTargetInSplitArrayHelper(int[] nums, int left, int right, int target) {
+        if (left > right) {
+            return -1;
+        }
+        int mid = (right + left) / 2;
+
+        if (nums[mid] == target) {
+            return mid;
+        }
+
+        if (nums[left] <= nums[mid] && isInBetween(nums[left], target, nums[mid])) {
+            // This portion of the array is sorted and our target is in between the bounds
+            return binarySearch(nums, left, mid, target);
+        } else if (nums[mid] <= nums[right] && isInBetween(nums[mid], target, nums[right])) {
+            // This portion of the array is sorted and our target is in between the bounds
+            return binarySearch(nums, mid + 1, right, target);
+        } else if (nums[mid] >= nums[right]) {
+            // This portion must have the rotation point, so recurse and look for the sorted portion
+            return findTargetInSplitArrayHelper(nums, mid + 1, right, target);
+        } else if (nums[left] >= nums[mid]){
+            // This portion must have the rotation point, so recurse and look for the sorted portion
+            return findTargetInSplitArrayHelper(nums, left, mid, target);
+        }
+        return -1;
+    }
+
+    private boolean isInBetween(int leftBound, int number, int rightBound) {
+        return leftBound <= number && number <= rightBound;
+    }
+
+    /**
+     * Binary search always fucks me up because I always mess up the base case.
+     * considering we are constantly moving the left and right indices towards each other,
+     * when they cross, i.e. left > right, then we should stop. THATS ALL.
+     *
+     * @param nums array of integers
+     * @param left the left bound of the array
+     * @param right the right bound of the array
+     * @param target the target value we are searching for
+     * @return the index of our target value
+     */
+    public int binarySearch(int[] nums, int left, int right, int target) {
+        if (left > right) {
+            return -1;
+        }
+
+        int mid = (right + left) / 2;
+
+        if (nums[mid] == target) {
+            return mid;
+        }
+
+        if (target < nums[mid]) {
+            return binarySearch(nums, left, mid, target);
+        } else {
+            return binarySearch(nums, mid + 1, right, target);
+        }
+    }
+
+    public boolean oneEditAway(String one, String two) {
+        int lengthOfOne = one.length();
+        int lengthOfTwo = two.length();
+
+        if (lengthOfOne == 0 && lengthOfTwo == 0) {
+            return true;
+        }
+
+        if ((lengthOfOne == 1 && lengthOfTwo == 0) || lengthOfOne == 0 && lengthOfTwo == 1) {
+            return true;
+        }
+
+        if (Math.abs(lengthOfOne - lengthOfTwo) > 1) {
+            return false;
+        }
+
+        int ptrOne = 0;
+        int ptrTwo = 0;
+        int differences = 0;
+        while (ptrOne <= lengthOfOne || ptrTwo <= lengthOfTwo) {
+            if (differences > 1) {
+                return false;
+            }
+
+            if (ptrOne == lengthOfOne && ptrTwo == lengthOfTwo) {
+                return differences <= 1;
+            }
+
+            if (ptrOne == lengthOfOne || ptrTwo == lengthOfTwo) {
+                differences += Math.abs(lengthOfOne - lengthOfTwo);
+                return differences <= 1;
+            }
+
+            if (one.charAt(ptrOne) == two.charAt(ptrTwo)) {
+                ptrOne++;
+                ptrTwo++;
+            } else if (lengthOfOne == lengthOfTwo) {
+                differences++;
+                ptrOne++;
+                ptrTwo++;
+            } else if (lengthOfOne > lengthOfTwo) {
+                ptrOne++;
+                differences++;
+            } else {
+                ptrTwo++;
+                differences++;
+            }
+        }
+        return true;
+    }
+
+    /*
+     * Tech screen from Glass door.
+     *
+     * Q1 - For the given input string, return a map of case insensitive
+     * words and their counts. Do not worry about punctuation or special
+     * characters.
+     */
+    public Map<String, Integer> countWords(String input) {
+        Map<String, Integer> results = new HashMap<>();
+        if (input == null || input.isEmpty()) {
+            return results;
+        }
+        String[] inputArray = input.split(" ");
+        for (String word: inputArray) {
+            if (!results.containsKey(word.toLowerCase())) {
+                results.put(word.toLowerCase(), 1);
+            } else {
+                Integer count = results.get(word.toLowerCase());
+                results.put(word.toLowerCase(), count.intValue() + 1);
+            }
+        }
+        return results;
+    }
+
+    public Map<String, Integer> countWordsWithSynonyms(Map<String, Integer> wordMap, String[][] synonyms) {
+        Map<String, String> adjMap = new HashMap<>();
+        for (int i = 0; i < synonyms.length; i++) {
+            adjMap.put(synonyms[i][0], synonyms[i][1]);
+        }
+
+        Set<String> keys = wordMap.keySet();
+        Set<String> seen = new HashSet<>();
+        Set<String> toRemove = new HashSet<>();
+
+        for (String key: keys) {
+            if (!seen.contains(key)) {
+               exploreGetCount(adjMap, wordMap, key, seen, toRemove);
+            }
+        }
+
+        for (String key: toRemove) {
+            if (wordMap.containsKey(key)) {
+                wordMap.remove(key);
+            }
+        }
+        return wordMap;
+    }
+
+    public int exploreGetCount(Map<String, String> adjMap, Map<String, Integer> wordMap, String key, Set<String> seen, Set<String> toRemove) {
+        String neighbor = adjMap.get(key);
+        int resultingCount = 0;
+        while(neighbor != null) {
+            if (!seen.contains(neighbor)) {
+                seen.add(neighbor);
+                resultingCount = exploreGetCount(adjMap, wordMap, neighbor, seen, toRemove);
+                toRemove.add(neighbor);
+            }
+            neighbor = adjMap.get(neighbor);
+        }
+
+        Integer count = wordMap.get(key);
+        int total = count.intValue() + resultingCount;
+        wordMap.put(key, count.intValue() + resultingCount);
+        return total;
+    }
+
+    /**
+     * The following was a question from an online amazon assessment
+     *
+     * Write an algorithm to compute the minimum amount of time to put N items together
+     * worker can only combine 2 items at a time. Time require to put two parts together is
+     * equal to the sum of the part sizes. The size of the newly constructed part is equal to the sum
+     * of the part sizes.
+     *
+     * I tried doing this problem using Dynamic Programming, and I think that was a mistake. DP
+     * problems require overlapping sub problem and it took me too long to see, that this problem
+     * DOESN"T have overlapping sub problems, because the problem space changes. We keep
+     * collasping the iput array until we have two numbers, and then we return that up
+     * the stack, taking the minimum sum.
+     *
+     * The recusion isn't even that hard, I simply spent too much time going down the incorrect approach.
+     *
+     * @param numOfParts int
+     * @param parts list of integers
+     * @return minimum time
+     */
+    public int minimumTime(int numOfParts, List<Integer> parts) {
+        if (numOfParts == 2) {
+            return parts.get(0).intValue() + parts.get(1).intValue();
+        }
+
+        int firstSmallest = findKthSmallest(parts);
+        int firstSmallestValue = parts.get(firstSmallest).intValue();
+        parts.set(firstSmallest, Integer.MAX_VALUE);
+
+        int secondSmallest = findKthSmallest(parts);
+        int secondSmallestValue = parts.get(secondSmallest).intValue();
+        parts.set(secondSmallest, Integer.MAX_VALUE);
+        int sum = firstSmallestValue + secondSmallestValue;
+
+        List<Integer> newParts = new ArrayList<>();
+        for (int i = 0; i < parts.size(); i++) {
+            if (parts.get(i) < Integer.MAX_VALUE) {
+                newParts.add(parts.get(i));
+            }
+        }
+
+        newParts.add(sum);
+        return sum + minimumTime(newParts.size(), newParts);
+    }
+
+    /**
+     * Finds the smallest Element.
+     * @param list of integers
+     * @return
+     */
+    public int findKthSmallest(List<Integer> list)  {
+        int length = list.size();
+        int min = Integer.MAX_VALUE;
+        int index = -1;
+        for (int i = 0; i < length; i++) {
+            Integer n = list.get(i);
+            if (min > n) {
+                min = n;
+                index = i;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * The second question from an online assessment from Amazon. A straight forward graphing
+     * problem, an implementation of BFS.
+     *
+     * Just remember that, every neighbor cell we visit, the distance to that cell is
+     * the parent distance + 1;
+     *
+     * When we find our destination cell, while visiting each neighbor, thats when we return
+     * our shortest distance.
+     * @param numRows
+     * @param numCols
+     * @param lot
+     * @return
+     */
+    public int minDistanceToRemoveObstacle(int numRows, int numCols, List<List<Integer>> lot) {
+        int[] rowMoves = {0, 1, 0, 1};
+        int[] colMoves = {-1, 0, 1, 0};
+
+        int endingCell = 9;
+        int flatLand = 1;
+
+        boolean[][] visited = new boolean[lot.size()][lot.get(0).size()];
+        int[][] distance = new int[lot.size()][lot.get(0).size()];
+
+        Queue<Cell> queue = new LinkedList<>();
+        Cell startingCell = new Cell(0, 0);
+        queue.add(startingCell);
+        while (!queue.isEmpty()) {
+            Cell parentCell = queue.poll();
+            if (visited[parentCell.row][parentCell.col] == false) {
+                visited[parentCell.row][parentCell.col] = true;
+                for (int i = 0; i < 4; i++) {
+                    if (isValidMove(parentCell.row + rowMoves[i], parentCell.col + colMoves[i], lot)) {
+                        int nextRow = parentCell.row + rowMoves[i];
+                        int nextCol = parentCell.col + colMoves[i];
+                        if (lot.get(nextRow).get(nextCol) == flatLand) {
+                            distance[nextRow][nextCol] = distance[parentCell.row][parentCell.col] + 1;
+                            Cell neighborCell = new Cell(nextRow, nextCol);
+                            queue.add(neighborCell);
+                        } else if (lot.get(nextRow).get(nextCol) == endingCell) {
+                            distance[nextRow][nextCol] = distance[parentCell.row][parentCell.col] + 1;
+                            return distance[nextRow][nextCol];
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    private boolean isValidMove(int row, int col, List<List<Integer>> lot) {
+        return row >= 0 && row < lot.size() && col >= 0 && col < lot.get(0).size();
+    }
+
+    /**
+     * Facebook Tech Screen
+     *
+     * We have a list of various types of tasks to perform. Task types are identified by number:
+     * task type 1, task type 2, task type 3, etc.
+     *
+     * Each task takes 1 time slot to execute, and requires a cool down to recover before we can execute
+     * another task of the same type.  However, we can execute tasks of other types in the meantime.
+     * The recovery interval is the same for all task types.
+     *
+     * Given a list of input tasks to run, and the cool down interval, output the number of
+     * time slots required to run them in the given order of the tasks.
+     *
+     * tasks = [1, 1, 2, 1]
+     * cooldown = 2
+     * Output: 7  (order is 1 _ _ 1 2 _ 1)
+     *
+     * I found this problem to be very difficult. My initial intiution on how to solve the problem
+     * was incorrect. Initially I thought that, given the task that I was on, I had to check
+     * the previous task type to see if it was of the same type, and if it was add the cool down
+     * period to the total. This was incorrect of course. Checking the previous task type won't
+     * help if the cool down period is large. The last task of the same type might be any number of
+     * time slots away.
+     *
+     * This problem is a good exercise in learning strategies for how to break down a tricky
+     * problem and solve it, when there is no obvious way to solve it, and when it clearly
+     * doesn't map to any class of algorithms.
+     *
+     * The information given in the problem, that is a list of tasks, and that, there is a
+     * cool down period, and that every task takes up at least one time slot, directly hint
+     * that this problem is an array type of problem.
+     *
+     * I think that the strategy for learning how to do the problem, will probably come from
+     * breaking the problem down into its simplest case, and building up from there. So
+     * lets try that.
+     *
+     * Lets assume the cool down is 2
+     * [1] => 1, the time is clearly one, as there is only one time slot
+     * [1 2] => 2, the time is 2, because neither task is of the same type
+     * [1,2,3] => 3, the same rationale as before
+     *
+     * [1,1] => 4, the time is +1 for doing the first take, then +2 for cool down period,
+     * because the next task is of the same type, +1 again for the time to execute the
+     * second task 1
+     *
+     * [1, 2, 1] => 4 (1, 2, _, 1). Again this is also 4, because the first task executes,
+     * then the next task does, but we must wait one time slot because we can't execute
+     * the next taskType 1 because its within the cool down period of the first one.
+     *
+     * This should give away how to do the problem. Anytime we execute a given task type,
+     * we should check to see if there is another task type of the same type,
+     * withing the given cool down period. All that means is if taskType 1 is
+     * at position i, then check if there is another task type 1, within
+     * [i + 1,...,i + 1 + cooldown). If there is, then calculate the extra time
+     * that would be required. If a task type of the same type is found within
+     * the cool down period, then we just check the magnitude of how far away
+     * its from the beginning of the boundary (i + 1).
+     *
+     * If there is no task type found withing this cool down period, then
+     * there is no extra time to add, because the other tasks can run
+     * during the cool down period. here the time slot is the index
+     * and the cooldown is merely the current position + the cool down.
+     *
+     * Given the format information is given to us for the problem,
+     * task types in a list, and the fact they must be executed in order,
+     * we must ask ourselves what the problem is telling us, and how the
+     * format of the information can help us. if we are having trouble,
+     * we should then break the problem down into its very simplest case
+     * and slowly build up from their until the rationale for solving it
+     * becomes clear.
+     *
+     * @param array int array
+     * @param coolDown int
+     * @return total number of time slots
+     */
+    public int getTimeToCompleteTasks(int[] array, int coolDown) {
+        int count = 0;
+        for (int i = 0; i < array.length; i++) {
+            count += 1;
+            count += calculateRemainingTime(array, array[i], i + 1, coolDown);
+        }
+        return count;
+    }
+
+    private int calculateRemainingTime(int[] array, int taskType, int nextIndex, int coolDown) {
+        for (int i = nextIndex; i < nextIndex + coolDown; i++) {
+            if (i < array.length) {
+                if (array[i] == taskType) {
+                    return (nextIndex + coolDown) - i;
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Thumbtack Tech screen, number 2.
+     *
+     * This tech screen was straight forward.
+     *
+     * You have a dictionary (set) of words. You need to implement a spellchecker that
+     * returns the correct word for an input word.
+     *
+     * The spellchecker only handles the following two class of spelling mistakes -
+     *
+     * Capitalization
+     * Example 1: <set: {yellow, radish}, input: yelloW, output: yellow>
+     * Example 2: <set: {Yellow, radish}, input: yelloW, output: Yellow> // yolloW => Yellow
+     *
+     * Vowels (letters in the set {a,e,i,o,u}) mixed up - consonants are in the correct order,
+     * but one or more vowels in the input word is/are not the same as the vowels in the
+     * corresponding dictionary word.
+     * Example 1: <set: {yellow, radish}, input: yollow, output: yellow //>
+     * yellow is a valid suggestion for yollow
+     * Example 2: <set: {yellow, radish}, input: redosh, output: radish> // redosx => radish -- NO_MATCH
+     * In addition, the following cases should be handled -
+     *
+     * When there is no valid suggestion, your function should return the string "NO_MATCH".
+     * When there is more than one valid suggestion, your function can return any one of them.
+     * When there is no spelling mistake in the input (exact match found), your function should
+     * return the same word back.
+     *
+     * What I messed up with this problem, was the follow up question, where the interview asked
+     * what pre-processing could we do to make this faster. I struggled with this. The current run
+     * time was O(n * c), where n is the number of words in the dictionary, and c is the number
+     * of characters in the word we wish to spell check.
+     *
+     * I think the thing I need to remember, is when asked these questions, how can I make them of
+     * order of magnitude faster. So this is polynomial, so how could I make it linear? Making
+     * it linear would be simply iterating over the dictionary, and making the check with our input
+     * constant. How could we do that?
+     *
+     * Given that the spell checking is largely based on the positions of consonants, what I could
+     * do is create a wild card for the input. So that the mispelled word "yollow", has wildcards
+     * like "y*ll*w". The dictionary, could also be in this format, such that the key "y*ll*w",
+     * would map to a set of valid words where all of the consonants are in the same format.
+     *
+     * @param dictionary set of words
+     * @param input the word we wish to return a suggestion for
+     * @return String
+     */
+    public String spellChecker(Set<String> dictionary, String input) {
+        if (input == null || input.isEmpty()) {
+            return "NO_MATCH";
+        }
+        for (String s: dictionary) {
+            if(isMatch(s, input)) {
+                return s;
+            }
+        }
+        return "NO_MATCH";
+    }
+
+    private boolean isMatch(String word1, String word2) {
+        int lengthOne = word1.length();
+        int lengthTwo = word2.length();
+        if (lengthOne != lengthTwo) {
+            return false;
+        }
+
+        for (int i = 0; i < lengthOne; i++) {
+            char ch1 = Character.toLowerCase(word1.charAt(i));
+            char ch2 = Character.toLowerCase(word2.charAt(i));
+            if (isConsonant(ch1) && isConsonant(ch2)) {
+                if (ch1 != ch2) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Apple tech screen
+     *
+     * Given a sorted array of integers, return the sorted squares of those integers
+     * Input: [-4,-2,1,3,5]
+     *
+     * [-5, -3 -2, -1]
+     * [1, 4, 9, 25]
+     *
+     * 16, 4.....1 , 9 , 25
+     *
+     * input: [1, 4, 9, 16, 25]
+     * Output:[1,4,9,16,25]
+     *
+     * If you need more classes, simply define them inline.
+     *
+     * This problem essentially required one to use the merge portion of merge
+     * sort. I did quite well on this problem!
+     *
+     * @param array int[] array
+     * @return int[] array
+     */
+    public int[] sortedSquares(int[] array) {
+
+        if (array == null || array.length == 0) {
+            return null;
+        }
+
+        if (array[0] >= 0) {
+            square(array);
+            return array;
+        }
+
+        if (array[0] < 0 && array[array.length - 1] < 0) {
+            square(array);
+            return reverse(array);
+        }
+
+        if (array[0] < 0 && array[array.length -1] > 0) {
+            int inflectionIndex = 0;
+            for (int i = 0; i < array.length; i++) {
+                if (array[i] > 0) {
+                    inflectionIndex = i;
+                    break;
+                }
+            }
+
+            square(array);
+            return merge(array, inflectionIndex);
+        }
+
+        return null;
+    }
+
+    private void square(int[] array) {
+        for (int i =0; i < array.length; i++) {
+            array[i] = array[i] * array[i];
+        }
+    }
+
+    private int[] reverse(int[] array) {
+        int[] temp = new int[array.length];
+        int j =0;
+        for (int i = array.length - 1; i >=0; i--) {
+            temp[j] = array[i];
+            j++;
+        }
+        return temp;
+    }
+
+    private int[] merge(int[] array, int inflectionIndex) {
+
+        int begLeft = 0;
+        int endLeft = inflectionIndex - 1;
+
+        int begRight = inflectionIndex;
+        int endRight = array.length - 1;
+
+        int[] temp = new int[array.length];
+        int i = 0;
+
+        while (endLeft >= begLeft && begRight <= endRight) {
+            if (array[endLeft] <= array[begRight]) {
+                temp[i] = array[endLeft];
+                endLeft--;
+                i++;
+            } else {
+                temp[i] = array[begRight];
+                begRight++;
+                i++;
+            }
+        }
+
+        while (endLeft >= begLeft) {
+            temp[i] = array[endLeft];
+            i++;
+            endLeft--;
+        }
+
+        while (begRight <= endRight) {
+            temp[i] = array[begRight];
+            i++;
+            begRight++;
+        }
+
+        return temp;
+    }
+
+    private static boolean prefixMatch(String bookMark, String searchTerm) {
+        if (bookMark == null || bookMark.isEmpty()) {
+            return false;
+        }
+
+        if (searchTerm == null) {
+            return false;
+        }
+
+        String[] bookMarks = bookMark.split(" ");
+        for (String bookMarkItem: bookMarks) {
+            if (bookMarkItem != null) {
+                if (bookMarkItem.toLowerCase().startsWith(searchTerm.toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean nonPreFixMatch(String bookMark, String searchTerm) {
+        if (bookMark == null || bookMark.isEmpty()) {
+            return false;
+        }
+
+        if (searchTerm == null) {
+            return false;
+        }
+
+        String[] bookMarks = bookMark.split(" ");
+        for (String bookMarkItem: bookMarks) {
+            if (bookMarkItem != null) {
+                if (bookMarkItem.toLowerCase().contains(searchTerm.toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Yelp tech screen
+     *
+     * Making a prefix matcher and then iterating on that requirement to return the
+     * top 4 results.
+     *
+     * After prefix works, then we must alter the code to return not just prefix matches
+     * but also if the search term is within the book mark.
+     *
+     * @param bizNames String[]
+     * @param searchTerm string
+     * @return List<String>
+     */
+    public List<String> getBookMarks(String[] bizNames, String searchTerm) {
+        if (bizNames == null || bizNames.length == 0) {
+            return new ArrayList<>();
+        }
+
+        if (searchTerm == null) {
+            return Arrays.asList(bizNames);
+        }
+
+        List<String> results = new ArrayList<>();
+        int prefixMatchCount = 0;
+        Queue<Integer> nonPrefixLocations = new LinkedList<>();
+        for (String biz: bizNames) {
+            if (prefixMatch(biz, searchTerm)) {
+                results.add(biz);
+                prefixMatchCount++;
+            } else {
+                if (nonPreFixMatch(biz, searchTerm)) {
+                    results.add(biz);
+                    nonPrefixLocations.add(results.size() - 1);
+                }
+            }
+
+            if (prefixMatchCount == 4) {
+                break;
+            }
+        }
+
+        if (prefixMatchCount == 4 && results.size() > 4) {
+            while (!nonPrefixLocations.isEmpty()) {
+                Integer position = nonPrefixLocations.poll();
+                results.remove(position.intValue());
+            }
+        }
+
+        return results;
+    }
 }
+
 
 

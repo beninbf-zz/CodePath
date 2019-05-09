@@ -43,54 +43,70 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-class MyMap {
 
-    private Map<String, Integer> innerMap = null;
-    private List<String> keys = null;
-    private Map<String, Integer> locationMap = null;
+public class MyMap {
+    private final Map<String, String> innerMap;
+    private final Map<String, Integer> locationMap;
+    List<String> keyList;
 
     public MyMap() {
         this.innerMap = new HashMap<>();
+        this.keyList = new ArrayList<>();
         this.locationMap = new HashMap<>();
-        this.keys = new ArrayList<>();
     }
 
     public MyMap(int capacity) {
         this.innerMap = new HashMap<>(capacity);
+        this.keyList = new ArrayList<>(capacity);
         this.locationMap = new HashMap<>(capacity);
-        this.keys = new ArrayList<>(capacity);
     }
 
-    public Integer get(String key) {
-        return innerMap.get(key);
-    }
-
-    public void put(String key, Integer value) {
+    public void set(String key, String value) {
+        if (!this.innerMap.containsKey(key)) {
+            this.keyList.add(key);
+            this.locationMap.put(key, keyList.size() - 1);
+        }
         this.innerMap.put(key, value);
-        this.keys.add(key);
-        this.locationMap.put(key, keys.size() - 1);
+    }
+
+    public String get(String key) {
+        return this.innerMap.get(key);
     }
 
     public void delete(String key) {
         this.innerMap.remove(key);
-        int index = this.locationMap.get(key);
-        swap(index, keys.size() - 1);
-        this.keys.remove(keys.size() - 1);
+        Integer keyIndex = locationMap.get(key);
+        swap(keyIndex, keyList.size() - 1);
+        this.keyList.remove(keyList.size() - 1);
         this.locationMap.remove(key);
     }
 
-    public String getRandom() {
-        Random rand = new Random();
-        int index = rand.nextInt(keys.size());
-        return keys.get(index);
+    private void swap(int index1, int index2) {
+        String temp = keyList.get(index1);
+        String end = keyList.get(index2);
+        this.keyList.set(index1, end);
+        this.locationMap.put(end, index1);
+        this.keyList.set(index2, temp);
+        this.locationMap.put(temp, index2);
     }
 
-    private void swap(int index1, int index2) {
-        String item1 = this.keys.get(index1);
-        String item2 = this.keys.get(index2);
-        this.keys.set(index1, item2);
-        this.locationMap.put(item1, index2);
-        this.keys.set(index2, item1);
-        this.locationMap.put(item2, index1);
+    public String getRandom() {
+        Random random = new Random();
+        int rand = random.nextInt(keyList.size());
+        String randomKey = keyList.get(rand);
+        return this.innerMap.get(randomKey);
+    }
+
+    public String toString() {
+        return this.innerMap.entrySet().toString();
+    }
+
+    public String keyListStr() {
+        return this.keyList.toString();
+    }
+
+    public String locationMapStr() {
+        return this.locationMap.entrySet().toString();
     }
 }
+

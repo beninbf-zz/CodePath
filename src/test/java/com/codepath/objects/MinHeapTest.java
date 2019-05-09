@@ -2,13 +2,11 @@ package test.java.com.codepath.objects;
 
 import main.java.com.codepath.objects.MinHeap;
 import main.java.com.codepath.objects.Vertex;
+import main.java.com.codepath.techscreens.objects.MyMap;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MinHeapTest {
 
@@ -117,6 +115,35 @@ public class MinHeapTest {
             current = next;
             System.out.println(next);
         }
+    }
 
+    @Test
+    public void testMyMap() {
+        MyMap map = new MyMap();
+        map.set("foo", "bar");
+        map.set("A", "B");
+        map.set("C", "D");
+        map.set("E", "F");
+
+        System.out.println(map);
+        System.out.println(map.keyListStr());
+        System.out.println(map.locationMapStr());
+
+        map.delete("A");
+        System.out.println("AFTER DELETE");
+        System.out.println(map);
+        System.out.println(map.keyListStr());
+        System.out.println(map.locationMapStr());
+
+        map.set("E", "test");
+        System.out.println("AFTER E SET");
+        System.out.println(map);
+        System.out.println(map.keyListStr());
+        System.out.println(map.locationMapStr());
+
+        System.out.println("Random");
+        System.out.println(map.getRandom());
+        System.out.println("Random");
+        System.out.println(map.getRandom());
     }
 }

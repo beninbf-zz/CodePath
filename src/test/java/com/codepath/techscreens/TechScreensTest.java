@@ -1,6 +1,7 @@
 package test.java.com.codepath.techscreens;
 
 import main.java.com.codepath.techscreens.objects.InstaCartMap;
+import main.java.com.codepath.techscreens.objects.MyMap;
 import main.java.com.codepath.techscreens.objects.NameNumberElement;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
@@ -8,6 +9,7 @@ import main.java.com.codepath.techscreens.objects.StackRoxNode;
 import main.java.com.codepath.techscreens.TechScreens;
 import main.java.com.codepath.techscreens.objects.StudentCoursePair;
 import main.java.com.codepath.techscreens.objects.ZerosRectangle;
+import main.java.com.codepath.util.Util;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -172,22 +174,22 @@ public class TechScreensTest {
 
     @Test
     public void testZume_findNodesWithZeroParents() {
-        int[][] parentChildPairs = new int[][] {
-                {1, 3}, {2, 3}, {3, 6}, {5, 6}, {5, 7},
-                {4, 5}, {4, 8}, {8, 10}
+        int[][] parentChildPairs = new int[][]{
+            {1, 3}, {2, 3}, {3, 6}, {5, 6}, {5, 7},
+            {4, 5}, {4, 8}, {8, 10}
         };
 
         List<Integer> answer = new ArrayList<>(Arrays.asList(1, 2, 4));
         Set<Integer> result = testObj.findNodesWithZeroParents(parentChildPairs);
         Integer[] ans = result.toArray(new Integer[0]);
-        for(int i = 0; i < ans.length; i++) {
+        for (int i = 0; i < ans.length; i++) {
             assertEquals("items should be equal", answer.get(i).intValue(), ans[i].intValue());
         }
     }
 
     @Test
     public void testZume_findNodesWithOneParents() {
-        int[][] parentChildPairs = new int[][] {
+        int[][] parentChildPairs = new int[][]{
             {1, 3}, {2, 3}, {3, 6}, {5, 6}, {5, 7},
             {4, 5}, {4, 8}, {8, 10}
         };
@@ -195,21 +197,21 @@ public class TechScreensTest {
         List<Integer> answer = new ArrayList<>(Arrays.asList(5, 7, 8, 10));
         Set<Integer> result = testObj.findNodesWithOneParent(parentChildPairs);
         Integer[] ans = result.toArray(new Integer[0]);
-        for(int i = 0; i < ans.length; i++) {
+        for (int i = 0; i < ans.length; i++) {
             assertEquals("items should be equal", answer.get(i).intValue(), ans[i].intValue());
         }
     }
 
     @Test
     public void testQuizlet_SameSchema() {
-         Map<String, Object> FIRST = new HashMap() {{
-                put("a", "hello");
-                put("b", 1);
-         }};
+        Map<String, Object> FIRST = new HashMap() {{
+            put("a", "hello");
+            put("b", 1);
+        }};
 
         Map<String, Object> SECOND = new HashMap() {{
-                put("a", "world");
-                put("b", 2);
+            put("a", "world");
+            put("b", 2);
         }};
 
         Map<String, Object> THIRD = new HashMap() {{
@@ -217,9 +219,9 @@ public class TechScreensTest {
             put("b", "1");
         }};
 
-       Map<String, Object> FOURTH = new HashMap() {{
-           put("a", "hello");
-       }};
+        Map<String, Object> FOURTH = new HashMap() {{
+            put("a", "hello");
+        }};
 
         Map<String, Object> FIFTH = new HashMap() {{
             put("a", 1);
@@ -246,7 +248,7 @@ public class TechScreensTest {
             new StackRoxNode("3", "B")
         ));
         Map<String, String> results = testObj.getUniquePrefixes(nodes);
-        for(String key: results.keySet()) {
+        for (String key : results.keySet()) {
             System.out.println(results.get(key));
         }
     }
@@ -406,22 +408,22 @@ public class TechScreensTest {
     @Test
     public void testVoidFindStudentCoursePairs() {
         String[][] studentCoursePairs = {
-                {"58", "Software Design"},
-                {"58", "Linear Algebra"},
-                {"94", "Art History"},
-                {"94", "Operating Systems"},
-                {"17", "Software Design"},
-                {"58", "Mechanics"},
-                {"58", "Economics"},
-                {"17", "Linear Algebra"},
-                {"17", "Political Science"},
-                {"94", "Economics"}
-            };
+            {"58", "Software Design"},
+            {"58", "Linear Algebra"},
+            {"94", "Art History"},
+            {"94", "Operating Systems"},
+            {"17", "Software Design"},
+            {"58", "Mechanics"},
+            {"58", "Economics"},
+            {"17", "Linear Algebra"},
+            {"17", "Political Science"},
+            {"94", "Economics"}
+        };
 
-            List<StudentCoursePair> list = testObj.find_pairs(studentCoursePairs);
+        List<StudentCoursePair> list = testObj.find_pairs(studentCoursePairs);
 
         System.out.println("FROM MAIN");
-        for (StudentCoursePair p: list) {
+        for (StudentCoursePair p : list) {
             System.out.println(p);
         }
     }
@@ -438,7 +440,7 @@ public class TechScreensTest {
         };
 
         List<NameNumberElement> elements = new ArrayList<>();
-        for (String item: input) {
+        for (String item : input) {
             String[] values = item.split(" ");
             NameNumberElement e = new NameNumberElement(values[0], values[1]);
             elements.add(e);
@@ -596,5 +598,203 @@ public class TechScreensTest {
         } catch (Exception ex) {
             // do nothing
         }
+    }
+
+    @Test
+    public void testFindTargetInSplitArray() {
+        int[] nums = {4, 5, 6, 7, 8, 0, 1, 2};
+        assertEquals("Should be 5", 5, testObj.findTargetInSplitArray(nums, 0));
+        assertEquals("Should be -1", -1, testObj.findTargetInSplitArray(nums, 3));
+        assertEquals("Should be 2", 2, testObj.findTargetInSplitArray(nums, 6));
+        assertEquals("Should be 0", 0, testObj.findTargetInSplitArray(nums, 4));
+        assertEquals("Should be 7", 7, testObj.findTargetInSplitArray(nums, 2));
+    }
+
+    @Test
+    public void testFindTargetInSplitArray1() {
+        int[] nums = {10, 11, 1, 2, 3, 4, 5, 6};
+        assertEquals("Should be 2", 2, testObj.findTargetInSplitArray(nums, 1));
+        assertEquals("Should be 0", 0, testObj.findTargetInSplitArray(nums, 10));
+        assertEquals("Should be 7", 7, testObj.findTargetInSplitArray(nums, 6));
+        assertEquals("Should be 1", 1, testObj.findTargetInSplitArray(nums, 11));
+    }
+
+    @Test
+    public void testCountWordSynonyms() {
+        String input = "hot warm warm sizzling cold cool icy cold feather";
+        Map<String, Integer> map = testObj.countWords(input);
+
+        String[][] synonyms = {
+            {"hot", "warm"},
+            {"warm", "sizzling"},
+            {"cold", "cool"},
+            {"icy", "cold"}};
+
+        Map<String, Integer> consolidatedMap = testObj.countWordsWithSynonyms(map, synonyms);
+        System.out.println(consolidatedMap);
+    }
+
+    @Test
+    public void testOneEditAway() {
+        // same
+        assertTrue("Should be true", testObj.oneEditAway("", ""));
+        assertTrue("Should be true", testObj.oneEditAway("a", "a"));
+        assertTrue("Should be true", testObj.oneEditAway("abc", "abc"));
+
+        // rep, ins, del at end
+        assertTrue("Should be true", testObj.oneEditAway("abc", "abd"));
+        assertTrue("Should be true", testObj.oneEditAway("abc", "ab"));
+
+        // rep, ins, del at beginning
+        assertTrue("Should be true", testObj.oneEditAway("abc", "bbc"));
+        assertTrue("Should be true", testObj.oneEditAway("abc", "aabc"));
+        assertTrue("Should be true", testObj.oneEditAway("abc", "bc"));
+
+        // rep, ins, del in middle
+        assertTrue("Should be true", testObj.oneEditAway("abc", "adc"));
+        assertTrue("Should be true", testObj.oneEditAway("abc", "abdc"));
+        assertTrue("Should be true", testObj.oneEditAway("abc", "ac"));
+
+        // boundaries
+        assertTrue("Should be true", testObj.oneEditAway("", "a"));
+        assertTrue("Should be true", testObj.oneEditAway("a", ""));
+        assertTrue("Should be true", testObj.oneEditAway("a", "aa"));
+        assertTrue("Should be true", testObj.oneEditAway("aa", "a"));
+
+        // repeats
+        assertTrue("Should be true", testObj.oneEditAway("aaa", "aaaa"));
+        assertTrue("Should be true", testObj.oneEditAway("aaa", "aa"));
+        assertTrue("Should be true", testObj.oneEditAway("aaabbbccc", "aaabcbccc"));
+        assertTrue("Should be true", testObj.oneEditAway("aaabbbccc", "aaabbccc"));
+        assertTrue("Should be true", testObj.oneEditAway("aaabbbccc", "aaabcbbccc"));
+
+        // should be false:
+        assertFalse("Should be false", testObj.oneEditAway("bbb", "aba"));
+        assertFalse("Should be false", testObj.oneEditAway("abc", "abdb"));
+        assertFalse("Should be false", testObj.oneEditAway("abdb", "abc"));
+        assertFalse("Should be false", testObj.oneEditAway("abc", "aaabc"));
+        assertFalse("Should be false", testObj.oneEditAway("aaabc", "abc"));
+        assertFalse("Should be false", testObj.oneEditAway("abc", "abccc"));
+        assertFalse("Should be false", testObj.oneEditAway("abccc", "abc"));
+        assertFalse("Should be false", testObj.oneEditAway("abc", "acb"));
+        assertFalse("Should be false", testObj.oneEditAway("bac", "abc"));
+        assertFalse("Should be false", testObj.oneEditAway("aaabbbccc", "aababbccc"));
+        assertFalse("Should be false", testObj.oneEditAway("aaabbbccc", "aaabcbbdcc"));
+    }
+
+    @Test
+    public void testMinTimeForAmazon() {
+        List<Integer> parts = Arrays.asList(8, 4, 6, 12);
+        assertEquals("Min time should be 58", 58, testObj.minimumTime(parts.size(), parts));
+    }
+
+    @Test
+    public void testMinDistanceToObstacleForAmazon() {
+        List<List<Integer>> lot = new ArrayList<>();
+        List<Integer> firstRow = Arrays.asList(1, 0, 0);
+        List<Integer> secondRow = Arrays.asList(1, 0, 0);
+        List<Integer> thirdRow = Arrays.asList(1, 9, 1);
+
+        lot.add(firstRow);
+        lot.add(secondRow);
+        lot.add(thirdRow);
+        assertEquals("Should be 3", 3, testObj.minDistanceToRemoveObstacle(lot.size(), lot.get(0).size(), lot));
+    }
+
+    @Test
+    public void testGetTimeToCompleteTasks() {
+        int[] array = {1, 1, 2, 1};
+        assertEquals("Count should be 7", 7, testObj.getTimeToCompleteTasks(array, 2));
+
+        int[] array1 = {1, 2, 3, 4};
+        assertEquals("Count should be 4", 4, testObj.getTimeToCompleteTasks(array1, 2));
+    }
+
+    @Test
+    public void testSortedSquares() {
+        int[] a = {-4, -2, 1, 3, 5};
+        int[] results = testObj.sortedSquares(a);
+        Util.print(results);
+
+        int[] b = {-6, -4, -3, -2, -1};
+        Util.print(testObj.sortedSquares(b));
+
+        int[] c = {3, 4, 5, 7, 8};
+        Util.print(testObj.sortedSquares(c));
+
+        int[] d = {};
+        Util.print(testObj.sortedSquares(d));
+    }
+
+    @Test
+    public void testBookMarkMatch() {
+
+        String bizNames[] = {
+            "Burger King",
+            "McDonald's",
+            "Bob’s Burgers",
+            "Five Guys",
+            "Super Duper Burgers",
+            "Wahlburgers"
+        };
+
+        String bizNames1[] = {
+            "Wahlburgers",
+            "Burger King",
+            "McDonald's",
+            "Bob’s Burgers",
+            "Five Guys",
+            "Super Duper Burgers",
+            "burger town",
+            "the place for burgers"
+        };
+
+        String bizNames2[] = {
+            "Wahlburgers",
+            "Burger King",
+            "McDonald's",
+            "Bob’s Burgers",
+            "Five Guys",
+            "Super Duper Burgers"
+        };
+
+        String[] empty = new String[1];
+        String[] nullArray = null;
+
+        //   List<String> result = Solution.getBookMarks(bizNames, "bur");
+        //   System.out.println(result);
+        //   Assert.assertEquals(4, result.size());
+
+        //   List<String> result1 = Solution.getBookMarks(bizNames1, "bur");
+        //   System.out.println(result1);
+        //   Assert.assertEquals(4, result1.size());
+
+        //   List<String> result2 = Solution.getBookMarks(bizNames1, "xoo");
+        //   System.out.println(result2);
+        //   Assert.assertEquals(0, result2.size());
+
+        //   List<String> result3 = Solution.getBookMarks(empty, "xoo");
+        //   System.out.println(result3);
+        //   Assert.assertEquals(0, result3.size());
+
+        //   List<String> result4 = Solution.getBookMarks(nullArray, "xoo");
+        //   System.out.println(result4);
+        //   Assert.assertEquals(0, result4.size());
+
+        //   List<String> result5 = Solution.getBookMarks(bizNames1, "");
+        //   System.out.println(result5);
+        //   Assert.assertEquals(4, result5.size());
+
+        //   List<String> result6 = Solution.getBookMarks(nullArray, null);
+        //   System.out.println(result5);
+        //   Assert.assertEquals(0, result6.size());
+
+        List<String> result7 = testObj.getBookMarks(bizNames1, "bur");
+        System.out.println(result7);
+        assertEquals(4, result7.size());
+
+        List<String> result8 = testObj.getBookMarks(bizNames2, "bur");
+        System.out.println(result8);
+        assertEquals(4, result8.size());
     }
 }

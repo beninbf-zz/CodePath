@@ -20,8 +20,6 @@ public class Util {
 
     public static int sum(Integer[] array) {
         int total = 0;
-
-
         for(Integer number: array) {
             if (number != null) {
                 total += number.intValue();
@@ -217,5 +215,23 @@ public class Util {
             sb.append(c);
         }
         return sb.toString();
+    }
+
+    public static int sum(int[] array) {
+        int sum = 0;
+        for (int i = 0; i < array.length; i++) {
+            sum += array[i];
+        }
+        return sum;
+    }
+
+    public static int sum(List<Integer> list) {
+        int sum = 0;
+        for (Integer n: list) {
+            if (n != null) {
+                sum += n.intValue();
+            }
+        }
+        return sum;
     }
 }

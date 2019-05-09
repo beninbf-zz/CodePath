@@ -916,7 +916,7 @@ public class GraphProblems {
      *           3 -> {3: []}
      *              4 -> {4: []}
      *                  when we check to see if the neighbor of 4 is in our map, we will see that it is. so grab, that node
-     *                     get(neibhor of 4) which is 1
+     *                     get(neighbor of 4) which is 1
      *                     now, for the entry 1, put 4 as its neighbor, so effectively we get
      *                     1 -> {1: [4]}
      *                     As we recurse back up the stack, we will effectively be updating the neighbors list of these new nodes
