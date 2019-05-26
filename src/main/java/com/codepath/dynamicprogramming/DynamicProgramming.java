@@ -1,7 +1,6 @@
 package main.java.com.codepath.dynamicprogramming;
 
 import main.java.com.codepath.objects.Cell;
-import main.java.com.codepath.recursion.Palindrome.Palindrome;
 import main.java.com.codepath.util.Util;
 
 import java.util.ArrayList;
@@ -735,6 +734,116 @@ public class DynamicProgramming {
     }
 
     /**
+     * Counting the number of paths with obstructions, where if a cell
+     * is a 0 we can't move there.
+     *
+     * Consider a maze mapped to a matrix with an upper left corner at coordinates (row, column) = (0, 0).
+     * Any movement must be in increasing row or column direction. You must determine the number of
+     * distinct paths through the maze. You will always start at position (0, 0), the top left,
+     * and end up at (max(row), max(column)), the bottom right.
+     *
+     * Below is a basic recursive implementation, starting at the bottom right, and moving to the
+     * top left.
+     *
+     * RUNNING TIME: O(2 ^ (R * C))
+     *
+     * SPACE COMPLEXITY: O(R + C)
+     *
+     * @param a int[][]
+     * @return number of paths int
+     */
+    public int numberOfPathsWithObstructions(int[][] a) {
+        if (a[0][0] == 0) {
+            return 0;
+        }
+        return numberOfPathsHelper(a, a.length - 1, a[0].length - 1);
+    }
+
+    public int numberOfPathsHelper(int[][] a, int row, int col) {
+        if (row == 0 && col == 0) {
+            return 1;
+        }
+
+        int up = 0;
+        int left = 0;
+        if (isValid(a, row - 1, col) && a[row - 1][col] == 1) {
+            up = numberOfPathsHelper(a, row - 1, col);
+        }
+        if (isValid(a, row, col - 1) && a[row][col - 1] == 1) {
+            left = numberOfPathsHelper(a, row, col - 1);
+        }
+        return up + left;
+    }
+
+    private boolean isValid(int [][] a, int row, int col) {
+        return row >= 0 && row < a.length && col >= 0 && col < a[0].length;
+    }
+
+    /**
+     * This follows from the recursive solution however there is a WRINKLE!
+     * The wrinkle is how to initialize the DP table. From our base case I
+     * initially thought that I had to intialize the first row and first column
+     * to all 1's...but this doesn't make sense.
+     *
+     * We must remember that in the original grid, that if there are cells in the
+     * first row or first column with a 0, then that means there is NO PATH to those
+     * cells that we can count, because its an obstruction.
+     *
+     * So to initalize the DP table, what we do for the 1st row and column is to
+     * initialize the DP table, we copy the values from our input a, BUT when
+     * we get a 0, then ever cell after that in the row or column should also be
+     * a zero! This will give us the correct answer.
+     *
+     * RUNTIME: O(R * C)
+     * SPACE: O(R * C)
+     * @param a int[][]
+     * @return int
+     */
+    public int numberOfPathsDp(int[][] a) {
+        if (a[0][0] == 0) {
+            return 0;
+        }
+        int[][] table = new int[a.length][a[0].length];
+
+        // fill first row
+        for (int i = 0; i < table[0].length; i++) {
+            if (a[0][i] == 1) {
+                table[0][i] = a[0][i];
+            } else {
+                break;
+            }
+        }
+
+        // fill first column
+        for (int i = 0; i < table.length; i++) {
+            if (a[i][0] == 1) {
+                table[i][0] = a[i][0];
+            } else {
+                break;
+            }
+        }
+
+        // fill dp table
+        for (int i = 1; i < table.length; i++) {
+            for (int j = 1; j < table[0].length; j++) {
+                int up = 0;
+                int left = 0;
+                if (a[i][j] == 1) {
+                    if (isValid(a, i - 1, j) && a[i - 1][j] == 1) {
+                        up = table[i - 1][j];
+                    }
+                    if (isValid(a, i, j - 1) && a[i][j - 1] == 1) {
+                        left = table[i][j - 1];
+                    }
+                    table[i][j] = up + left;
+                }
+            }
+        }
+
+        return table[table.length - 1][table[0].length - 1];
+    }
+
+    /**
      *
      * This algorithm is for computing the maximum amount of profit that can be generated
      * for cutting a rope, where the lengths of rope can be sold for amounts dictated
@@ -1374,5 +1483,647 @@ public class DynamicProgramming {
             table[i] = Math.max(first, second);
         }
         return table[0];
+    }
+
+    /**
+     * Given a phone keypad as shown below:
+     *
+     * 1 2 3
+     * 4 5 6
+     * 7 8 9
+     * - 0 -
+     *
+     * How many different phone numbers of given length can be formed starting
+     * from the given digit? The constraint is that the movement from one digit
+     * to the next is similar to the movement of the Knight in a chess game.
+     *
+     * For eg. if we are at 1 then the next digit can be either 6 or 8 if we
+     * are at 6 then the next digit can be 1, 7 or 0.
+     *
+     * Repetition of digits are allowed - 1616161616 is a valid number.
+     *
+     * The problem requires us to just give the count of different phone
+     * numbers and not necessarily list the numbers.
+     *
+     * This is a recursive algorithm for generating all of the numbers on a key pad
+     * of a given length, if you can only move as a knight on chess board.
+     *
+     * This essentially is an implementation of DFS where the decisions
+     * we make are dictated by the knight moves arrays.
+     *
+     * @param startDigit starting digit in the keypad
+     * @param phoneNumberLength length of the phone number
+     * @return List of phone numbers of phoneNumberLength
+     */
+    public List<List<Integer>> numPhoneNumbersRec(int startDigit, int phoneNumberLength) {
+        Integer[][] keyPad = new Integer[][]{{1, 2, 3},
+                                            {4, 5, 6},
+                                            {7, 8, 9},
+                                            {null, 0, null}};
+        List<Integer> candidate = new ArrayList<>();
+        List<List<Integer>> phoneNumbers = new ArrayList<>();
+
+        Cell cell = findCell(startDigit, keyPad);
+        numPhoneNumbersRecHelper(keyPad, cell.row, cell.col, phoneNumberLength - 1, candidate, phoneNumbers);
+        return phoneNumbers;
+    }
+
+    private void numPhoneNumbersRecHelper(Integer[][] keyPad, int row, int col, int phoneNumberLength, List<Integer> candidate, List<List<Integer>> phoneNumbers) {
+        int[] knightMoveRow = new int[]{-2, -2, -1, 1, 2, 2, 1, -1};
+        int[] knightMoveCol = new int[]{-1, 1, 2, 2, 1, -1, -2, -2};
+
+        candidate.add(keyPad[row][col]);
+        if (phoneNumberLength == 0) {
+            phoneNumbers.add(new ArrayList<>(candidate));
+            return;
+        }
+        for (int i = 0; i < 8; i++) {
+            if (isValidMove(keyPad, row + knightMoveRow[i], col + knightMoveCol[i])) {
+                numPhoneNumbersRecHelper(keyPad, row + knightMoveRow[i], col + knightMoveCol[i], phoneNumberLength - 1, candidate, phoneNumbers);
+                candidate.remove(candidate.size() - 1);
+            }
+        }
+    }
+
+    /**
+     * This is an optimal recursive algorithm that returns the number of phone numbers
+     * on a keypad, starting at a given digit, and only moving as a knight on a chess
+     * board.
+     *
+     * This essentially is an implementation of DFS where the decisions we make are
+     * dictated by the knight moves arrays. Instead of generating all of the
+     * phone numbers, we just return the number of phone numbers, which essentially
+     * means just returning 1 when we get to a leave node in a tree, and summing
+     * this up.
+     *
+     * @param startDigit starting digit in the keypad
+     * @param phoneNumberLength length of the phone number
+     * @return number of phone numbers of length startDigit
+     */
+    public int numPhoneNumbersOptimal(int startDigit, int phoneNumberLength) {
+        Integer[][] keyPad = new Integer[][]{{1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9},
+            {null, 0, null}};
+        Cell cell = findCell(startDigit, keyPad);
+        return numPhoneNumbersHelperOptimal(keyPad, cell.row, cell.col, phoneNumberLength - 1);
+    }
+
+    private int numPhoneNumbersHelperOptimal(Integer[][] keyPad, int row, int col, int phoneNumberLength) {
+        int[] knightMoveRow = new int[]{-2, -2, -1, 1, 2, 2, 1, -1};
+        int[] knightMoveCol = new int[]{-1, 1, 2, 2, 1, -1, -2, -2};
+
+        if (phoneNumberLength == 0) {
+            return 1;
+        }
+        int result = 0;
+        for (int i = 0; i < 8; i++) {
+            if (isValidMove(keyPad, row + knightMoveRow[i], col + knightMoveCol[i])) {
+                result += numPhoneNumbersHelperOptimal(keyPad, row + knightMoveRow[i], col + knightMoveCol[i], phoneNumberLength - 1);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * This solution follows exactly from my 'optimal' sub structure solution above. The trouble was with figuring out
+     * exactly how to memoize the table. Remember that the memoize table is suppose to be a look up table.
+     *
+     * It helps to draw the recursion tree to what the calls looks like
+     *
+     *
+     *                         f(6, 4)
+     *                  /         |               \
+     *               f(1, 3)     f(7, 3)           f(0, 3)
+     *             /        \     /    \            /     \
+     *        f(6, 2)   f(8, 2)  f(2,2) f(6,2)   f(4,2) f(6,2)
+     *
+     *  We can see that we are calling f(6, 2) repeated times. What does that mean in the context of our solution?
+     *  That means that our memoize table, has to be two dimensions, one dimension for the starting digit, the other
+     *  for the phone number length.
+     *
+     *  Given our solution, that means the starting digit, is actually keypad[row][col]. Hence our memo table
+     *  is of the form
+     *
+     *  memo[0...10][phoneNumbelength], and we use it like memo[keypay[i][j]][phoneNumberLength]. We should think
+     *  of the memo table as being no different than a standard DP table. We look at the parameters that are changing
+     *  and let that dictate the table. What's changing in this case, is the starting digit and the phone number length.
+     *
+     *  RUNTIME: O(phoneNumberLength) because the digits are constant
+     *  SPACETIME: O(phoneNumberLength) again because the digits are constant
+     *
+     * @param startDigit the start digit
+     * @param phoneNumberLength the length of the phone number
+     * @return the number of phone numbers we can generate given the start digit and length
+     */
+    public long numPhoneNumbersMemo(int startDigit, int phoneNumberLength) {
+        Integer[][] keyPad = new Integer[][]{{1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9},
+            {null, 0, null}};
+        Cell cell = findCell(startDigit, keyPad);
+        long[][] memo = new long[10][phoneNumberLength];
+        return numPhoneNumbersHelperMemo(keyPad, cell.row, cell.col, phoneNumberLength - 1, memo);
+    }
+    private long numPhoneNumbersHelperMemo(Integer[][] keyPad, int row, int col, int phoneNumberLength, long[][] memo) {
+        int[] knightMoveRow = new int[]{-2, -2, -1, 1, 2, 2, 1, -1};
+        int[] knightMoveCol = new int[]{-1, 1, 2, 2, 1, -1, -2, -2};
+
+        if (memo[ keyPad[row][col] ][phoneNumberLength] != 0) {
+            return memo[keyPad[row][col]][phoneNumberLength];
+        }
+
+        if (phoneNumberLength == 0) {
+            memo[keyPad[row][col]][phoneNumberLength] += 1;
+            return memo[keyPad[row][col]][phoneNumberLength];
+        }
+
+        for (int i = 0; i < 8; i++) {
+            if (isValidMove(keyPad, row + knightMoveRow[i], col + knightMoveCol[i])) {
+                memo[keyPad[row][col]][phoneNumberLength] += numPhoneNumbersHelperMemo(keyPad, row + knightMoveRow[i], col + knightMoveCol[i], phoneNumberLength - 1, memo);
+            }
+        }
+        return memo[keyPad[row][col]][phoneNumberLength];
+    }
+
+    private boolean isValidMove(Integer[][] keyPad, int row, int col) {
+        if ((row >= 0 && row < keyPad.length)
+            && (col >= 0 && col < keyPad[0].length)
+            && (keyPad[row][col] != null)) {
+            return true;
+        }
+        return false;
+    }
+
+    private Cell findCell(int startDigit, Integer[][] keyPad) {
+        for (int i = 0; i < keyPad.length; i++) {
+            for (int j = 0; j < keyPad[0].length; j++) {
+                if (keyPad[i][j] != null && keyPad[i][j].intValue() == startDigit) {
+                    return new Cell(i, j);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * There are n stairs, a person standing at the bottom wants to reach the top.
+     * He can climb a certain number of steps at once. For instance, the person
+     * can climb either 1 stair or 2 stairs at a time. Count the number of ways,
+     * the person can reach the top.
+     *
+     * Note: Solve the problem for general case i.e. for n stairs,
+     * and different kinds of steps that can be taken (e.g. instead of only 1 or 2 steps,
+     * it could be 2, 3 and 5 steps at a time).
+     *
+     * This problem is just a replication of the coin change problem.
+     *
+     * @param steps array of step sizes
+     * @param stairs the number of stairs
+     * @return number of ways to reach the nth stair
+     */
+    public int countWaysToReachNthStair(int[] steps, int stairs) {
+        if (stairs == 0) {
+            return 1;
+        }
+
+        int result = 0;
+        for (int i = 0; i < steps.length; i++) {
+            if (steps[i] <= stairs) {
+                result += countWaysToReachNthStair(steps, stairs - steps[i]);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * There are n stairs, a person standing at the bottom wants to reach the top.
+     * He can climb a certain number of steps at once. For instance, the person
+     * can climb either 1 stair or 2 stairs at a time. Count the number of ways,
+     * the person can reach the top.
+     *
+     * Note: Solve the problem for general case i.e. for n stairs,
+     * and different kinds of steps that can be taken (e.g. instead of only 1 or 2 steps,
+     * it could be 2, 3 and 5 steps at a time).
+     *
+     * This problem is just a replication of the coin change problem.
+     *
+     * @param steps array of step sizes
+     * @param stairs the number of stairs
+     * @return number of ways to reach the nth stair
+     */
+    public long countNthStairDP(int[] steps, int stairs) {
+        long[] table = new long[stairs + 1];
+        table[0] = 1;
+
+        for (int i = 1; i < table.length; i++) {
+            for (int j = 0; j < steps.length; j++) {
+                if (steps[j] <= i) {
+                    table[i] += table[i - steps[j]];
+                }
+            }
+        }
+        return table[stairs];
+    }
+
+    /**
+     *
+     * Given a rope with length n, find the maximum value maxProduct, that can be achieved for
+     * product len[0] * len[1] * ... * len[m - 1], where len[] is the array of lengths
+     * obtained by cutting the given rope into m parts. Recursive solution for max product from
+     * cuts. we have to pay attention to the base cases here. For a rope of length 1, the
+     * max product can only be one.
+     *
+     * We have to pay attention to the base cases here. For a rope of length = 1, the max product
+     * can only be 1, for length = 2, it is still only 1, for length = 3, its 2 (2 * 1). These
+     * bases cases are NOT really base cases as they don't follow any pattern, so I put them
+     * in the calling method, and NOT in the recursive method. the nly Real base case
+     * is n == 0, which in the context of the problem, might not make much sense, because
+     * how could the max product of a rope of length 0 be 1...however it works for cases
+     * where length > 3.
+     *
+     * However after that, we notice a pattern emerge. for length == 4, our max product is
+     * 4, (2 * 2). This means that for length > 3, we have to cut the rope down to length 0,
+     * our stopping condition, and as we recurse back up, simply take the product of the cuts
+     * or n - i.
+     *
+     * @param n the length of the rope
+     * @return the max product
+     */
+    public long maxProductFromCuts(int n) {
+        if (n == 1) {
+            return 1;
+        }
+
+        if (n == 2) {
+            return 1;
+        }
+
+        if (n == 3) {
+            return 2;
+        }
+        return maxProductFromCutsHelper(n);
+    }
+
+    private long maxProductFromCutsHelper(int n) {
+        if (n == 0) {
+            return 1;
+        }
+
+        long result = 1;
+        for (int i = 1; i <= n; i++) {
+            long max = maxProductFromCutsHelper(n - i) * i;
+            result = Math.max(result, max);
+        }
+        return result;
+    }
+
+    /**
+     * This follows from the recursive solution, which one caveat. Instead of taking
+     * the max of result and the recursive call, which we have to do, to initialize something,
+     * we take the max of table[n], table[n - i] * i, and that is the value for table[n];
+     *
+     * @param length int length of rope
+     * @return max product
+     */
+    public long maxProductFromCutsDp(int length) {
+        if (length == 1) {
+            return 1;
+        }
+
+        if (length == 2) {
+            return 1;
+        }
+
+        if (length == 3) {
+            return 2;
+        }
+
+        long[] table = new long[length + 1];
+        table[0] = 1;
+
+        for (int n = 1; n < table.length; n++) {
+            for (int i = 1; i <= n; i++) {
+                long max = table[n - i] * i;
+                table[n] = Math.max(table[n], max);
+            }
+        }
+        return table[length];
+    }
+
+    /**
+     * Recursive algorithm for returning the longest common subsequence. We have
+     * two pointers for both strings. One pointer for the beginning of the String
+     * and one pointer for the end of the substring.
+     *
+     * If the substring for both strings is the same, then we continue to recurse
+     * by moving the end pointer to the right by one.
+     *
+     * @param one String
+     * @param two String
+     * @return longest common substring
+     */
+    public String longestCommongSubstring(String one, String two) {
+        if (one == null) {
+            return null;
+        }
+
+        if (two == null) {
+            return null;
+        }
+        if (one.equals(two)) {
+            return one;
+        }
+        String[] lcs = new String[1];
+        lcs[0] = "";
+        longestCommongSubstringHelper(one, two, 0, 1, 0, 1, lcs);
+        return lcs[0];
+    }
+
+    private void longestCommongSubstringHelper(String one, String two, int oneStr, int oneEnd, int twoStr, int twoEnd, String[] lcs) {
+        if (oneEnd > one.length()) {
+            return;
+        }
+
+        if (twoEnd > two.length()) {
+            return;
+        }
+
+        String oneSub = one.substring(oneStr, oneEnd);
+        String twoSub = two.substring(twoStr, twoEnd);
+
+        if (oneSub.equals(twoSub)) {
+            if (oneSub.length() > lcs[0].length()) {
+                lcs[0] = oneSub;
+            }
+            longestCommongSubstringHelper(one, two, oneStr, oneEnd + 1, twoStr, twoEnd + 1, lcs);
+        } else {
+            longestCommongSubstringHelper(one, two, oneEnd, oneEnd + 1, twoEnd, twoEnd + 1, lcs);
+        }
+    }
+
+    /**
+     * Longest common subsequence
+     *
+     * This problem is interesting. I originally confused it with finding the longest common substring. The
+     * difference between a substring and and subsequence is that a substring must be contigious in
+     * the array. The sub sequence, does not have to be! While they both must be in order, the following
+     * string, "adm", is a subsequence of "bacdama".
+     *
+     * The intuition behind doing this problem was a little tricky. Imagine we have the following Strings
+     *
+     * "a b d a c e" and
+     * "b a b c e"
+     *
+     * we can see that 'b' doesn't match 'a', so we can move a pointer in the first string to
+     * 'b'.
+     *
+     * b d a c e
+     * b a b c e
+     *
+     * Now 'b' in the first, and 'b' in the second match. Now that they match, we can
+     * check the rest of the characters with in the second string.
+     *
+     * Once we do that, we must now consider the other scenario, which is
+     *
+     * a b d a c e
+     * a b c e
+     *
+     * In this scenario, we still need to check ALL subsequences, so we needed to check
+     * sub sequences starting with the "a" in the second string.
+     *
+     * Essentially what we are doing is considering all subsequences, that include AND exclude
+     * each character similar to the subset problem. We end of the with the following recurrence
+     *
+     * if (string(i) == string(j))
+     *   return 1 + LCS(i + 1, j + 1)
+     * else
+     *  int longestWithOutIandWithJ = LCS(i + 1, j);
+     *  int longestWithOutJandWithI = LCS(i, j + 1);
+     *  return Max(longestWithOutIandWithJ, longestWithOutJandWithI);
+     *
+     * This is an exponential running time of 2^n
+     *
+     * @param one string
+     * @param two string
+     * @return length of longest common subsequence
+     */
+    public int longestCommonSubsequence(String one, String two) {
+      return lcsHelper(one, 0, one.length(), two, 0, two.length());
+    }
+
+    public int lcsHelper(String one, int ptrOne, int lengthOfOne, String two, int ptrTwo, int lengthOfTwo) {
+        if (ptrOne == lengthOfOne) {
+            return 0;
+        }
+
+        if (ptrTwo == lengthOfTwo) {
+            return 0;
+        }
+
+        if (one.charAt(ptrOne) == two.charAt(ptrTwo)) {
+            return 1 + lcsHelper(one, ptrOne + 1, lengthOfOne, two, ptrTwo + 1, lengthOfTwo);
+        } else {
+            int lengthExcludingFirstCharOfOne = lcsHelper(one, ptrOne + 1, lengthOfOne, two, ptrTwo, lengthOfTwo);
+            int lengthExcludingFirstCharOfTwo = lcsHelper(one, ptrOne, lengthOfOne, two, ptrTwo + 1, lengthOfTwo);
+            return Math.max(lengthExcludingFirstCharOfOne, lengthExcludingFirstCharOfTwo);
+        }
+    }
+
+    /**
+     * DP solution follows exactly from recursive solution
+     * @param one string
+     * @param two string
+     * @return length of longest common subsequence
+     */
+    public int lcsDp(String one, String two) {
+        int[][] table = new int[one.length() + 1][two.length() + 1];
+
+        for (int i = table.length - 2; i >= 0; i--) {
+            for (int j = table[0].length - 2; j >= 0; j--) {
+                if (one.charAt(i) == two.charAt(j)) {
+                    table[i][j] = 1 + table[i + 1][j + 1];
+                } else {
+                    table[i][j] = Math.max(table[i + 1][j], table[i][j + 1]);
+                }
+            }
+        }
+        return table[0][0];
+    }
+
+    public List<List<Integer>> findAllIncreasingSubSequences(int[] A) {
+        if (A == null) {
+            return new ArrayList<>();
+        }
+
+        if (A.length == 0) {
+            return new ArrayList<>();
+        }
+
+        if (A.length == 1) {
+            return Arrays.asList(new ArrayList(Arrays.asList(A[0])));
+        }
+
+        List<Integer> list = new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
+        findAllLinHelper(A, 0, list, result);
+        return result;
+    }
+
+    private void findAllLinHelper(int[] A, int index, List<Integer> list,  List<List<Integer>> result) {
+        if (index == A.length) {
+            if (!list.isEmpty()) {
+                result.add(new ArrayList<>(list));
+                list.clear();
+            }
+            return;
+        }
+
+        if (list.isEmpty()) {
+            list.add(A[index]);
+        } else {
+            if (list.get(list.size() - 1) < A[index]) {
+                list.add(A[index]);
+            }
+        }
+
+        for (int i = index + 1; i <= A.length; i++) {
+            findAllLinHelper(A, i, list, result);
+            if (!list.isEmpty()) {
+                list.remove(list.size() - 1);
+            }
+        }
+    }
+
+    /**
+     * The recurrence relation here means the following
+     *
+     * The simplest approach is to try to find all increasing subsequences and then returning the maximum
+     * length of longest increasing sub sequence. In order to do this, we make use of a recursive function
+     * lengthofLIS which returns the length of the LIS possible from the current element(corresponding to index)
+     * onwards(including the current element).
+     *
+     * Inside each function call, we consider two cases: The current element is larger than the previous
+     * element included in the LIS. In this case, we can include the current element in the LIS. Thus, we find
+     * out the length of the LIS obtained by including it. Further, we also find out the length of LIS possible
+     * by not including the current element in the LIS. The value returned by the current function call is,
+     * thus, the maximum out of the two lengths.
+     *
+     * The current element is smaller than the previous element included in the LIS. In this case, we can't
+     * include the current element in the LIS. Thus, we find out only the length of the LIS possible by not
+     * including the current element in the LIS, which is returned by the current function call.
+     *
+     * @param A
+     * @return
+     */
+    public int findLongestIncreasingSubSequence(int[] A) {
+        if (A == null) {
+            return 0;
+        }
+
+        if (A.length == 0) {
+            return 0;
+        }
+
+        if (A.length == 1) {
+            return 1;
+        }
+
+        return findLisHelper(A, Integer.MIN_VALUE, 0);
+    }
+
+    private int findLisHelper(int[] A, int previous, int index) {
+        if (index == A.length) {
+            return 0;
+        }
+
+        int included = 0;
+        if (previous < A[index]) {
+            included = 1 + findLisHelper(A, A[index],index + 1);
+        }
+
+        int excluding = findLisHelper(A, previous, index + 1);
+        return Math.max(included, excluding);
+    }
+
+    public int lengthOfLISMemo(int[] nums) {
+        int memo[][] = new int[nums.length + 1][nums.length];
+        for (int[] l : memo) {
+            Arrays.fill(l, -1);
+        }
+        int result = lengthofLISMemoHelper(nums, -1, 0, memo);
+        return result;
+    }
+
+    private int lengthofLISMemoHelper(int[] nums, int previndex, int curpos, int[][] memo) {
+        if (curpos == nums.length) {
+            return 0;
+        }
+
+        if (memo[previndex + 1][curpos] >= 0) {
+            return memo[previndex + 1][curpos];
+        }
+        int taken = 0;
+        if (previndex < 0 || nums[previndex] < nums[curpos] ) {
+            taken = 1 + lengthofLISMemoHelper(nums, curpos, curpos + 1, memo);
+        }
+
+        int nottaken = lengthofLISMemoHelper(nums, previndex, curpos + 1, memo);
+        memo[previndex + 1][curpos] = Math.max(taken, nottaken);
+        return memo[previndex + 1][curpos];
+    }
+
+    /**
+     * The recurrence relation for this approach means the following
+     *
+     * f(A, i) = the max length of the longest increasing subsequence at i, where
+     * A[i] is the last element in that sub sequence.
+     *
+     * @param A
+     * @return
+     */
+    public int lengthOfLisRec(int[] A) {
+        int[] max = new int[1];
+        lengthOfLisRecHelper(A, A.length - 1, max);
+        return max[0];
+    }
+
+    private int lengthOfLisRecHelper(int[] A, int n, int[] max) {
+        if (n == 0) {
+            return 1;
+        }
+        int maxHere = 1;
+        for (int j = 0; j < n; j++) {
+            int result = lengthOfLisRecHelper(A, j, max);
+            if (A[j] < A[n]) {
+                maxHere = Math.max(result + 1, maxHere);
+            }
+        }
+        max[0] = Math.max(max[0], maxHere);
+        return maxHere;
+    }
+
+    public int lengthOfLIS(int[] A) {
+        if (A.length == 0) {
+            return 0;
+        }
+
+        // Array to store our sub problems, default answer is 1
+        int[] table = new int[A.length];
+        Arrays.fill(table , 1);
+
+        table[0] = 1;
+        // By default the best answer is a length of 1
+        int maximumSoFar = 1;
+        for (int i = 1; i < table.length; i++) {
+            for (int j = 0; j < i; j++){
+                int result = table[j];
+                if (A[j] < A[i]) {
+                    table[i] = Math.max(result + 1, table[i]);
+                }
+            }
+            maximumSoFar = Math.max(maximumSoFar, table[i]);
+        }
+        return maximumSoFar;
     }
 }

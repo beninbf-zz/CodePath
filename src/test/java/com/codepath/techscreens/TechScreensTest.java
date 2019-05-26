@@ -1,16 +1,17 @@
 package test.java.com.codepath.techscreens;
 
+import main.java.com.codepath.techscreens.TechScreens;
+import main.java.com.codepath.techscreens.objects.Cell;
+import main.java.com.codepath.techscreens.objects.ConnectFour;
 import main.java.com.codepath.techscreens.objects.InstaCartMap;
-import main.java.com.codepath.techscreens.objects.MaxHeap;
 import main.java.com.codepath.techscreens.objects.Message;
-import main.java.com.codepath.techscreens.objects.MyMap;
 import main.java.com.codepath.techscreens.objects.NameNumberElement;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
 import main.java.com.codepath.techscreens.objects.StackRoxNode;
-import main.java.com.codepath.techscreens.TechScreens;
 import main.java.com.codepath.techscreens.objects.StatsCounter;
 import main.java.com.codepath.techscreens.objects.StudentCoursePair;
+import main.java.com.codepath.techscreens.objects.Tile;
 import main.java.com.codepath.techscreens.objects.ZerosRectangle;
 import main.java.com.codepath.util.Util;
 import org.junit.Before;
@@ -23,7 +24,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -821,5 +821,117 @@ public class TechScreensTest {
 
         sc.register(new Message(13 * MIN, 2));
         assertEquals("Should be 4", 4, sc.getMax());
+    }
+
+    @Test
+    public void testEmployeeChart() {
+        testObj.printEmployeeChart("1:Max:4,2:Ann:0,3:Albert:2,4:Edmond:2");
+    }
+
+    @Test
+    public void testFindColors() {
+        String[] colors = {"aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue",
+            "blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson",
+            "cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkgrey","darkkhaki","darkmagenta","darkolivegreen",
+            "darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkslategrey",
+            "darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dimgrey","dodgerblue","firebrick","floralwhite",
+            "forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","grey","honeydew",
+            "hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral",
+            "lightcyan","lightgoldenrodyellow","lightgray","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue",
+            "lightslategray","lightslategrey","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine",
+            "mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise",
+            "mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab",
+            "orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise", "palevioletred","papayawhip","peachpuff","peru",
+            "pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen",
+            "seashell","sienna","silver","skyblue","slateblue","slategray","slategrey","snow","springgreen","steelblue","tan","teal",
+            "thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen"};
+
+        List<Integer> pos = testObj.getPositions("uqi", "darkturquoise");
+        System.out.println(pos);
+        assertTrue("Should be sorted", testObj.isSorted(pos));
+
+        List<Integer> negCase = Arrays.asList(6, 2, 7);
+        assertFalse("Should not be sorted", testObj.isSorted(negCase));
+
+        System.out.println(testObj.findColors("uqi", colors));
+    }
+
+    @Test
+    public void testGetPathForTiles() {
+        /* Enter your code here. Read input from STDIN. Print output to STDOUT */
+
+        Tile[][] floor = {
+            {new Tile(1, false), new Tile(0, false), new Tile(0, false)},
+            {new Tile(1, false), new Tile(0, true), new Tile(0, false)},
+            {new Tile(1, false), new Tile(1, false), new Tile(0, false)}
+        };
+
+        List<Cell> path = testObj.getPath(floor, 0, 0, 2, 1);
+        System.out.println(path);
+    }
+
+    @Test
+    public void testConnectFour() {
+        ConnectFour board = new ConnectFour();
+        Integer PLAYER_ONE = 1;
+        Integer PLAYER_TWO = 2;
+
+        // vertical
+         System.out.println(board.play(PLAYER_ONE, 3));
+         System.out.println(board.play(PLAYER_ONE, 3));
+         System.out.println(board.play(PLAYER_ONE, 3));
+         System.out.println(board.play(PLAYER_ONE, 3));
+
+        // horizontal
+        System.out.println(board.play(PLAYER_ONE, 1));
+        System.out.println(board.play(PLAYER_ONE, 2));
+        System.out.println(board.play(PLAYER_ONE, 3));
+        System.out.println(board.play(PLAYER_ONE, 4));
+
+        //Need complete diagonal tests
+
+        board.print();
+    }
+
+    @Test
+    public void findNextLargest() {
+        int[] input = {1, 2, 7, 6, 5, 4, 3, 1};
+        testObj.findNextLargest(input);
+        Util.print(input);
+        int[] inputAnswer = {1, 3, 1, 2, 4, 5, 6, 7};
+        testEquality(input, inputAnswer);
+
+        int[] input1 = {1, 1, 5};
+        testObj.findNextLargest(input1);
+        Util.print(input1);
+        int[] inputAnswer1 = {1, 5, 1};
+        testEquality(input1, inputAnswer1);
+
+        int[] input2 = {1, 2, 3};
+        testObj.findNextLargest(input2);
+        Util.print(input2);
+        int[] inputAnswer2 = {1, 3, 2};
+        testEquality(input2, inputAnswer2);
+
+        int[] input3 = {5, 1, 1};
+        testObj.findNextLargest(input3);
+        Util.print(input3);
+        int[] inputAnswer3 = {1, 1, 5};
+        testEquality(input3, inputAnswer3);
+    }
+
+    private void testEquality(int[] input, int[] answer) {
+
+        if (input == null || answer == null) {
+            assertTrue("Invalid input", false);
+        }
+
+        if (input.length != answer.length) {
+            assertTrue("Arrays are of different lengths", false);
+        }
+
+        for (int i = 0; i < answer.length; i++) {
+            assertEquals("values should be equal", answer[i], input[i]);
+        }
     }
 }

@@ -1,7 +1,8 @@
-package main.java.com.codepath.objects;
+package main.java.com.codepath.techscreens.objects;
 
 public class Cell {
     public int row;
+
     public int col;
 
     public Cell(int row, int col) {
@@ -11,16 +12,17 @@ public class Cell {
 
     @Override
     public boolean equals(Object obj) {
+
         if (obj == null) {
             return false;
         }
 
-        if (obj.getClass() != this.getClass()) {
+        if (this.getClass() != obj.getClass()) {
             return false;
         }
 
-        Cell cell = (Cell) obj;
-        return this.row == cell.row && this.col == cell.col;
+        Cell other = (Cell) obj;
+        return this.row == other.row && this.col == other.col;
     }
 
     @Override

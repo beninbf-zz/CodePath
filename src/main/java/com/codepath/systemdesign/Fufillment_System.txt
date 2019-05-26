@@ -1,0 +1,48 @@
+Design - Distribution centers spread across different locations have to be able to
+to deliver packages at the lowest cost possible.
+
+The distribution centers have two kinds of trucks. Diesel trucks that have a long
+range but are at a high cost, and electric trucks that are at a low cost, but have
+a shorter range.
+
+Order for customers must be fufilled within the desired delivery time, 1, 3, or 5 days
+AND deliveries must be sent out at the lowest cost.
+
+How to accomplish these things?
+
+Microservices:
+
+- Fufillment Microservice
+- Distribution Center Microservice
+- Schedule Service
+- Location Distance Service
+
+Fufillment Microservice:
+- Services as a controller. A request will be made to the fufillment service
+for an order to fufilled. It is the Fullfilment services job to pick the correct
+disburtion center to assign to the order.
+- The Fufillment center knows about ALL of the disribution centers. Based on the
+delivery location for an order, the Fufillment service will leverage the location
+distance service in order to find a subset of distribution centers of size n.
+This subset of distribution centers will have requests made to them. The responses
+will be whether or not the distribution centers can honor the order, and if they can
+what the cost is, and what date they can honor the delivery.
+Based on this repsponse, the fullfillment center will chose the appropriate
+distribution center.
+- Logical schema: table storing distribution center information
+
+Distribution Center Microservice:
+-Each distribution center has all of the information about its capacity, and its inventory. A
+request will be made to a distribution center inquiring about the earliest date and cost
+that a delivery can be fufilled. The distribution center has all local knowledge regarding
+this information
+- It leverages the schedule service on its available trucks, to see when trucks are availabile
+- It will mark orders as pending, and reserve inventor, (a hold), anticpating that the order
+will be fullfilled, unless the distribution centers is informed that it can release the hold.
+
+Logical schema: inventory table, truck table, order table, order item join table
+
+-schedule service; Given a truck returns avaiable dates
+
+- distance service: given the address of an order, returns the nearest disburtion centers
+

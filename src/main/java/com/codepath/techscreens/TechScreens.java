@@ -1,11 +1,13 @@
 package main.java.com.codepath.techscreens;
 
-import main.java.com.codepath.objects.Cell;
 import main.java.com.codepath.techscreens.objects.Booking;
+import main.java.com.codepath.techscreens.objects.Cell;
+import main.java.com.codepath.techscreens.objects.Employee;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
 import main.java.com.codepath.techscreens.objects.StackRoxNode;
 import main.java.com.codepath.techscreens.objects.StudentCoursePair;
+import main.java.com.codepath.techscreens.objects.Tile;
 import main.java.com.codepath.techscreens.objects.ZerosRectangle;
 
 import java.lang.reflect.Array;
@@ -2057,7 +2059,7 @@ public class TechScreens {
     }
 
     /**
-     *
+     * DROP BOX tech screen. Code doesn't compile so its commented out.
      /*
      * To execute Java, please define "static void main" on a class
      * named Solution.
@@ -2269,7 +2271,472 @@ public class TechScreens {
 //            return true;
 //        }
 
+    public void printEmployeeChart(String input) {
+        Map<Integer, Employee> employeeMap = new HashMap<>();
+        String[] records = input.split(",");
+        List<Employee> employeeList = new ArrayList<>();
+        for (String record: records) {
+            Employee emp = new Employee(record);
+            employeeList.add(emp);
+            if (!employeeMap.containsKey(emp.id)) {
+                employeeMap.put(emp.id, emp);
+            }
+        }
 
+        Employee root = findRoot(employeeMap);
+        Map<Integer, List<Employee>> adjList = getAdjList(employeeList);
+        printChart(root, adjList);
+    }
+
+    private void printChart(Employee root,  Map<Integer, List<Employee>> adjList) {
+        printChartHelper(root, adjList, "");
+    }
+
+    private void printChartHelper(Employee root,  Map<Integer, List<Employee>> adjList, String dash) {
+        System.out.println(dash + root);
+        List<Employee> list = adjList.get(root.id);
+        if (list != null) {
+            for (Employee emp: list) {
+                printChartHelper(emp, adjList, "-" + dash);
+            }
+        }
+    }
+
+    private Employee findRoot(Map<Integer, Employee> employeeMap) {
+        Set<Integer> keys = employeeMap.keySet();
+        for (Integer key: keys) {
+            Employee emp = employeeMap.get(key);
+            if (!employeeMap.containsKey(emp.managerId)) {
+                return emp;
+            }
+        }
+        return null;
+    }
+
+    private Map<Integer, List<Employee>> getAdjList(List<Employee> employeeList) {
+        Map<Integer, List<Employee>> adjList = new HashMap<>();
+        for (Employee emp: employeeList) {
+            for (Employee neighbor: employeeList) {
+                if (emp.id == neighbor.id) {
+                    continue;
+                }
+                if (emp.id == neighbor.managerId) {
+                    if (!adjList.containsKey(emp.id)) {
+                        List<Employee> neighborList = new ArrayList<>();
+                        neighborList.add(neighbor);
+                        adjList.put(emp.id, neighborList);
+                    } else {
+                        List<Employee> list = adjList.get(emp.id);
+                        list.add(neighbor);
+                    }
+                }
+            }
+        }
+        return adjList;
+    }
+
+    /**
+     * Credit Karma tech screen.
+     *
+     * Given a list of colors and a string, find the colors that have the String "input"
+     * as a subsequence.
+     *
+     * Example:
+     *
+     *
+     * console.log(findColor('uqi'))
+     * [ 'darkturquoise', 'mediumaquamarine', 'mediumturquoise', 'paleturquoise', 'turquoise' ]
+     *
+     * console.log(findColor('zre'))
+     * [ 'azure' ]
+     *
+     * console.log(findColor('gold'))
+     * [ 'darkgoldenrod', 'gold', 'goldenrod', 'lightgoldenrodyellow', 'palegoldenrod' ]
+     *
+     *
+     * @param input
+     * @param colors
+     * @return
+     */
+    public List<String> findColors(String input, String[] colors) {
+        if (input == null) {
+            return null;
+        }
+
+        if (input.isEmpty()) {
+            return null;
+        }
+        List<String> results = new ArrayList<>();
+
+        int inputLength = input.length();
+        for (String color : colors) {
+            List<Integer> positions = getPositions(input, color);
+            if (positions != null) {
+                if (positions.size() == inputLength && isSorted(positions)) {
+                    results.add(color);
+                }
+            }
+        }
+
+        return results;
+    }
+
+    public List<Integer> getPositions(String input, String color) {
+        List<Integer> pos = new ArrayList<>();
+        int length = input.length();
+        int colorLength = color.length();
+        int lastPos = 0;
+        for (int i = 0; i < length; i++) {
+            char inputChar = input.charAt(i);
+            for (int j = 0; j < colorLength; j++) {
+                char colorChar = color.charAt(j);
+                if (inputChar == colorChar && j >= lastPos) {
+                    pos.add(j);
+                    lastPos = j;
+                    break;
+                } else {
+                    if (j == colorLength - 1) {
+                        return null;
+                    }
+                }
+            }
+        }
+        return pos;
+    }
+
+    public boolean isSorted(List<Integer> positions) {
+        if (positions == null) {
+            return true;
+        }
+
+        if (positions.size() == 0) {
+            return true;
+        }
+        int length = positions.size();
+        for (int i = 0; i < length - 1; i++) {
+            if (positions.get(i) > positions.get(i + 1)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public List<Cell> getPath(Tile[][] floor, int startRow, int startCol, int endRow, int endCol) {
+        //up, down, right, left
+        int[] rowMoves = {-1, 1, 0, 0};
+        int[] colMoves = { 0, 0, 1, -1};
+
+        // cell[0] is start, cell[1] is end
+        Cell[] cells = findStartAndEnd(floor, startRow, startCol, endRow, endCol);
+        boolean[][] visited = new boolean[floor.length][floor[0].length];
+
+        Map<Cell, Cell> pathMap = new HashMap<>();
+        Queue<Cell> queue = new LinkedList<>();
+        queue.add(cells[0]);
+        while (!queue.isEmpty()) {
+            Cell parentCell = queue.poll();
+            Tile parentTile = floor[parentCell.row][parentCell.col];
+            visited[parentCell.row][parentCell.col] = true;
+            for (int i = 0; i < 4; i++) {
+                int tileRow = parentCell.row + rowMoves[i];
+                int tileCol = parentCell.col + colMoves[i];
+                if (isValidMove(tileRow, floor.length, tileCol, floor[0].length)) {
+                    if (visited[tileRow][tileCol] == false) {
+                        Tile tile = floor[tileRow][tileCol];
+                        if (tileRow == endRow && tileCol == endCol) {
+                            Cell neighborCell = new Cell(tileRow, tileCol);
+                            pathMap.put(neighborCell, parentCell);
+                            break;
+                        }
+                        if (tile.color == parentTile.color && !tile.isBlocked) {
+                            Cell neighborCell = new Cell(tileRow, tileCol);
+                            queue.add(neighborCell);
+                            pathMap.put(neighborCell, parentCell);
+                        }
+                    }
+                }
+            }
+        }
+
+        List<Cell> path = new LinkedList<>();
+        Cell nextCell = pathMap.get(cells[1]);
+        if (nextCell != null) {
+            path.add(cells[1]);
+            while (nextCell != null) {
+                path.add(0, nextCell);
+                Cell current = pathMap.get(nextCell);
+                nextCell = current;
+            }
+        }
+
+        return path;
+    }
+
+    public boolean isValidMove(int row, int rowDimension, int col, int colDimension) {
+        return (row >= 0 && row < rowDimension) && (col >= 0 && col < colDimension);
+    }
+
+    public Cell[] findStartAndEnd(Tile[][] floor, int startRow, int startCol, int endRow, int endCol) {
+        Cell[] cells = new Cell[2];
+        for (int i = 0; i < floor.length; i++) {
+            for (int j = 0; j < floor[0].length; j++) {
+                if (i == startRow && j == startCol) {
+                    Cell startCell = new Cell(i, j);
+                    cells[0] = startCell;
+                    continue;
+                }
+                if (i == endRow && j == endCol) {
+                    Cell endCell = new Cell(i, j);
+                    cells[1] = endCell;
+                    continue;
+                }
+            }
+        }
+        return cells;
+    }
+
+    /**
+     * AirBnb 2nd tech screen, I will need to complete this.
+     *
+     *
+     // isPalindrome('foo') // False
+     // isPalindrome('bob') // True
+     // isPalindrome('gig') // True
+     // isPalindrome('abba') // True
+
+     // words = ['gab', 'cat', 'alpha', 'bag']
+     // pairs = [
+     //   ['gab', 'bag'],    // gab | bag
+     //   ['bag', 'gab'],    // bag | gab
+     // ]
+
+     //   words = ['gab', 'cat', 'alpha', 'bag', 'race', 'car', 'ag']
+     //   pairs = [
+     //     ['gab', 'bag'],    // gab | bag
+     //     ['bag', 'gab'],    // bag | gab
+     //     ['race', 'car'],   // race | car     ybag
+     // car  race
+     //     ['racee', 'car']   // racee | car
+     //     ['nurses', 'run'], // nurses | run
+     //      nur ses run
+     //       run  nurses
+     // rac ebn car
+     // racecar....carrace
+     //
+
+     // 'nurses',       // 'sesrun'        (nurses | sesrun)
+     //                 // 'esrun'         (nurse | s | esrun)
+     //                 // 'run'           (nur | ses | run)
+
+     *
+     * @param words
+     * @return
+     */
+    public List<List<String>> getPairs(List<String> words) {
+
+        List<List<String>> results = new ArrayList<>();
+
+        return null;
+    }
+
+    public boolean isPalindrome(String input) {
+        if (input == null) {
+            return true;
+        }
+
+        if (input.isEmpty()) {
+            return true;
+        }
+
+        if (input.length() == 1) {
+            return true;
+        }
+
+        int length = input.length();
+        int mid = length / 2;
+        int j = mid - 1;
+        int start = length % 2 == 0 ? mid : mid + 1;
+        for (int i = start; i < length; i++) {
+            if (input.charAt(i) != input.charAt(j)) {
+                return false;
+            }
+            j--;
+        }
+        return true;
+    }
+
+    /**
+     *
+     * Uber tech screen.
+     *
+     * Get the next number. Write a function that rearrange input elements into to generate the immediate next value,
+     * if is not possible (is be biggest one) return the smaller one.
+     *
+     * Examples:
+     * 1,2,3 → 1,3,2
+     * 3,2,1 → 1,2,3
+     * 1,1,5 → 1,5,1
+     *
+     *
+     * 1, 2, 7, 6, 5, 4, 3, 1 => 1, 3, 1, 2, 4, 5, 6, 7
+     *
+     * This problem, I found to be tricky. In the end i was able to get a working solution, however
+     * i needed to be given some hints.
+     *
+     * The problem goes as follows, if the numbers are such that, every digit, moving from right
+     * to left, is in ascending order, then there is no next largest number to generate
+     * and we infact have to wrap around, but reversion the number, look at example
+     *
+     * 5 1 1 => 1, 1, 5...there is no next larget number to make for the array 5, 1, 1, so the
+     * smallest number to be made with this digits is infact the reverse of the array.
+     *
+     * For other cases, we essentially do, is move from right to left, looking for an inflection
+     * point.
+     *
+     * When we find that point, we record that index. We then move from that inflection point
+     * to the right, looking for the smallest number that is larger that our inflection point.
+     *
+     * Those are the numbers we should swap to make the next largest number. At this point,
+     * everything to the right of the inflection point should be sorted, so then we can
+     * simply reverse that portion of the array to generate the next largest number.
+     *
+     * @param input in[] array
+     */
+    public void findNextLargest(int[] input) {
+        int inflectionPoint = -1;
+        for (int i = input.length - 1; i >= 0; i--) {
+            if (i - 1 >= 0) {
+                if (input[i - 1] < input[i]) {
+                    inflectionPoint = i - 1;
+                    break;
+                }
+            }
+        }
+
+        if (inflectionPoint != -1) {
+            int toSwap = getNextLargest(input[inflectionPoint], inflectionPoint + 1, input);
+            swap(inflectionPoint, toSwap, input);
+            reverse(input, inflectionPoint + 1);
+        } else {
+            reverse(input, inflectionPoint + 1);
+        }
+    }
+
+    public void reverse(int[] input, int start) {
+        int steps = (input.length - start) / 2;
+        int j = 0;
+        for (int i = start; i < start + steps; i++) {
+            swap(i, input.length - j - 1, input);
+            j++;
+        }
+    }
+    public void swap(int i, int j, int[] input) {
+        int temp = input[i];
+        input[i] = input[j];
+        input[j] = temp;
+    }
+
+    public int getNextLargest(int value, int start, int[] input) {
+        int nextLargest = Integer.MAX_VALUE;
+        int nextLargestIndex = -1;
+        for (int i = start; i < input.length; i++) {
+            if (input[i] > value && input[i] < nextLargest) {
+                nextLargest = input[i];
+                nextLargestIndex = i;
+            }
+        }
+        return nextLargestIndex;
+    }
+
+    private static final List<String[]> folders = Arrays.asList(new String[][]{
+        {"A", null},
+        {"B", "A"},
+        {"C", "B"},
+        {"D", "B"},
+        {"E", "A"},
+        {"F", "E"},
+    });
+
+    /**
+     * Dropbox 2nd techs screen
+     *
+     * Filesystem and trees, checking for access
+     *
+     *  /A
+     *  |___ /B
+     *  |     |___ /C <-- access
+     *  |     |___ /D
+     *  |___ /E <-- access
+     *        |___ /F
+     *
+     * @param folder
+     * @param access
+     * @return
+     */
+    public boolean hasAccess(String folder, Set<String> access) {
+
+        // run time : O(n)
+        // space: O(1)
+        Map<String, String> adjMap = createAdjMap();
+
+        // run O(1)
+        if (access.contains(folder)) {
+            return true;
+        }
+
+        //run O(1)
+        String current = adjMap.get(folder);
+
+        // run O(N)
+        while (current != null) {
+            if (access.contains(current)) {
+                return true;
+            }
+            current = adjMap.get(current);
+        }
+
+        return false;
+    }
+
+    public boolean efficientHasAccess(String folder, Set<String> access) {
+
+        Map<String, Set<String>> ancestorMap = getGrandParents(folder);
+        if (ancestorMap.containsKey(folder)) {
+            Set<String> ancestors = ancestorMap.get(folder);
+            for (String parent: access) {
+                if (ancestors.contains(parent)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public Map<String, Set<String>> getGrandParents(String folder) {
+        Map<String, Set<String>> ancestorMap = new HashMap<>();
+        Map<String, String> adjMap = createAdjMap();
+
+        Set<String> ancestors = new HashSet<>();
+        String current = adjMap.get(folder);
+        while (current != null) {
+            ancestors.add(current);
+            current = adjMap.get(current);
+        }
+
+        ancestorMap.put(folder, ancestors);
+        return ancestorMap;
+    }
+
+    public Map<String, String> createAdjMap() {
+        Map<String, String> adjMap = new HashMap<>();
+        for (String[] strArray: folders) {
+            if (strArray[1] != null) {
+                adjMap.put(strArray[0], strArray[1]);
+            }
+        }
+        return adjMap;
+    }
 }
 
 

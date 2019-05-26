@@ -264,12 +264,180 @@ public class DynamicProgrammingTest {
         assertEquals("result should be 7", 7, testObj.maxRobberyValue(array4));
         assertEquals("result should be 7", 7, testObj.maxRobberyDP(array4));
 
-
-
         int[] array2 = {6, 1, 6, 1, 1, 10, 1, 8, 3, 2, 7, 3};
         assertEquals("result should be 37", 37, testObj.maxRobberyValue(array2));
         assertEquals("result should be 37", 37, testObj.maxRobberyDP(array2));
+    }
+
+    @Test
+    public void testNumPhoneNumbers() {
+        List<List<Integer>> result = testObj.numPhoneNumbersRec(1, 2);
+        assertEquals("should be 2", 2, result.size());
+        result = testObj.numPhoneNumbersRec(1, 3);
+        assertEquals("should be 5", 5, result.size());
+        assertEquals("should be 2", 2, testObj.numPhoneNumbersOptimal(1, 2));
+        assertEquals("should be 2", 2, testObj.numPhoneNumbersMemo(1, 2));
+        assertEquals("should be 5 memo", 5, testObj.numPhoneNumbersMemo(1, 3));
+        assertEquals("should be 10 memo", 10, testObj.numPhoneNumbersMemo(1, 4));
+        assertEquals("should be 26 memo", 26, testObj.numPhoneNumbersMemo(1, 5));
+        assertEquals("should be 26 memo", 13632143360l, testObj.numPhoneNumbersMemo(0, 29));
+    }
+
+    @Test
+    public void testCountStairs() {
+        int[] steps = {2, 3};
+        assertEquals("Should be 3", 3, (testObj.countWaysToReachNthStair(steps, 7)));
+
+        int[] steps1 = {1, 2};
+        assertEquals("Should be 2", 2, testObj.countNthStairDP(steps1, 2));
+        assertEquals("Should be 1", 1, testObj.countNthStairDP(steps1, 1));
+
+        int[] steps2 = {1};
+        assertEquals("Should be 1", 1, testObj.countNthStairDP(steps2, 10));
+
+        int[] steps3 = {1, 2, 3, 4, 5};
+        assertEquals("Should be 16", 16, testObj.countNthStairDP(steps3, 5));
+
+        int[] steps4 = {2, 3, 5};
+        assertEquals("Should be 14", 14, testObj.countNthStairDP(steps4, 10));
+
+        int[] steps5 = {3, 5};
+        assertEquals("Should be 0", 0, testObj.countNthStairDP(steps5, 7));
+
+        int[] steps6 = {47, 25, 40, 8, 3, 22, 12, 2, 28, 23, 33, 26};
+        assertEquals("Should be 29782190164", 29782190164l, testObj.countNthStairDP(steps6, 78));
+
+    }
+
+    @Test
+    public void testMaxCut() {
+        assertEquals("Should be 1", 1, testObj.maxProductFromCuts(1));
+        assertEquals("Should be 2", 1, testObj.maxProductFromCuts(2));
+        assertEquals("Should be 2", 2, testObj.maxProductFromCuts(3));
+        assertEquals("Should be 4", 4, testObj.maxProductFromCuts(4));
+        assertEquals("Should be 6", 6, testObj.maxProductFromCuts(5));
+        assertEquals("Should be 9", 9, testObj.maxProductFromCuts(6));
+        assertEquals("Should be 54", 54, testObj.maxProductFromCuts(11));
+        assertEquals("Should be 81", 81, testObj.maxProductFromCuts(12));
+        assertEquals("Should be 108", 108, testObj.maxProductFromCuts(13));
+
+        assertEquals("Should be 1", 1, testObj.maxProductFromCutsDp(1));
+        assertEquals("Should be 2", 1, testObj.maxProductFromCutsDp(2));
+        assertEquals("Should be 2", 2, testObj.maxProductFromCutsDp(3));
+        assertEquals("Should be 4", 4, testObj.maxProductFromCutsDp(4));
+        assertEquals("Should be 6", 6, testObj.maxProductFromCutsDp(5));
+        assertEquals("Should be 9", 9, testObj.maxProductFromCutsDp(6));
+        assertEquals("Should be 54", 54, testObj.maxProductFromCutsDp(11));
+        assertEquals("Should be 81", 81, testObj.maxProductFromCutsDp(12));
+        assertEquals("Should be 108", 108, testObj.maxProductFromCutsDp(13));
+        assertEquals("Should be 4374", 4374, testObj.maxProductFromCutsDp(23));
+    }
+
+    @Test
+    public void testLongestCommonSubstring() {
+        assertEquals("longest common substring should be ello", "ello", testObj.longestCommongSubstring("hello", "bellodfd"));
+        assertEquals("longest common substring should be fooxtex", "fooxtex", testObj.longestCommongSubstring("fooxtex", "fooxtex"));
+        assertEquals("longest common substring should be oxte", "oxte", testObj.longestCommongSubstring("fooxtex", "ewoxteg"));
+        assertEquals("longest common substring should be football", "football", testObj.longestCommongSubstring("football", "footballd"));
+        assertEquals("longest common substring should be ootball", "ootball", testObj.longestCommongSubstring("pootball", "football"));
+    }
+
+    @Test
+    public void testLongestCommonSubSequence() {
+        assertEquals("lcs should be 4", 4, testObj.longestCommonSubsequence("abdace", "babce"));
+        assertEquals("lcs should be 4", 4, testObj.lcsDp("abdace", "babce"));
+    }
+
+    @Test
+    public void testCountPathsWithObstruction() {
+        int[][] test = {{1, 1, 0, 1, 1},
+                    {1, 1, 1, 1, 1},
+                    {1, 0, 1, 0, 1},
+                    {1, 1, 1, 1, 1},
+                    {1, 0, 1, 1, 1}};
 
 
+        assertEquals("should be 11", 11, testObj.numberOfPathsWithObstructions(test));
+        assertEquals("should be 11", 11, testObj.numberOfPathsDp(test));
+
+        int[][] test1 = {{1, 1, 1, 1},
+            {1, 1, 1, 1},
+            {1, 1, 1, 1}};
+
+        assertEquals("should be 10", 10, testObj.numberOfPathsWithObstructions(test1));
+        assertEquals("should be 10", 10, testObj.numberOfPathsDp(test1));
+
+        int[][] test2 = {{1, 1},
+            {0, 1}};
+
+        assertEquals("should be 1", 1, testObj.numberOfPathsWithObstructions(test2));
+        assertEquals("should be 1", 1, testObj.numberOfPathsDp(test2));
+
+        int[][] test3 = {{1, 0, 0},
+            {1, 1, 1},
+            {1, 1, 1}};
+
+        assertEquals("should be 3", 3, testObj.numberOfPathsWithObstructions(test3));
+        assertEquals("should be 3", 3, testObj.numberOfPathsDp(test3));
+
+        int[][] test4 = {
+            {1 ,1, 1, 1, 1, 0, 0, 1, 0, 1},
+        {1, 1, 1, 1, 0, 0, 1, 0, 1, 0},
+        {1, 1, 1, 1, 0, 1, 0, 1, 0, 1},
+        {1, 1, 0, 1, 1, 1, 1, 0, 1, 0},
+        {1, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 0, 1, 1, 0, 1, 1, 0, 1},
+        {1, 1, 0, 0, 1, 1, 0, 1, 0, 1},
+        {0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+        };
+
+        assertEquals("should be 606", 606, testObj.numberOfPathsWithObstructions(test4));
+        assertEquals("should be 606", 606, testObj.numberOfPathsDp(test4));
+    }
+
+    @Test
+    public void testLongestIncreasingSubsequence() {
+        //int[] A = {10, 22, 9, 33, 21, 50, 41, 60, 80};
+        //List<List<Integer>> results = testObj.findAllIncreasingSubSequences(A);
+        //System.out.println(results);
+
+        int[] A1 ={4,10,4,3,8,9};
+        assertEquals("LIS for {4,10,4,3,8,9} should be 3", 3, testObj.findLongestIncreasingSubSequence(A1));
+        assertEquals("LIS for {4,10,4,3,8,9} should be 3", 3, testObj.lengthOfLIS(A1));
+        assertEquals("LIS for {4,10,4,3,8,9} should be 3", 3, testObj.lengthOfLISMemo(A1));
+        assertEquals("LIS for {4,10,4,3,8,9} should be 3", 3, testObj.lengthOfLisRec(A1));
+
+
+        int[] A2 = {10,9,2,5,3,7,101,18};
+        assertEquals("LIS for {10,9,2,5,3,7,101,18} should be 4", 4, testObj.findLongestIncreasingSubSequence(A2));
+        assertEquals("LIS for {10,9,2,5,3,7,101,18} should be 4", 4, testObj.lengthOfLIS(A2));
+        assertEquals("LIS for {10,9,2,5,3,7,101,18} should be 4", 4, testObj.lengthOfLISMemo(A2));
+        assertEquals("LIS for {10,9,2,5,3,7,101,18} should be 4", 4, testObj.lengthOfLisRec(A2));
+
+        int[] A4 = {10,19,20};
+        assertEquals("LIS for {10,19,20} should be 3", 3, testObj.findLongestIncreasingSubSequence(A4));
+        assertEquals("LIS for {10,19,20} should be 3", 3, testObj.lengthOfLIS(A4));
+        assertEquals("LIS for {10,19,20} should be 3", 3, testObj.lengthOfLISMemo(A4));
+        assertEquals("LIS for {10,19,20} should be 3", 3, testObj.lengthOfLisRec(A4));
+
+        int[] A5 = {10,19};
+        assertEquals("LIS for {10,19} should be 2", 2, testObj.findLongestIncreasingSubSequence(A5));
+        assertEquals("LIS for {10,19} should be 2", 2, testObj.lengthOfLIS(A5));
+        assertEquals("LIS for {10,19} should be 2", 2, testObj.lengthOfLISMemo(A5));
+        assertEquals("LIS for {10,19} should be 2", 2, testObj.lengthOfLisRec(A5));
+
+        int[] A3 = {-2, -1};
+        assertEquals("LIS for {-2, -1} should be 2", 2, testObj.findLongestIncreasingSubSequence(A3));
+        assertEquals("LIS for {-2, -1} should be 2", 2, testObj.lengthOfLIS(A3));
+        assertEquals("LIS for {-2, -1} should be 2", 2, testObj.lengthOfLISMemo(A3));
+        assertEquals("LIS for {-2, -1} should be 2", 2, testObj.lengthOfLisRec(A3));
+
+        int[] A6 = {1,3,6,7,9,4,10,5,6};
+        assertEquals("LIS for {1,3,6,7,9,4,10,5,6} should be 6", 6, testObj.findLongestIncreasingSubSequence(A6));
+        assertEquals("LIS for {1,3,6,7,9,4,10,5,6} should be 6", 6, testObj.lengthOfLIS(A6));
+        assertEquals("LIS for {1,3,6,7,9,4,10,5,6} should be 6", 6, testObj.lengthOfLISMemo(A6));
+        assertEquals("LIS for {1,3,6,7,9,4,10,5,6} should be 6", 6, testObj.lengthOfLisRec(A6));
     }
 }
