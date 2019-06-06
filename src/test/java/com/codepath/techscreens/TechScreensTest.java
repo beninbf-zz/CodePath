@@ -8,9 +8,11 @@ import main.java.com.codepath.techscreens.objects.Message;
 import main.java.com.codepath.techscreens.objects.NameNumberElement;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
+import main.java.com.codepath.techscreens.objects.Range;
 import main.java.com.codepath.techscreens.objects.StackRoxNode;
 import main.java.com.codepath.techscreens.objects.StatsCounter;
 import main.java.com.codepath.techscreens.objects.StudentCoursePair;
+import main.java.com.codepath.techscreens.objects.Sudoku;
 import main.java.com.codepath.techscreens.objects.Tile;
 import main.java.com.codepath.techscreens.objects.ZerosRectangle;
 import main.java.com.codepath.util.Util;
@@ -933,5 +935,112 @@ public class TechScreensTest {
         for (int i = 0; i < answer.length; i++) {
             assertEquals("values should be equal", answer[i], input[i]);
         }
+    }
+
+    @Test
+    public void testFlattenMap() {
+        Map<String, Object> outerMap = new HashMap<>();
+        outerMap.put("a", 5);
+        outerMap.put("b", 6);
+
+        Map<String, Object> mostInnerMap = new HashMap<>();
+        mostInnerMap.put("m", 17);
+        mostInnerMap.put("n", 9);
+
+        Map<String, Object> firstInnerMap = new HashMap<>();
+        firstInnerMap.put("f", 7);
+        firstInnerMap.put("g", mostInnerMap);
+
+        outerMap.put("c", firstInnerMap);
+        Map<String, Integer> result = testObj.getFlattendedMap(outerMap);
+        System.out.println(result);
+    }
+
+    @Test
+    public void testRanges() {
+        Range range = new Range(0, 5);
+        Range range1 = new Range(2, 6);
+        Range range2 = new Range(11, 17);
+        Range range3 = new Range(14, 17);
+        Range range4 = new Range(10, 18);
+        List<Range> ranges = new ArrayList<>(Arrays.asList(range, range1, range2, range3, range4));
+
+        assertEquals("should be 16", 16, testObj.getUniqueSeconds(ranges));
+        assertEquals("should be 16", 16, testObj.getUniqueSecondsEff(ranges));
+    }
+
+    @Test
+    public void testFamilyTree() {
+        assertEquals("should be child", "child", testObj.describeRelationship("Daphne", "Chris"));
+        assertEquals("should be child", "parent", testObj.describeRelationship("Chris", "Daphne"));
+        assertEquals("should be child", "parent", testObj.describeRelationship("Bret", "Chris"));
+        assertEquals("should be child", "ancestor", testObj.describeRelationship("Chris", "Henry"));
+        assertEquals("should be child", "ancestor", testObj.describeRelationship("Annie", "Jack"));
+        assertEquals("should be child", "unknown", testObj.describeRelationship("Foo", "Bar"));
+    }
+
+    @Test
+    public void testSudoku() {
+
+        Sudoku sudoku = new Sudoku();
+        int[][] board = {
+            {1,2,3, 4,5,6, 7,8,9},
+        {4,5,6, 7,8,9, 1,2,3},
+        {7,8,9, 1,2,3, 4,5,6},
+        {2,3,4, 5,6,7, 8,9,1},
+        {5,6,7, 8,9,1, 2,3,4},
+        {8,9,1, 2,3,4, 5,6,7},
+        {3,4,5, 6,7,8, 9,1,2},
+        {6,7,8, 9,1,2, 3,4,5},
+        {9,1,2, 3,4,5, 6,7,8}};
+
+        assertTrue("Rows should be valid", sudoku.checkRows(board));
+        assertTrue("Cols should be valid", sudoku.checkCols(board));
+        assertTrue("Subs should be valid", sudoku.checkSubMatrices(board));
+
+        int[][] board1 = {
+            {1,1,1, 1,1,1, 1,1,1},
+            {2,2,2, 2,2,2, 2,2,2},
+            {3,3,3, 3,3,3, 3,3,3},
+            {4,4,4, 4,4,4, 4,4,4},
+            {5,5,5, 5,5,5, 5,5,5},
+            {6,6,6, 6,6,6, 6,6,6},
+            {7,7,7, 7,7,7, 7,7,7},
+            {8,8,8, 8,8,8, 8,8,8},
+            {9,9,9, 9,9,9, 9,9,9}};
+
+        assertFalse("Rows should be invalid", sudoku.checkRows(board1));
+        assertTrue("Cols should be invalid", sudoku.checkCols(board1));
+        assertFalse("Subs should be invalid", sudoku.checkSubMatrices(board1));
+
+        int[][] board2 = {
+          {1,2,3, 4,5,6, 7,8,9},
+          {1,2,3, 4,5,6, 7,8,9},
+          {1,2,3, 4,5,6, 7,8,9},
+          {1,2,3, 4,5,6, 7,8,9},
+          {1,2,3, 4,5,6, 7,8,9},
+          {1,2,3, 4,5,6, 7,8,9},
+          {1,2,3, 4,5,6, 7,8,9},
+          {1,2,3, 4,5,6, 7,8,9},
+          {1,2,3, 4,5,6, 7,8,9}
+        };
+
+        assertTrue("Rows should be valid", sudoku.checkRows(board2));
+        assertFalse("Cols should be invalid", sudoku.checkCols(board2));
+        assertFalse("Subs should be invalid", sudoku.checkSubMatrices(board2));
+
+        int[][] board3 = {
+            {1,2,3, 4,5,6, 7,8,9},
+            {4,5,6, 7,8,9, 1,2,3},
+            {7,8,9, 1,2,3, 4,5,6},
+            {2,3,4, 5,6,7, 8,9,1},
+            {5,6,7, 8,9,1, 2,3,4},
+            {3,4,5, 6,7,8, 9,1,2},
+            {8,9,1, 2,3,4, 5,6,7},
+            {6,7,8, 9,1,2, 3,4,5},
+            {9,1,2, 3,4,5, 6,7,8}
+        };
+
+       assertFalse(sudoku.evaluateBoard(board3));
     }
 }

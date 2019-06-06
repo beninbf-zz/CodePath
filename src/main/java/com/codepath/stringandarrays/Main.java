@@ -21,7 +21,7 @@ public class Main {
 
 
 
-        sorting.iterativeMergeSort3(array4);
+        //sorting.iterativeMergeSort3(array4);
         sorting.print(array4);
 
         System.out.println(sorting.gcd(30, 12));

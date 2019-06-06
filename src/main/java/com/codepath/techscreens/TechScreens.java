@@ -5,10 +5,12 @@ import main.java.com.codepath.techscreens.objects.Cell;
 import main.java.com.codepath.techscreens.objects.Employee;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
+import main.java.com.codepath.techscreens.objects.Range;
 import main.java.com.codepath.techscreens.objects.StackRoxNode;
 import main.java.com.codepath.techscreens.objects.StudentCoursePair;
 import main.java.com.codepath.techscreens.objects.Tile;
 import main.java.com.codepath.techscreens.objects.ZerosRectangle;
+import main.java.com.codepath.techscreens.objects.Range;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -34,6 +36,20 @@ public class TechScreens {
     private final static String COLON = ":";
     private final static String COMMA = ",";
     private final static Set<String> protectedTypes = new HashSet<>(Arrays.asList("String", "Integer", "Double", "Float"));
+    private static final String CHILD = "child";
+    private static final String PARENT = "parent";
+    private static final String UNKNOWN = "unknown";
+    private static final String ANCESTOR = "ancestor";
+    private static final Map<String, Set<String>> relationshipMap = new HashMap<>();
+
+    private static final String CSV = "Name,Parent1,Parent2\n"
+        + "Chris,Bret,Annie\n"
+        + "Daphne,Chris,Emily\n"
+        + "Fred,Chris,Emily\n"
+        + "Henry,George,Daphne\n"
+        + "Ivy,George,Daphne\n"
+        + "Jack,George,Daphne";
+
 
     /**
      * Sonder
@@ -2700,7 +2716,6 @@ public class TechScreens {
     }
 
     public boolean efficientHasAccess(String folder, Set<String> access) {
-
         Map<String, Set<String>> ancestorMap = getGrandParents(folder);
         if (ancestorMap.containsKey(folder)) {
             Set<String> ancestors = ancestorMap.get(folder);
@@ -2736,6 +2751,212 @@ public class TechScreens {
             }
         }
         return adjMap;
+    }
+
+    public Map<String, Integer> getFlattendedMap(Map<String, Object> map) {
+        return getFlattendedMapHelper(map,"");
+    }
+
+    private Map<String, Integer > getFlattendedMapHelper(Map<String, Object> map, String parent) {
+        Map<String, Integer> result = new HashMap<>();
+        Map<String, Integer> mapToMerge = null;
+
+        Set<String> keys = map.keySet();
+        for (String key: keys) {
+            Object value = map.get(key);
+            if (value instanceof Map) {
+                Map<String, Object> recurseMap = (Map<String, Object>) value;
+                mapToMerge = getFlattendedMapHelper(recurseMap, key);
+            } else if (value instanceof Integer) {
+                Integer v = (Integer) value;
+                result.put(key, v);
+            }
+        }
+        for (String key : keys) {
+            Object v = result.get(key);
+            if (v instanceof Integer) {
+                Integer value = (Integer) v;
+                String newKey = getKey(parent, key);
+                result.remove(key);
+                result.put(newKey, value);
+            }
+        }
+        if (mapToMerge != null && !mapToMerge.isEmpty()) {
+            return mergeMaps(result, mapToMerge, parent);
+        }
+        return result;
+    }
+
+    public Map<String, Integer> mergeMaps(Map<String, Integer> result,  Map<String, Integer> mapToMerge, String parent) {
+        Map<String, Integer> keyChangedMap = new HashMap<String, Integer>();
+        for (Map.Entry<String, Integer> entry: mapToMerge.entrySet()) {
+            keyChangedMap.put(getKey(parent, entry.getKey()), entry.getValue());
+        }
+        for (Map.Entry<String, Integer> entry: result.entrySet()) {
+            if (result.get(entry.getKey()) != null) {
+                keyChangedMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return keyChangedMap;
+    }
+
+    private String getKey(String parent, String child) {
+        if (parent.isEmpty()) {
+            return child;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(parent);
+        sb.append(".");
+        sb.append(child);
+        return sb.toString();
+    }
+
+    public int getUniqueSeconds(List<Range> ranges) {
+        Set<Integer> uniqueSeconds = new HashSet<>();
+        for (Range range: ranges) {
+            for (int i = range.start; i <= range.end; i++) {
+                if (!uniqueSeconds.contains(i)) {
+                    uniqueSeconds.add(i);
+                }
+            }
+        }
+        return uniqueSeconds.size();
+    }
+
+    public int getUniqueSecondsEff(List<Range> ranges) {
+        Collections.sort(ranges);
+        int ct = ranges.get(0).end - ranges.get(0).start + 1;
+        int length = ranges.size();
+        for (int i = 1; i < length - 1; i++) {
+            Range priorRange = ranges.get(i - 1);
+            Range currentRange = ranges.get(i);
+            if (priorRange.end < currentRange.end && priorRange.end > currentRange.start) {
+                ct += currentRange.end - priorRange.end;
+            } else if (currentRange.start > priorRange.start && currentRange.end > priorRange.end) {
+                ct +=  currentRange.end - currentRange.start + 1;
+            }
+        }
+        return ct;
+    }
+
+    /*
+
+ /api/price/AAPL
+ - 200.00
+
+ - clientId
+ - ticker symbol
+
+ - Rate limiter
+ - Call the API n numbers of times within a time period
+ - ex: 10 calls per second
+
+ - If number of calls exceed the threshold, block the call with an error message
+ - If number of calls are within in the threshold, allow the call to proceed
+
+ - HTTP method call
+
+
+ Per client - ex: clientId = 1
+ // 0th. - 3
+ // 1st sec - 0, 1 - 10, 11 onwards block
+ // 2nd sec - 0, 1 - 10, 11 onwards block
+
+ clientId = 2
+ 0th,
+ 1st
+ 2nd..
+ 10th..
+
+ // Fixed time period
+
+
+ */
+
+    /**
+     Assume:
+
+     - No CSV metacharacters in the names in our CSV. (no "," or "\n")
+     - 1:1 mapping between a person and a name.
+
+     1st task: parse this CSV. For each line of input, print "{name} is the child of {parent1} and {parent2}"
+     */
+    private void populateMap(String csvInput) {
+        String[] csvInputArray = csvInput.split("\\n");
+        for (int i = 1; i < csvInputArray.length; i++) {
+            String[] line = csvInputArray[i].split(",");
+            if (line.length == 3) {
+                if (!relationshipMap.containsKey(line[0])) {
+                    Set<String> parents = new HashSet<>();
+                    parents.add(line[1]);
+                    parents.add(line[2]);
+                    relationshipMap.put(line[0], parents);
+                }
+            }
+        }
+    }
+
+    /**
+     Returns a string describing how name1 relates to name2. Valid values:
+
+     - "child"
+     - "parent"
+     - "ancestor"
+     - "unknown"
+
+     describeRelationship("Daphne", "Chris") // => "child"
+     describeRelationship("Chris", "Daphne") // => "parent"
+     describeRelationship("Chris", "Henry") // => "ancestor"
+     describeRelationship("Annie", "Jack") // => "ancestor"
+     describeRelationship("Fred", "Henry") // => "unknown"
+     describeRelationship("Foo", "Bar") // => "unknown"
+     */
+    // name1 is what relationship to name2
+    public String describeRelationship(String name1, String name2) {
+        populateMap(CSV);
+        if (relationshipMap.containsKey(name1)) {
+            Set<String> parents = relationshipMap.get(name1);
+            if (parents.contains(name2)) {
+                return CHILD;
+            } else { // check for parent relationship
+                if (relationshipMap.containsKey(name2)) {
+                    Set<String> potentialParents = relationshipMap.get(name2);
+                    if (potentialParents.contains(name1)) {
+                        return PARENT;
+                    }
+                }
+            }
+        } else {
+            if(relationshipMap.containsKey(name2)) {
+                Set<String> parents = relationshipMap.get(name2);
+                if (parents.contains(name1)) {
+                    return PARENT;
+                }
+            }
+        }
+
+        if (isAncestor(name1, name2)) {
+            return ANCESTOR;
+        }
+        return UNKNOWN;
+    }
+
+    private boolean isAncestor(String name1, String name2) {
+        Set<String> parents = relationshipMap.get(name2);
+        /*THE BREAKING CONDITION IS ON THE PARENTS, if its null, then i can stop*/
+        while(parents != null) {
+            Set<String> potentionalAncestors = null;
+            for (String parent : parents) {
+                if (relationshipMap.containsKey(parent)) {
+                    potentionalAncestors = relationshipMap.get(parent);
+                    if (potentionalAncestors.contains(name1)) {
+                        return true;
+                    }
+                }
+            }
+            parents = potentionalAncestors;
+        }
+        return false;
     }
 }
 
