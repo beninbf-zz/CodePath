@@ -2960,7 +2960,27 @@ public class TechScreens {
         return false;
     }
 
-
+    /**
+     * FlexPort Tech Screen - Print zig zag
+     *
+     * Given a sequence of letters and number of levels. Print it in a zig zag fashion as shown below.
+     *
+     * ABCDEFGHIJ, 3
+     *
+     * A E I
+     * BDFHJ
+     * C G
+     *
+     * ABCDEFGHIJKLMNOPQ, 4
+     *
+     * A  G  M
+     * B FH LN
+     * CE IK OQ
+     * D  J  P
+     *
+     *
+     * print_zigzag(sequence, num_levels)
+     */
     public void printZigZag(String input, int numLevels) {
         char[][] grid = new char[numLevels][input.length()];
         int length = input.length();
