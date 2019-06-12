@@ -1043,4 +1043,15 @@ public class TechScreensTest {
 
        assertFalse(sudoku.evaluateBoard(board3));
     }
+
+    @Test
+    public void testPrintZigZag() {
+        testObj.printZigZag("ABCDEFGHIJKLMNOPQ", 4);
+
+    }
+
+    @Test
+    public void testPrintZigZag1() {
+        testObj.printZigZag("ABCDEFGHIJKLMNOPQ", 4);
+    }
 }

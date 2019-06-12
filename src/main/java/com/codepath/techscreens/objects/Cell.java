@@ -5,9 +5,17 @@ public class Cell {
 
     public int col;
 
+    public int index;
+
     public Cell(int row, int col) {
         this.row = row;
         this.col = col;
+    }
+
+    public Cell(int row, int col, int index) {
+        this.row = row;
+        this.col = col;
+        this.index = index;
     }
 
     @Override
@@ -32,6 +40,6 @@ public class Cell {
 
     @Override
     public String toString() {
-        return "{" + row + " , " + col + "}";
+        return String.format("{row=%s, col=%s, index=%s}", row, col, index);
     }
 }

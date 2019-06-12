@@ -6,11 +6,17 @@ The argument supplied is a timestamp. So cound the number of hits
 in the last 5 minutes starting from the argument.
  
 hit(1)
+
 hit(2)
+
 hit(3)
+
 getHits(4) => 3
+
 hit(300)
+
 getHits(300) => 4
+
 getHits(301)  => 3
 
 There are two main wrinkles to this problem. My first solution was just using a list 
@@ -53,19 +59,20 @@ Scaling this for distributed machines would require aggregating the counts, when
 hit is called.
 
 
-405 % 300 = 105...405 - 105 > 5 Mins, current count at index 105 = 1
+405 % 300 = 105...405 - 105 > 5 : Mins, current count at index 105 = 1
 
-// 105 -> (405, 405, 405, 405)
+105 -> (405, 405, 405, 405)
 
 ```java
-class HitCounter{
+class HitCounter {
     private final int MIN = 60;
 
     int[] hits = new int[300];
     int[] times = new int[300];
-    void hit(int timestamp) {
+    
+    public void hit(int timestamp) {
          int index = timestamp % hits.length;
-         if (times[index] != timestamp)    // times[105] = 105{
+         if (times[index] != timestamp)  {
              times[index] = timestamp;
              hits[index] = 1;
          } else {
@@ -73,15 +80,14 @@ class HitCounter{
          }
     }
 
-    int getHits(int timestamp) {
-           int result = 0;
-           for (int i = 0; i < hits.length; i++) {
-               if (timestamp - times[i] < 300) {
-                  result+=hits[i];
-                }
+    public int getHits(int timestamp) {
+       int result = 0;
+       for (int i = 0; i < hits.length; i++) {
+           if (timestamp - times[i] < 300) {
+              result += hits[i];
             }
-            return result;
         }
-      };
+        return result;
+    }
 }
 ```

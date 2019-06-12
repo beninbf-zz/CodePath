@@ -1,8 +1,6 @@
 package main.java.com.codepath.techscreens.objects;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Sudoku {
@@ -34,8 +32,7 @@ public class Sudoku {
     public boolean checkSubMatrices(int[][] board) {
         for (int i = 0; i < board.length; i = i + STEP) {
             for (int j = 0; j < board[0].length; j = j + STEP) {
-                //System.out.print("I: " + i + "J: " + j);
-                if (!checkSubMatrix(board, i, j)) {// 0, 0......0,3, ....0, 6
+                if (!checkSubMatrix(board, i, j)) {
                     return false;
                 }
             }
@@ -49,7 +46,6 @@ public class Sudoku {
         int k = 0;
         for (int i = startRow; i < startRow + STEP; i++) {
             for (int j = startCol; j < startCol + STEP; j++) {
-                //System.out.print("I: " + i + " J: " + j + " k: " + k);
                 array[k] = subMatrix[i][j];
                 k++;
             }
