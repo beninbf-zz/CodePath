@@ -3,6 +3,7 @@ package main.java.com.codepath.techscreens;
 import main.java.com.codepath.techscreens.objects.Booking;
 import main.java.com.codepath.techscreens.objects.Cell;
 import main.java.com.codepath.techscreens.objects.Employee;
+import main.java.com.codepath.techscreens.objects.IntersectionIterator;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
 import main.java.com.codepath.techscreens.objects.Range;
@@ -21,10 +22,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
 
 public class TechScreens {
@@ -3020,6 +3023,111 @@ public class TechScreens {
             }
         }
         return new Cell(0, cell.col + 2, cell.index);
+    }
+
+    /**
+     * Lyft tech screen making use of a custom object.
+     * The intersection iterator will return the next common element
+     * from the two iterators.
+     *
+     * @param it1 Iterator
+     * @param it2 Iterator
+     * @return List of common elements
+     */
+    public List<Integer> commonElements(Iterator<Integer> it1, Iterator<Integer> it2) {
+        ArrayList<Integer> output = new ArrayList<>();
+        IntersectionIterator interItr = new IntersectionIterator(it1, it2);
+        Integer common = interItr.next();
+        while (common != null) {
+            output.add(common);
+            common = interItr.next();
+        }
+        return output;
+    }
+
+    /**
+     * Apple tech screen. Secret santa.
+     *
+     * Given a list of names, return a map, that has a name randomnly mapped to another
+     * name.
+     *
+     * One edge case to account for
+     *
+     * // A, B, C
+     * // A -> B
+     * // B -> A
+     * // C ? // solve for this edge case, only thing left to map is C
+     *
+     *
+     * @param names
+     * @return Map
+     */
+    public Map<String, String> getRandomMap(List<String> names) {
+        Map<String, String> result = new HashMap<>();
+        if (names == null) {
+            return result;
+        }
+
+        if (names.isEmpty() || names.size() == 1) {
+            return result;
+        }
+
+        int length = names.size();
+        List<String> namesToMapTo = new ArrayList<>(names);
+
+        int index = 0;
+        boolean lastNameCollision = false;
+        while (!namesToMapTo.isEmpty() && index < length) {
+            int mapIndex = setRandom(index, names, namesToMapTo, result);
+            if (mapIndex == names.size() - 1) {
+                break;
+            } else if (mapIndex == -1) {
+                if (namesToMapTo.size() == 1) {
+                    lastNameCollision = true;
+                    break;
+                }
+                // collision
+            } else {
+                index++;
+            }
+        }
+
+        if (lastNameCollision) {
+            String parent = result.get(names.get(0));
+            result.put(names.get(0), names.get(index));
+            result.put(names.get(index), parent);
+        }
+        return result;
+    }
+
+
+
+    public int setRandom(int i, List<String> names, List<String> namesToMapTo, Map<String, String> result) {
+        int random = getRandom(namesToMapTo.size());
+        String parent = names.get(i);
+        String child = namesToMapTo.get(random);
+        if (!parent.equals(child)) {
+            if (!result.containsKey(parent)) {
+                result.put(parent, child);
+                swap(namesToMapTo, random);
+                namesToMapTo.remove(namesToMapTo.size() - 1);
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int getRandom(int size) {
+        Random r = new Random();
+        int randomIndex = r.nextInt(size);
+        return randomIndex;
+    }
+
+    public void swap(List<String> namesToMapTo, int index) {
+        String temp = namesToMapTo.get(index);
+        String last = namesToMapTo.get(namesToMapTo.size() - 1);
+        namesToMapTo.set(index, last);
+        namesToMapTo.set(namesToMapTo.size() - 1, temp);
     }
 }
 

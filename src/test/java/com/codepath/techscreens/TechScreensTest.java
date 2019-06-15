@@ -3,9 +3,11 @@ package test.java.com.codepath.techscreens;
 import main.java.com.codepath.techscreens.TechScreens;
 import main.java.com.codepath.techscreens.objects.Cell;
 import main.java.com.codepath.techscreens.objects.ConnectFour;
+import main.java.com.codepath.techscreens.objects.FareCalculator;
 import main.java.com.codepath.techscreens.objects.InstaCartMap;
 import main.java.com.codepath.techscreens.objects.Message;
 import main.java.com.codepath.techscreens.objects.NameNumberElement;
+import main.java.com.codepath.techscreens.objects.Pallet;
 import main.java.com.codepath.techscreens.objects.Person;
 import main.java.com.codepath.techscreens.objects.Position;
 import main.java.com.codepath.techscreens.objects.Range;
@@ -14,6 +16,7 @@ import main.java.com.codepath.techscreens.objects.StatsCounter;
 import main.java.com.codepath.techscreens.objects.StudentCoursePair;
 import main.java.com.codepath.techscreens.objects.Sudoku;
 import main.java.com.codepath.techscreens.objects.Tile;
+import main.java.com.codepath.techscreens.objects.Trailer;
 import main.java.com.codepath.techscreens.objects.ZerosRectangle;
 import main.java.com.codepath.util.Util;
 import org.junit.Before;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1053,5 +1057,87 @@ public class TechScreensTest {
     @Test
     public void testPrintZigZag1() {
         testObj.printZigZag("ABCDEFGHIJKLMNOPQ", 4);
+    }
+
+    @Test
+    public void testIntersectionIterator() {
+        Iterator<Integer> it1 = testIter(1);
+        Iterator<Integer> it2 = testIter(1);
+        assertEquals(Arrays.asList(1), testObj.commonElements(it1, it2));
+
+        it1 = testIter(1, 2);
+        it2 = testIter(1, 2);
+        assertEquals(Arrays.asList(1, 2), testObj.commonElements(it1, it2));
+
+        it1 = testIter(1, 2, 3);
+        it2 = testIter(1, 3);
+        assertEquals(Arrays.asList(1, 3), testObj.commonElements(it1, it2));
+
+        it1 = testIter(4, 5, 6);
+        it2 = testIter(1, 3);
+        assertEquals(Arrays.asList(), testObj.commonElements(it1, it2));
+
+        it1 = testIter(1, 2, 3, 4, 5, 6);
+        it2 = testIter(2, 3, 4, 10, 11);
+        assertEquals(Arrays.asList(2, 3, 4), testObj.commonElements(it1, it2));
+
+        it1 = testIter(1, 2, 3, 4, 5, 6);
+        it2 = testIter(1, 2, 3, 4, 5, 6);
+        assertEquals(Arrays.asList(1, 2, 3, 4, 5, 6), testObj.commonElements(it1, it2));
+
+        it1 = testIter(1, 2, 3, 4, 5, 6, 10);
+        it2 = testIter(2, 3, 10, 11);
+        assertEquals(Arrays.asList(2, 3, 10), testObj.commonElements(it1, it2));
+
+        it1 = testIter();
+        it2 = testIter();
+        assertEquals(Collections.emptyList(), testObj.commonElements(it1, it2));
+    }
+
+    public Iterator<Integer> testIter(Integer... ints) {
+        return Arrays.asList(ints).iterator();
+    }
+
+    @Test
+    public void testFareCalculator() {
+        FareCalculator fareCalculator = new FareCalculator(10.00d);
+        fareCalculator.addRider(1, 1);
+        fareCalculator.addRider(2, 3);
+        assertEquals("should be 13.33", 13.33333d, fareCalculator.dropFare(1,4).doubleValue(), .0002);
+    }
+
+    @Test
+    public void testTrailerWeight() {
+        Pallet pallet1 = new Pallet(1, 5);
+        Pallet pallet2 = new Pallet(2, 6);
+        Pallet pallet3 = new Pallet(3, 7);
+
+        Trailer trailer = new Trailer();
+
+        trailer.load(pallet1, 2);
+        trailer.load(pallet2, 5);
+        Pallet pallet = trailer.unload(1, 6);
+
+        assertEquals("pallet id should be 1", 1, pallet.id);
+
+        trailer.load(pallet3, 8);
+
+        assertEquals("weight should be 13", 13, trailer.getWeight());
+        assertEquals("weight at time 0: ", 0,trailer.weightAt(0));
+        assertEquals("weight at time 1: ", 0, trailer.weightAt(1));
+        assertEquals("weight at time 2: ", 5, trailer.weightAt(2));
+        assertEquals("weight at time 3: ", 5,trailer.weightAt(3));
+        assertEquals("weight at time 4: ", 5, trailer.weightAt(4));
+        assertEquals("weight at time 5: ", 11, trailer.weightAt(5));
+        assertEquals("weight at time 6: ", 6, trailer.weightAt(6));
+        assertEquals("weight at time 7: ", 6, trailer.weightAt(7));
+        assertEquals("weight at time 8: ", 13, trailer.weightAt(8));
+    }
+
+    @Test
+    public void testSecretSanta() {
+        List<String> names = Arrays.asList("Bill", "Bob", "Tom");
+        Map<String, String> map = testObj.getRandomMap(names);
+        System.out.println(map);
     }
 }

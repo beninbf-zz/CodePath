@@ -116,12 +116,6 @@ public class Util {
         destination.add(temp);
     }
 
-//    public static void copy(Object[][] source, Object[][] destination) {
-//        for (int i = 0; i < source.length; i++) {
-//           System.arraycopy(source[i], 0, destination[i], 0, source.length);
-//        }
-//    }
-
     public static void copy(Boolean[][] source, Boolean[][] destination) {
         for (int i = 0; i < source.length; i++) {
             System.arraycopy(source[i], 0, destination[i], 0, source.length);
