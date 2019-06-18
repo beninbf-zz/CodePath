@@ -1,4 +1,4 @@
-# "Places Near Me":
+# "Places Near Me"
 
 Given a latitude, longtitude, and radius return a list of "places" within that radius
 

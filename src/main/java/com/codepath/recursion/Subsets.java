@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  *
- * <code>SubSets</code> is a class containing different algorithms for printing and generating powersets.
+ * <code>Subsets</code> is a class containing different algorithms for printing and generating powersets.
  *
  * A "subset" is a subset if all of its elements are contained within some superset. For example if our
  * super set is {1, 2}, then a subset of {1, 2} is {}, its also {1}, and {2}, and {1, 2}.
@@ -33,7 +33,7 @@ import java.util.List;
  * @author Benin Bryant
  * @since Mar 4, 2019
  */
-public class SubSets {
+public class Subsets {
     /**
      * Print sub sets
      * <p>
@@ -518,5 +518,48 @@ public class SubSets {
         }
 
         return array;
+    }
+
+    public List<List<Integer>> findSubsetsOfSizek(int[] array, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> candidate = new ArrayList();
+        subsetsOfSizeKhelper(array, 0, k, candidate, result);
+        return result;
+    }
+
+    private void subsetsOfSizeKhelper(int[] array, int index, int k, List<Integer> candidate, List<List<Integer>> result) {
+        if (candidate.size() == k) {
+            result.add(new ArrayList<>(candidate));
+            return;
+        }
+
+        for (int i = index; i < array.length; i++) {
+            candidate.add(array[i]);
+            subsetsOfSizeKhelper(array, i + 1, k, candidate, result);
+            candidate.remove(candidate.size() - 1);
+        }
+    }
+
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        exploreCombinations(n, k, 1, new ArrayList<Integer>(), result);
+        return result;
+    }
+
+    private void exploreCombinations(int n, int k, int offset, List<Integer> snippet, List<List<Integer>> result) {
+
+        if (snippet.size() == k) {
+            result.add(new ArrayList<>(snippet));
+            return;
+        }
+
+        final int spaceLeftInSnippet = k - snippet.size();
+        for (int i = offset; i <= n; ++i) {
+            if (spaceLeftInSnippet <= n - i + 1) {
+                snippet.add(i);
+                exploreCombinations(n, k, i + 1, snippet, result);
+                snippet.remove(snippet.size() - 1);
+            }
+        }
     }
 }

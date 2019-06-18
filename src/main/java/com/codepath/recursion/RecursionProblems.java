@@ -24,6 +24,7 @@ public class RecursionProblems {
         }
 
         printBinary(n - 1, binaryNumber + "0");
+        printBinary(n - 1, binaryNumber + "0");
         printBinary(n - 1, binaryNumber + "1");
     }
 

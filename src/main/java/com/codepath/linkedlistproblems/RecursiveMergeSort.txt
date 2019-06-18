@@ -1,0 +1,174 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+class SinglyLinkedListNode {
+    public int data;
+    public SinglyLinkedListNode next;
+
+    public SinglyLinkedListNode(int nodeData) {
+        this.data = nodeData;
+        this.next = null;
+    }
+}
+
+class SinglyLinkedList {
+    public SinglyLinkedListNode head;
+    public SinglyLinkedListNode tail;
+
+    public SinglyLinkedList() {
+        this.head = null;
+        this.tail = null;
+    }
+
+    public void insertNode(int nodeData) {
+        SinglyLinkedListNode SinglyLinkedListNode = new SinglyLinkedListNode(nodeData);
+
+        if (this.head == null) {
+            this.head = SinglyLinkedListNode;
+        } else {
+            this.tail.next = SinglyLinkedListNode;
+        }
+
+        this.tail = SinglyLinkedListNode;
+    }
+}
+
+class SinglyLinkedListPrintHelper {
+    public static void printList(SinglyLinkedListNode SinglyLinkedListNode, String sep, BufferedWriter bufferedWriter)
+        throws IOException {
+        while (SinglyLinkedListNode != null) {
+            bufferedWriter.write(String.valueOf(SinglyLinkedListNode.data));
+
+            SinglyLinkedListNode = SinglyLinkedListNode.next;
+
+            if (SinglyLinkedListNode != null) {
+                bufferedWriter.write(sep);
+            }
+        }
+    }
+}
+
+class Result {
+
+    /*-------------------START----------------------*/
+    public static SinglyLinkedListNode merge_sort(SinglyLinkedListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        // get the middle of the list
+        SinglyLinkedListNode middle = split(head);
+        SinglyLinkedListNode nextofmiddle = middle.next;
+
+        // set the next of middle SinglyLinkedListNode to null
+        middle.next = null;
+
+        // Apply split on left list
+        SinglyLinkedListNode left = merge_sort(head);
+
+        // Apply split on right list
+        SinglyLinkedListNode right = merge_sort(nextofmiddle);
+
+        // Merge the left and right lists
+        SinglyLinkedListNode sortedlist = merge(left, right);
+        return sortedlist;
+    }
+
+    public static SinglyLinkedListNode merge(SinglyLinkedListNode list1, SinglyLinkedListNode list2) {
+        SinglyLinkedListNode result = null;
+        if (list1 == null) {
+            return list2;
+        }
+        if (list2 == null) {
+            return list1;
+        }
+
+        // Pick either list1 or list2 and recur the merge method
+        if (list1.data <= list2.data) {
+            result = list1;
+            result.next = merge(list1.next, list2);
+        } else {
+            result = list2;
+            result.next = merge(list1, list2.next);
+        }
+        return result;
+    }
+
+    public static SinglyLinkedListNode split(SinglyLinkedListNode head) {
+        // Base case
+        if (head == null) {
+            return head;
+        }
+        SinglyLinkedListNode fast = head.next;
+        SinglyLinkedListNode slow = head;
+
+        // Move fast by two and slow by one
+        // Finally slow will point to middle SinglyLinkedListNode
+        while (fast != null) {
+            fast = fast.next;
+            if (fast != null) {
+                slow = slow.next;
+                fast = fast.next;
+            }
+        }
+        return slow;
+    }
+    /*-------------------END----------------------*/
+
+}
+
+class Solution {
+    public static void main(String args[]) {
+        /*
+        This function is used to increase the size of recursion stack. It makes the size of stack
+        2^26 ~= 10^8
+        */
+        new Thread(null, new Runnable() {
+            public void run() {
+                try{
+                    solve();
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }, "1", 1 << 26).start();
+    }
+
+    public static void solve() throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+        SinglyLinkedList head = new SinglyLinkedList();
+
+        int headCount = Integer.parseInt(bufferedReader.readLine().trim());
+
+        IntStream.range(0, headCount).forEach(i -> {
+            try {
+                int headItem = Integer.parseInt(bufferedReader.readLine().trim());
+
+                head.insertNode(headItem);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        SinglyLinkedListNode result = Result.merge_sort(head.head);
+
+        SinglyLinkedListPrintHelper.printList(result, "\n", bufferedWriter);
+        bufferedWriter.newLine();
+
+        bufferedWriter.close();
+
+        bufferedReader.close();
+    }
+}
