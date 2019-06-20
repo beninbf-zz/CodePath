@@ -2191,10 +2191,10 @@ public class TreeProblems {
      * 3) This is the most complicated case: We need to be sure that we maintain the binary search property.
      * And we don't want to lose any of the right or left subtrees of the node that we are trying to delete.
      * To keep those sub trees, those descendant, and maintain the BST property, we have have 2 choices.
-     * We can either take the maximum node of the left subtree, and overrwite the node we wish to delete
-     * OR we can take the minimum node of the left subtree, and overrwrite the node we wish to delete.
+     * We can either take the maximum node of the left subtree, and overrwite the node we Wish to delete
+     * OR we can take the minimum node of the left subtree, and overrwrite the node we Wish to delete.
      *
-     * But we are not done there. Once we have copied the value to the current root we wish to delete, we
+     * But we are not done there. Once we have copied the value to the current root we Wish to delete, we
      * then have to delete that max or min node that we originally copied from, so that we don't have
      * duplicate nodes. In order to do this, we simply call our delete function again, because we have now
      * reduced this problem to case 1, becaue the max or min nodes for any subtree, will always be a leaf
@@ -2202,7 +2202,7 @@ public class TreeProblems {
      *
      * One more thing, remember to return the root with each call stack so that we keep the tree intact.
      * @param root root of tree
-     * @param target the value we wish to delete
+     * @param target the value we Wish to delete
      * @return root
      */
     public TreeNode<Integer> deleteBstNode(TreeNode<Integer> root, Integer target) {
@@ -2273,7 +2273,7 @@ public class TreeProblems {
      *
      * We rotate the trees as necessary, preserving the BST property.
      * @param root root of tree
-     * @param value value we wish to insert
+     * @param value value we Wish to insert
      * @return root of tree
      */
     public TreeNode<Integer> insertNodeIntoBST(TreeNode<Integer> root, Integer value) {

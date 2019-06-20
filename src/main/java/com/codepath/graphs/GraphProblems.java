@@ -706,10 +706,10 @@ public class GraphProblems {
      * come before 0. Hence, it would not make any sense to put any value into the fact that its a mismatch with "0".
      * Because its not our first mismatch, we can therefore ignore.
      *
-     * This is actually intuitive because, because the characters of the alphabet are just like nummerical characters,
+     * This is actually intuitive because, because the characters of the alphabet are just like numerical characters,
      * they just happend to be base 26 as opposed to base 10. So we can see with this example that with "119"
      * and "120", the only thing we could rightfully determine is that 1 comes before 2. For the characters after
-     * the first mismatch, we can discern nothing (if its an alien lauguage) about the ordering of the entire alphabet.
+     * the first mismatch, we can discern nothing (if its an alien language) about the ordering of the entire alphabet.
      *
      * Its only because we know english, that the 119 and 120, tells us that we certainly can't say 9 comes before 0.
      *
@@ -717,7 +717,7 @@ public class GraphProblems {
      *
      * TOPLOGICAL SORT.
      *
-     * What is a topological sort. A topological sort is an ordering of the verticies in a directed graph such that
+     * What is a topological sort. A topological sort is an ordering of the vertices in a directed graph such that
      * vertex A appears before vertex B for all directed edges A->B. Another way to think about it is that you're
      * given a graph of dependencies and we want to order the vertices such that no dependencies are broken when
      * going from left to right.

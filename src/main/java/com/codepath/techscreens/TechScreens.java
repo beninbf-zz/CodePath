@@ -1,5 +1,6 @@
 package main.java.com.codepath.techscreens;
 
+import main.java.com.codepath.objects.UserClick;
 import main.java.com.codepath.techscreens.objects.Booking;
 import main.java.com.codepath.techscreens.objects.Cell;
 import main.java.com.codepath.techscreens.objects.Employee;
@@ -189,7 +190,7 @@ public class TechScreens {
      * I have to remember one thing for problems that are recursive in nature, and that is
      * TO DRAW THE FUCKING RECURSION TREE FIRST!!!!!!
      *
-     * When you do, that, writing the code afterwards becomes much clearer.
+     * When you do, that, writing the code afterwards becomes much cleaner.
      *
      * Essentially this solution works, by starting at cell 0, 0, it then generates all square sub matrices
      * of length, 1, 2, 3, up to the bounds of the matrix.
@@ -199,7 +200,7 @@ public class TechScreens {
      * if the startRow or startCol plus the dimension im checking is outside of the bounds, is all that
      * is necessary.
      *
-     * In this problem we start with dimenion 0, knowing it won't count, but thats no problem, as proceed
+     * In this problem we start with dimension 0, knowing it won't count, but that's no problem, as proceed
      * to dimension, as the cell 0,0 will be counted because 0 < 1.
      *
      * I'm pretty sure this problem is a prime candidate for a dynamic programming solution, because
@@ -219,7 +220,7 @@ public class TechScreens {
      * @param arr 2-D array of zeros and ones
      * @return int the largest dimension of a subm atrix containing all ones
      */
-    public int largestMatrix(List<List<Integer>> arr) {
+    public int largestSquareMatrix(List<List<Integer>> arr) {
 
         int rows = arr.size();
         int cols = arr.get(0).size();
@@ -258,6 +259,82 @@ public class TechScreens {
         }
     }
 
+    public int largestSquareMatrixOptimal(int[][] input) {
+        int[] max = new int[1];
+        largestMatrixHelperEff(input, input.length - 1, input[0].length - 1, max);
+        return max[0];
+    }
+
+    private int largestMatrixHelperEff(int[][] input, int row, int col, int[] max) {
+        if (row == 0 || col == 0) {
+            return input[row][col];
+        }
+
+        int left = largestMatrixHelperEff(input, row, col - 1, max);
+        int up = largestMatrixHelperEff(input, row - 1, col, max);
+        int diagonal = largestMatrixHelperEff(input, row - 1, col - 1, max);
+
+        int temp = 0;
+        if (input[row][col] == 1) {
+            temp = 1 + Math.min(Math.min(left, up), diagonal);
+        }
+        max[0] = Math.max(max[0], temp);
+        return temp;
+    }
+
+    public int largestSquareSubMatrixDp(int[][] input) {
+        int[][] table = new int[input.length][input[0].length];
+
+        for (int i = 0; i < table[0].length; i++) {
+            table[0][i] = input[0][i];
+        }
+
+        for (int i = 0; i < table.length; i++) {
+            table[i][0] = input[i][0];
+        }
+
+        int maxDimension = 0;
+        int temp = 0;
+        for (int i = 1; i < input.length; i++) {
+            for (int j = 1; j < input[0].length; j++) {
+                if (input[i][j] == 1) {
+                    temp = 1 + Math.min(Math.min(table[i][j - 1], table[i - 1][j]), table[i - 1][j - 1]);
+                    table[i][j] = temp;
+                    maxDimension = Math.max(temp, maxDimension);
+                } else {
+                    table[i][j] = 0;
+                }
+            }
+        }
+        return maxDimension;
+    }
+
+    public int largestSubMatrixOfOnes(int[][] input) {
+        int[] max = new int[1];
+        largestSubMatrixOfOnesHelper(input, 0, 0, max);
+        return max[0];
+    }
+
+    private int largestSubMatrixOfOnesHelper(int[][] array, int row, int col, int[] max) {
+        if (row == array.length || col == array[0].length) {
+            return Integer.MAX_VALUE;
+        }
+
+        if (row == array.length - 1 || col == array[0].length - 1) {
+            return array[row][col];
+        }
+        int right = largestSubMatrixOfOnesHelper(array, row, col + 1, max);
+        int down = largestSubMatrixOfOnesHelper(array, row  + 1, col, max);
+        int diagonal = largestSubMatrixOfOnesHelper(array, row + 1, col + 1, max);
+
+        int temp = 0;
+        if (array[row][col] == 1) {
+            temp = 1 + Math.min(Math.min(right, down), diagonal);
+            max[0] = Math.max(temp, max[0]);
+        }
+        return temp;
+    }
+
     private boolean hasAllOnes(int[][] array, int startRow, int startCol, int dimension) {
         for (int i = startRow; i < startRow + dimension; i++) {
             for (int j = startCol; j < startCol + dimension; j++) {
@@ -283,7 +360,7 @@ public class TechScreens {
      *
      * The problem only becomes complicated when you try to serialize it into JSON format
      * for different field Types, like String, int, array, or nested objects.
-     * @param object object we wish to serialize
+     * @param object object we Wish to serialize
      * @return json string
      */
     public String getJsonString(Object object) {
@@ -414,7 +491,7 @@ public class TechScreens {
      * };
      *
      *
-     * @param parentChildPairs object we wish to serialize
+     * @param parentChildPairs object we Wish to serialize
      * @return List<List<Integer>>
      */
     public List<List<Integer>> findNodesWithZeroAndOneParents(int[][] parentChildPairs) {
@@ -1833,7 +1910,7 @@ public class TechScreens {
      * What I messed up with this problem, was the follow up question, where the interview asked
      * what pre-processing could we do to make this faster. I struggled with this. The current run
      * time was O(n * c), where n is the number of words in the dictionary, and c is the number
-     * of characters in the word we wish to spell check.
+     * of characters in the word we Wish to spell check.
      *
      * I think the thing I need to remember, is when asked these questions, how can I make them of
      * order of magnitude faster. So this is polynomial, so how could I make it linear? Making
@@ -1846,7 +1923,7 @@ public class TechScreens {
      * would map to a set of valid words where all of the consonants are in the same format.
      *
      * @param dictionary set of words
-     * @param input the word we wish to return a suggestion for
+     * @param input the word we Wish to return a suggestion for
      * @return String
      */
     public String spellChecker(Set<String> dictionary, String input) {
@@ -3128,6 +3205,39 @@ public class TechScreens {
         String last = namesToMapTo.get(namesToMapTo.size() - 1);
         namesToMapTo.set(index, last);
         namesToMapTo.set(namesToMapTo.size() - 1, temp);
+    }
+
+    public String getFinalDestination(List<UserClick> clicks, String start) {
+        Map<String, List<String>> clickMap = new HashMap<>();
+        String[] result = new String[1];
+        for (UserClick click: clicks) {
+            if (!clickMap.containsKey(click.source)) {
+                List<String> list = new ArrayList<>();
+                list.add(click.destination);
+                clickMap.put(click.source, list);
+            } else {
+                List<String> list = clickMap.get(click.source);
+                list.add(click.destination);
+            }
+        }
+        Set<String> seen = new HashSet<>();
+        seen.add(start);
+        explore(start, seen, clickMap, result);
+        return result[0];
+    }
+
+    private void explore(String key, Set<String> seen, Map<String, List<String>> clickMap, String[] result) {
+        result[0] = key;
+        List<String> neighbors = clickMap.get(key);
+        if (neighbors != null) {
+            for (String neighbor : neighbors) {
+                result[0] = neighbor;
+                if (!seen.contains(neighbor)) {
+                    seen.add(neighbor);
+                    explore(neighbor, seen, clickMap, result);
+                }
+            }
+        }
     }
 }
 

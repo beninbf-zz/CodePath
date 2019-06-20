@@ -1,5 +1,6 @@
 package test.java.com.codepath.techscreens;
 
+import main.java.com.codepath.objects.UserClick;
 import main.java.com.codepath.techscreens.TechScreens;
 import main.java.com.codepath.techscreens.objects.Cell;
 import main.java.com.codepath.techscreens.objects.ConnectFour;
@@ -85,7 +86,7 @@ public class TechScreensTest {
         matrix.add(row1);
         matrix.add(row2);
 
-        int largestSquare = testObj.largestMatrix(matrix);
+        int largestSquare = testObj.largestSquareMatrix(matrix);
         assertEquals("Largest square should be two", 2, largestSquare);
     }
 
@@ -100,7 +101,7 @@ public class TechScreensTest {
         matrix.add(row1);
         matrix.add(row2);
 
-        int largestSquare = testObj.largestMatrix(matrix);
+        int largestSquare = testObj.largestSquareMatrix(matrix);
         assertEquals("Largest square should be two", 2, largestSquare);
     }
 
@@ -119,7 +120,7 @@ public class TechScreensTest {
         matrix1.add(row3);
         matrix1.add(row4);
 
-        int largestSquare = testObj.largestMatrix(matrix1);
+        int largestSquare = testObj.largestSquareMatrix(matrix1);
         assertEquals("Largest square should be 3", 3, largestSquare);
     }
 
@@ -135,7 +136,7 @@ public class TechScreensTest {
         matrix2.add(row1);
         matrix2.add(row2);
 
-        int largestSquare = testObj.largestMatrix(matrix2);
+        int largestSquare = testObj.largestSquareMatrix(matrix2);
         assertEquals("Largest square should be 2", 2, largestSquare);
     }
 
@@ -150,7 +151,7 @@ public class TechScreensTest {
         matrix3.add(row1);
         matrix3.add(row2);
 
-        int largestSquare = testObj.largestMatrix(matrix3);
+        int largestSquare = testObj.largestSquareMatrix(matrix3);
         assertEquals("Largest square should be 1", 1, largestSquare);
     }
 
@@ -169,7 +170,7 @@ public class TechScreensTest {
         matrix1.add(row3);
         matrix1.add(row4);
 
-        int largestSquare = testObj.largestMatrix(matrix1);
+        int largestSquare = testObj.largestSquareMatrix(matrix1);
         assertEquals("Largest square should be 3", 3, largestSquare);
     }
 
@@ -1139,5 +1140,40 @@ public class TechScreensTest {
         List<String> names = Arrays.asList("Bill", "Bob", "Tom");
         Map<String, String> map = testObj.getRandomMap(names);
         System.out.println(map);
+    }
+
+    @Test
+    public void testUserClicks() {
+        List<UserClick> clicks = Arrays.asList(
+            new UserClick("A", "B"),
+            new UserClick("B", "C"),
+            new UserClick("C", "B"),
+            new UserClick("B", "D"),
+            new UserClick("A", "Z"),
+            new UserClick("Z", "B")
+            );
+
+        String result = testObj.getFinalDestination(clicks, "A");
+        assertEquals("should be B", "B", result);
+    }
+
+    @Test
+    public void testSquareMatix() {
+        int[][] input = {
+                    {0, 1, 1},
+                    {0, 1, 1},
+                    {0, 0, 0}};
+        assertEquals("Should be 2", 2, testObj.largestSquareMatrixOptimal(input));
+        assertEquals("Should be 2", 2, testObj.largestSubMatrixOfOnes(input));
+
+
+        int[][] input1 = {
+            {0, 1, 1, 1},
+            {0, 1, 1, 1},
+            {0, 1, 1, 1},
+            {0, 1, 1, 1}};
+        assertEquals("Should be 3", 3, testObj.largestSquareMatrixOptimal(input1));
+        assertEquals("Should be 3", 3, testObj.largestSubMatrixOfOnes(input1));
+
     }
 }

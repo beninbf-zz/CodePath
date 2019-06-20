@@ -267,7 +267,7 @@ public class DynamicProgramming {
      * This just means, passing in the index of the coin that we are on, and starting
      * from there in recursive calls.
      *
-     * @param A             the amount we wish to make change for
+     * @param A             the amount we Wish to make change for
      * @param denominations an integer array of denominations
      * @return A list of lists containing all of the combinations of denominations
      */
@@ -378,7 +378,7 @@ public class DynamicProgramming {
      * If it not infinity, then we simply take the minimum of table[i] and table[i - denomination[j]] + 1.
      * The final thing we return is table[A];
      *
-     * @param A             the amount we wish to make change for
+     * @param A             the amount we Wish to make change for
      * @param denominations the denominations
      * @return minimum number of coins to make change for amount A
      */
@@ -1866,9 +1866,9 @@ public class DynamicProgramming {
      * Longest common subsequence
      *
      * This problem is interesting. I originally confused it with finding the longest common substring. The
-     * difference between a substring and and subsequence is that a substring must be contigious in
+     * difference between a substring and and sub sequence is that a substring must be contigious in
      * the array. The sub sequence, does not have to be! While they both must be in order, the following
-     * string, "adm", is a subsequence of "bacdama".
+     * string, "adm", is a sub sequence of "bacdama".
      *
      * The intuition behind doing this problem was a little tricky. Imagine we have the following Strings
      *
@@ -1889,10 +1889,10 @@ public class DynamicProgramming {
      * a b d a c e
      * a b c e
      *
-     * In this scenario, we still need to check ALL subsequences, so we needed to check
+     * In this scenario, we still need to check ALL sub sequences, so we needed to check
      * sub sequences starting with the "a" in the second string.
      *
-     * Essentially what we are doing is considering all subsequences, that include AND exclude
+     * Essentially what we are doing is considering all sub sequences, that include AND exclude
      * each character similar to the subset problem. We end of the with the following recurrence
      *
      * if (string(i) == string(j))
@@ -2076,7 +2076,7 @@ public class DynamicProgramming {
     /**
      * The recurrence relation for this approach means the following
      *
-     * f(A, i) = the max length of the longest increasing subsequence at i, where
+     * f(A, i) = the max length of the longest increasing sub sequence at i, where
      * A[i] is the last element in that sub sequence.
      *
      * @param A
@@ -2117,13 +2117,338 @@ public class DynamicProgramming {
         int maximumSoFar = 1;
         for (int i = 1; i < table.length; i++) {
             for (int j = 0; j < i; j++){
-                int result = table[j];
+                int previous = table[j];
                 if (A[j] < A[i]) {
-                    table[i] = Math.max(result + 1, table[i]);
+                    table[i] = Math.max(previous + 1, table[i]);
                 }
             }
             maximumSoFar = Math.max(maximumSoFar, table[i]);
         }
         return maximumSoFar;
+    }
+
+    /**
+     * This tech screen was from a company called Exabeam. The problem statement is as follows
+     *
+     * Casey has a square image made up of black and white pixels represented as 0 and 1 respectively.
+     * As part of an image analysis process, Casey needs to determine the size of the largest square
+     * area of white pixels.  Given a 2-dimensional square matrix that represents the image,
+     * write a function to determine the length of a side of the largest square area made up
+     * of white pixels.
+     *
+     * For example, the n x n = 5 x 5 matrix of pixels is represented as
+     * arr = [[1,1,1,1,1], [1,1,1,0,0], [1,1,1,0,0], [1,1,1,0,0], [1,1,1,1,1].
+     * A diagram of the matrix is:
+     *
+     * 1 1 1 1 1
+     * 1 1 1 0 0
+     * 1 1 1 0 0
+     * 1 1 1 0 0
+     * 1 1 1 1 1
+     *
+     * The largest square sub-matrix is 3 x 3 in size starting at position (0, 0), (1, 0) or (2, 0).
+     * The expected return value is 3.
+     *
+     * So I had a correct idea on how to solve this problem. With the problem statement asking for
+     * the largest sub matrix, I realized one approach was to find all sub matrices of square dimensions
+     * and then check each one to see if they all contained 1. For the sub matrices that contained
+     * all ones, I would simply record the dimension length, and update it if a subsequent dimension
+     * was found to be longer.
+     *
+     * I could tell that this would not be optimal, but it should work. Considering it was an exhaustive
+     * search, the problem called for recursion. This is where I fumbled, and I neglected to first
+     * get a clear understanding of the recursive structure of the problem.
+     *
+     * I have to remember one thing for problems that are recursive in nature, and that is
+     * TO DRAW THE FUCKING RECURSION TREE FIRST!!!!!!
+     *
+     * When you do, that, writing the code afterwards becomes much cleaner.
+     *
+     * Essentially this solution works, by starting at cell 0, 0, it then generates all square sub matrices
+     * of length, 1, 2, 3, up to the bounds of the matrix.
+     *
+     * For each sub matrix a check is performed to determine if the sub matrix contains all ones or not.
+     * Drawing the recursion tree, and understanding the base cases upon which to return, which is
+     * if the startRow or startCol plus the dimension im checking is outside of the bounds, is all that
+     * is necessary.
+     *
+     * In this problem we start with dimension 0, knowing it won't count, but that's no problem, as proceed
+     * to dimension, as the cell 0,0 will be counted because 0 < 1.
+     *
+     * I'm pretty sure this problem is a prime candidate for a dynamic programming solution, because
+     * there would appear to be a lot of overlapping sub problems.
+     *
+     * We will try to the problem again later, as DP problem.
+     *
+     * RUNTIME: the runtime of the problem is quite heavy. For every call, we check
+     * the sub matrix given the dimension. That means a check of O(n^2) per recursive call.
+     * Every recursive call, spawns n new calls, where n is the dimension of the square.
+     * And the height of the recursion tree is n, where n is the dimension of the square matrix.
+     * So I think the runtime is n^2 * n * n
+     *
+     * SPACE COMPLEXITY: O(n^2) to store the 2-D array
+     *
+     *
+     * @param arr 2-D array of zeros and ones
+     * @return int the largest dimension of a subm atrix containing all ones
+     */
+    public int largestSquareMatrix(List<List<Integer>> arr) {
+
+        int rows = arr.size();
+        int cols = arr.get(0).size();
+
+        int[][] array = new int[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                array[i][j] = arr.get(i).get(j);
+            }
+        }
+        int[] largestDimension = new int[1];
+        largestMatrixHelper(array, 0, 0, 0, largestDimension);
+        return largestDimension[0];
+    }
+
+    private void largestMatrixHelper(int[][] array, int row, int col, int dimension, int[] largestDimension) {
+        if (row + dimension > array.length) {
+            return;
+        }
+
+        if (col + dimension > array[0].length) {
+            return;
+        }
+
+        if (hasAllOnes(array, row, col, dimension)) {
+            if (dimension > largestDimension[0]) {
+                largestDimension[0] = dimension;
+            }
+        }
+
+        for (int i = row; i < array.length; i++) {
+            for (int j = col; j < array[0].length; j++) {
+                largestMatrixHelper(array, i, j,  dimension + 1, largestDimension);
+            }
+        }
+    }
+
+    /**
+     * Given a matrix filled with ones and zeros, return dimension of largest square matrix
+     * filled only with ones.
+     *
+     * The following is an algorithm that is much more efficient than the original
+     * implementation that I came up with. The code below, follows very neatly, from
+     * the "pen" and "paper" way of doing solving this. Lets start with an example.
+     * Consider the following matrix.
+     *
+     * [1, 1, 1]
+     * [0, 1, 1]
+     * [0, 0, 0]
+     *
+     * The first thing we need to do, considering we are trying to find the largest
+     * square matrix is to identify which corner of the square matrix any given cell
+     * is.
+     *
+     * In this case, if we are looking at cell, (0,0), we can consider that the top
+     * left corner of a square matrix.
+     *
+     * If we do,that then how would we find out, what the largest possible square matrix
+     * was, where the top left corner is cell (0,0). Well, we would have to look
+     * at the immediate other cells that make a square. So that would be the cell, immediately
+     * to the right, the cell immediately down 1 and over 1 (1,1), and the cell directly
+     * below.
+     *
+     * These would be the cells that would make up a square. We can clearly see that, that square
+     * is
+     *
+     * 1, 1
+     * 0, 1
+     *
+     * Remembering that we are looking for the largest square matrix whose top left corner
+     * cell(0,0), we can see that the size of that square sub matrix is only 1? Why, well
+     * because the sub matrix above clearly isn't filled entirely with ones.
+     *
+     * How was that computed? Intuitively we can look at it and tell that, the largest
+     * square matrix whose top left corner is 0,0, is of dimension 1. We know that
+     * because of the other three cells, there values are 0, 1, and 1. Look at the follwing sub
+     * matrix
+     *
+     * 1, 1
+     * 1, 1
+     *
+     * This the largest square sub matrix filled with ones here, whose top left corner is 0,0
+     * is 2? We can see that what we did was take the value at cell 0,0, that value was 1,
+     * So we just took 1 + 1 for the other three cells to get 2. In the example of
+     *
+     * 1, 1
+     * 0, 1
+     *
+     * we can see that the largest is just 1, which is essentially 1 + 0, where 0
+     * is the minimum of the three other cells. This makes sense because, although we
+     * are looking for the maximum sub square matrix, in order to do so, we need
+     * ALL other cells to be a square, so we take the min. So what we have is
+     *
+     * if matrix[i][j] == 1
+     *  size = 1 + min(matrix[i+1][j], matrix[i][j+1], matrix[i+1][j+1]);
+     *
+     * If the cell at matrix[i][j], was zero, then we wouldn't do anything.
+     *
+     * Now we see that to compute largest square sub matrix filled with ones, where 0,0 is the top corner,
+     * we need to have computed that value at cell (1, 0), cell(1,1), and cell (0, 1). In turn those values
+     * are dependent on the same three other cells.
+     *
+     * We can see that we end up computing the same value over and over again AND we see that the we have
+     * an optimal substructure, where the solution of i,j is dependent upon the solutions to subsequent calls.
+     *
+     * This means DYNAMMIC programming. In this explanation I started with cells 0,0, but I could have
+     * easily started with cells(array.length - 1, array[0].length - 1), the bottom right corner,
+     * and could have insteade moved toward cell, 0,0
+     *
+     * if matrix[i][j] == 1
+     *  size = 1 + min(matrix[i-1][j], matrix[i][j-1], matrix[i-1][j-1]);
+     *
+     *  We must remember that the literaly definition of the recurrence is
+     *  fn(i, j) is the largest square sub matrix filled with all ones. For the cells that are
+     *  0, then fn of that cell would be zero. So we need to pass another variable to keep track
+     *  of the max.
+     *
+     *  The run time for the recursive solution is 3 ^ (r * c)
+     *
+     * @param input
+     * @return
+     */
+    public int largestSquareMatrixOptimal(int[][] input) {
+        int[] max = new int[1];
+        largestMatrixHelperEff(input, input.length - 1, input[0].length - 1, max);
+        return max[0];
+    }
+
+    private int largestMatrixHelperEff(int[][] input, int row, int col, int[] max) {
+        if (row == 0 || col == 0) {
+            return input[row][col];
+        }
+
+        int left = largestMatrixHelperEff(input, row, col - 1, max);
+        int up = largestMatrixHelperEff(input, row - 1, col, max);
+        int diagonal = largestMatrixHelperEff(input, row - 1, col - 1, max);
+
+        int temp = 0;
+        if (input[row][col] == 1) {
+            temp = 1 + Math.min(Math.min(left, up), diagonal);
+        }
+        max[0] = Math.max(max[0], temp);
+        return temp;
+    }
+
+    /**
+     * Follows directly from the recursive solution. Depending on how we recurse, going from
+     * 0,0 to r,c, or r,c to 0,0, the DP code is generally easier if we go from r,c to 0,0
+     * @param input
+     * @return
+     */
+    public int largestSquareSubMatrixDp(int[][] input) {
+        int[][] table = new int[input.length][input[0].length];
+
+        for (int i = 0; i < table[0].length; i++) {
+            table[0][i] = input[0][i];
+        }
+
+        for (int i = 0; i < table.length; i++) {
+            table[i][0] = input[i][0];
+        }
+
+        int maxDimension = 0;
+        int temp = 0;
+        for (int i = 1; i < table.length; i++) {
+            for (int j = 1; j < table[0].length; j++) {
+                if (input[i][j] == 1) {
+                    temp = 1 + Math.min(Math.min(table[i][j - 1], table[i - 1][j]), table[i - 1][j - 1]);
+                    table[i][j] = temp;
+                    maxDimension = Math.max(temp, maxDimension);
+                } else {
+                    table[i][j] = 0;
+                }
+            }
+        }
+        return maxDimension;
+    }
+
+    public int largestSubMatrixOfOnes(int[][] input) {
+        int[] max = new int[1];
+        largestSubMatrixOfOnesHelper(input, 0, 0, max);
+        return max[0];
+    }
+
+    private int largestSubMatrixOfOnesHelper(int[][] array, int row, int col, int[] max) {
+        if (row == array.length || col == array[0].length) {
+            return 0;
+        }
+
+        if (row == array.length - 1 || col == array[0].length - 1) {
+            return array[row][col];
+        }
+        int right = largestSubMatrixOfOnesHelper(array, row, col + 1, max);
+        int down = largestSubMatrixOfOnesHelper(array, row  + 1, col, max);
+        int diagonal = largestSubMatrixOfOnesHelper(array, row + 1, col + 1, max);
+
+        int temp = 0;
+        if (array[row][col] == 1) {
+            temp = 1 + Math.min(Math.min(right, down), diagonal);
+            max[0] = Math.max(temp, max[0]);
+        }
+        return temp;
+    }
+
+    /**
+     * Folloows directly from the recursive solution. Depending on how we recurse, going from
+     * 0,0 to r,c, or r,c to 0,0, the DP code is generally easier if we go from r,c to 0,0.
+     *
+     * Because we went from 0,0 to r,c...in the bottom up approach, we will literally start
+     * at index, r - 1, c -1, and move back towards 0,0. Now we must remember to keep track of the
+     * max, as the solution stored at cell(0,0), isn't the largest square matrix of the entire
+     * matrix, just the largest sub square whose top left corner is cell(0,0);
+     *
+     * @param input int[][]
+     * @return int
+     */
+    public int largestSubMatrixOfOnesDp(int[][] input) {
+        int[][] table = new int[input.length + 1][input[0].length + 1];
+
+        for (int i = 0; i < table[0].length; i++) {
+            table[table.length - 1][i] = 0;
+        }
+
+        for (int i = 0; i < table.length; i++) {
+            table[i][table[0].length - 1] = 0;
+        }
+
+        table[table.length - 2][table[0].length - 2] = input[input.length - 1][input[0].length - 1];
+
+        int maxDimension = 0;
+        int temp = 0;
+        for (int i = table.length - 2; i >= 0; i--) {
+            int colStart = (i == table.length - 2) ? table[0].length - 3 : table[0].length - 2;
+            for (int j = colStart; j >= 0; j--) {
+                if (input[i][j] == 1) {
+                    temp = 1 + Math.min(Math.min(table[i][j + 1], table[i + 1][j]), table[i + 1][j + 1]);
+                    table[i][j] = temp;
+                    maxDimension = Math.max(temp, maxDimension);
+                } else {
+                    table[i][j] = 0;
+                }
+            }
+        }
+        print2DArray(table);
+        return maxDimension;
+    }
+
+    private boolean hasAllOnes(int[][] array, int startRow, int startCol, int dimension) {
+        for (int i = startRow; i < startRow + dimension; i++) {
+            for (int j = startCol; j < startCol + dimension; j++) {
+                if (array[i][j] == 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

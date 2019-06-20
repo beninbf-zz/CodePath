@@ -150,7 +150,7 @@ public class Permutations {
      * and continue to recurse.
      *
      * The trick to remember is how to exactly perform the swap. Its not enough to merely check
-     * if the two characters you wish to swap the array[i] and array[j] are different.
+     * if the two characters you Wish to swap the array[i] and array[j] are different.
      *
      * No, what you must do is check every character from i to j - 1. If you want to swap array[i] and
      * array[j], then you must check to see if array[j] matches any of the characters from

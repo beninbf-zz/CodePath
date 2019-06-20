@@ -440,4 +440,27 @@ public class DynamicProgrammingTest {
         assertEquals("LIS for {1,3,6,7,9,4,10,5,6} should be 6", 6, testObj.lengthOfLISMemo(A6));
         assertEquals("LIS for {1,3,6,7,9,4,10,5,6} should be 6", 6, testObj.lengthOfLisRec(A6));
     }
+
+    @Test
+    public void testSquareMatix() {
+        int[][] input = {
+            {0, 1, 1},
+            {0, 1, 1},
+            {0, 0, 0}};
+        assertEquals("Should be 2", 2, testObj.largestSquareMatrixOptimal(input));
+        assertEquals("Should be 2", 2, testObj.largestSubMatrixOfOnes(input));
+        assertEquals("Should be 2", 2, testObj.largestSubMatrixOfOnesDp(input));
+        assertEquals("Should be 2", 2, testObj.largestSquareSubMatrixDp(input));
+
+
+        int[][] input1 = {
+            {0, 1, 1, 1},
+            {0, 1, 1, 1},
+            {0, 1, 1, 1},
+            {0, 1, 1, 1}};
+        assertEquals("Should be 3", 3, testObj.largestSquareMatrixOptimal(input1));
+        assertEquals("Should be 3", 3, testObj.largestSubMatrixOfOnes(input1));
+        assertEquals("Should be 3", 3, testObj.largestSubMatrixOfOnesDp(input1));
+        assertEquals("Should be 3", 3, testObj.largestSquareSubMatrixDp(input1));
+    }
 }
