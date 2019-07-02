@@ -28,7 +28,7 @@ EMAIL: 512 B
 PRODUCTION MACHINE CAPACITY:
 4 GHZ, 8 cores, 128 GB RAM, 2TB of locally mounted HDD
 can support 1000 QPS of typical reads
-can support 200 QPS of writes
+can support 500 QPS of writes
 
 TIME CONVERSION:
 1 sec = 1000 ms

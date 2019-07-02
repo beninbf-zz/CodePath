@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class Trie {
-
     public Character rootCharacter;
     public boolean isWord;
     public Map<Character, Trie> characterTrieMap;
@@ -124,7 +123,6 @@ public class Trie {
         if (trie.isWord) {
             allWordSegments.add(new ArrayList<>(wordSegment));
         }
-
         Set<Character> keySet = trie.characterTrieMap.keySet();
         for (Character ch : keySet) {
             wordSegment.add(ch);

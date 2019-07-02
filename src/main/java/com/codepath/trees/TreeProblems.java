@@ -1913,7 +1913,7 @@ public class TreeProblems {
      * createBTreeFromInorderAndPreOrder - To do this problem we must understand the nature of both the PreOrder
      * and Inorder traversals.
      * <p>
-     * If want to build a Binary Tree, then we have to find the root of the tree. How do we find the root?
+     * If we want to build a Binary Tree, then we have to find the root of the tree. How do we find the root?
      * Well we know that the root of a tree in a preOrder traversal, is always the first node. So we merely
      * have to look at the first node of the PreOrder Traversal.
      * <p>
@@ -1923,21 +1923,38 @@ public class TreeProblems {
      * We take the root, that we found from the preOrder traversal, and then we find it in the array of the
      * InOrder traversal. Because the InOrder traversal is such that the nodes are all in order, we then know
      * that all of the nodes to the left of the root in the Inorder Traversal array must make up the left subtree.
-     * All of the nodes to the right of the root node, in the Inorder traversal, make up the right subtree.
+     * We also know that all of the nodes to the right of this node in the Inorder traversal, make up the right subtree
+     * BUT....and this where I got tripped up, because AFTER finding the root of the subtree, and then recursing left...
+     * AFTER we return from recursing left, I wasn't sure how far to move to the right. That actually doesn't matter,
+     * because we are simply moving to the right, until we find the value of our PreOrder[PreOrderIndex[0]] in the
+     * inOrder array.
      * <p>
-     * So, this is where we recurse, this time, looking for the next root from the PreOrder traversal
-     * So just increment the counter in the preOrder traversal by 1, moving it to the right. This next root
-     * will end up being the root of the left sub tree of the BST. We then search for the next root,
-     * in the left portion of the InOrder Traversal.
+     * So initially, we know the root, its simply the value at preOrderIndex = 0, in the preOrder array. After grabbing
+     * this value, and making a root node. We then need to find the position of this root node in the InOrder array.
+     *
+     * We need the position because we are essentially going to recurse, building up the left subtree, with only a
+     * sub array of the InOrder array. So we need a start and an end for this subarray. So, we know the start in this
+     * case, when building up the left subtree, its just 0 (the beginning of the inorder array). But where is the end?
+     * So...once we have the root, obtained from the PreOrder array, we find it in the inOrder array. This index of the root
+     * from the inOrder array, will represent the boundary of the subarray we will recurse on.
+     *
+     * We end up recursing on array[start, inOrderIndexFound - 1]. This sub array will contain all of the values in our left subtree.
+     * When we recurse (and we've already moved the preOrderIndex to the right by one), our current preOrder[preOrderIndex[0]]++
+     * will be our root, and we then find this new root in the Inorder array, again recursing on array[start, inOrderIndex - 1].
+     *
+     * What we need to know, is what our base cases should be, and how to return back up the stack. Well if our start is
+     * greater than the end, we should just return null.
+     *
+     * If our start == end, (after incrementing our PreOrderIndex), we then return that node.
+     *
+     * when we return from building the left subtree, and then recurse to the right, we will be looking at a new sub array,
+     * which will be array[index + 1, end]. When we recurse, our preOrderIndex will be moved over to the right by 1. and we
+     * will then find try to be build a new left tree. The next call will be caught by our base case of start > end.
      * <p>
-     * We continue to do so, until we hit our base case, which is when either the leftBoundary of the
-     * InOrder array is greater than the right boundary, in which case we return null,
-     * or when the InOrder index is equal to the right boundary, in which case we should return the
-     * root from the preOrder array.
-     * <p>
-     * As the recursion returns and travels up the call stack, it will then look to the right of the root in
-     * the Inorder traversal array. As the recursion removes frames from the call stack, it will set the left and right
-     * child nodes of every root in the given stack frame as it moves back up the tree.
+     * An Interesting thing about this recursion is that, when we get to the left most node of the tree, we don't dont
+     * continue to recurse on that nodes left. We stop that, by seeing that our start == end, and hence we just return
+     * that node.
+     *
      * <p>
      * RUNTIME: we have to move through the entire preOrder array, so we know its at least O(n).
      * But at every call, we have to move through at least half of the inOrder traversal array,
@@ -1959,27 +1976,26 @@ public class TreeProblems {
         return createBTreeFromInorderAndPreOrderHelper(preOrder, preOrderIndex, inOrder, 0, inOrder.length - 1);
     }
 
-    private TreeNode<Character> createBTreeFromInorderAndPreOrderHelper(TreeNode<Character>[] preOrder, int[] preIndex, TreeNode<Character>[] inOrder, int inIndex, int rightBoundary) {
-        if (inIndex > rightBoundary) {
+    private TreeNode<Character> createBTreeFromInorderAndPreOrderHelper(TreeNode<Character>[] preOrder, int[] preIndex, TreeNode<Character>[] inOrder, int start, int end) {
+        if (start > end) {
             return null;
         }
-
         TreeNode<Character> root = preOrder[preIndex[0]];
         preIndex[0]++;
-        if (inIndex == rightBoundary) {
+
+        if (start == end) {
             return root;
         }
 
-        int right = inIndex;
-        for (int i = inIndex; i <= rightBoundary; i++) {
+        int index = 0;
+        for (int i = start; i <= end; i++) {
             if (root.getValue().equals(inOrder[i].getValue())) {
-                right = i;
+                index = i;
                 break;
             }
         }
-
-        root.setLeft(createBTreeFromInorderAndPreOrderHelper(preOrder, preIndex, inOrder, inIndex, right - 1));
-        root.setRight(createBTreeFromInorderAndPreOrderHelper(preOrder, preIndex, inOrder, right + 1, rightBoundary));
+        root.setLeft(createBTreeFromInorderAndPreOrderHelper(preOrder, preIndex, inOrder, start, index - 1));
+        root.setRight(createBTreeFromInorderAndPreOrderHelper(preOrder, preIndex, inOrder, index + 1, end));
         return root;
     }
 

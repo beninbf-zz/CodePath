@@ -1174,6 +1174,19 @@ public class TechScreensTest {
             {0, 1, 1, 1}};
         assertEquals("Should be 3", 3, testObj.largestSquareMatrixOptimal(input1));
         assertEquals("Should be 3", 3, testObj.largestSubMatrixOfOnes(input1));
+    }
+
+    @Test
+    public void testGetClosest() {
+        int[] input = {10, 50, 65, 70, 80, 120, 200};
+        assertEquals("closest is 65", 65, testObj.getClosest(input, 60));
+
+        assertEquals("closest is 200", 200, testObj.getClosest(input, 200));
+        assertEquals("closest is 200", 200, testObj.getClosest(input, 210));
+        assertEquals("closest is 10", 10, testObj.getClosest(input, 10));
+        assertEquals("closest is 10", 10, testObj.getClosest(input, 5));
+        assertEquals("closest is 80", 80, testObj.getClosest(input, 89));
+        assertEquals("closest is 80", 80, testObj.getClosest(input, 79));
 
     }
 }

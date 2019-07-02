@@ -3239,6 +3239,44 @@ public class TechScreens {
             }
         }
     }
+
+    public int getClosest(int[] array, int target) {
+        if (target > array[array.length - 1]) {
+            return array[array.length - 1];
+        } else if (target < array[0]) {
+            return array[0];
+        }
+        return getClosestHelper(array, 0, array.length - 1, target);
+    }
+
+    private int getClosestHelper(int[] array, int start, int end, int target) {
+        int mid = start + (end - start)/2;
+        if (target < array[mid]) {
+            if (mid - 1 >= 0 && inBetween(array[mid - 1], target, array[mid])) {
+                if (array[mid] - target <= Math.abs(target - array[mid - 1])) {
+                    return array[mid];
+                } else {
+                    return array[mid - 1];
+                }
+            }
+            return getClosestHelper(array, start, mid, target);
+        } else if (target > array[mid]) {
+            if (mid + 1 < array.length && inBetween(array[mid], target, array[mid + 1])) {
+                if (target - array[mid] <= Math.abs(target - array[mid + 1])) {
+                    return array[mid];
+                } else {
+                    return array[mid + 1];
+                }
+            }
+            return getClosestHelper(array, mid + 1, end, target);
+        } else {
+            return mid;
+        }
+    }
+
+    private boolean inBetween(int lower, int target, int upper) {
+        return target >= lower && target <= upper;
+    }
 }
 
 
