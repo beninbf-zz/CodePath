@@ -1,0 +1,45 @@
+Recursive solution
+
+
+
+A function f(start, end) is defined to denote the minimum operations needed for solving the mtxSizes in the range start…end
+
+
+
+Thus the base case would be
+
+f(i, i+1) = 0
+
+This is because it is denoting a single matrix.
+
+
+
+Lets put a parenthesis at index. We can recur for the cost for start…index and index…end.
+
+
+
+cost[index] = mtxSizes[start]*mtxSizes[index]*mtxSizes[end] + f(start, index) + f(index, end)
+
+
+
+Recurrence relationship for this problem would be
+
+f(start, end) = min(cost[index])
+
+where start<index<end
+
+
+
+Optimal solution
+
+
+
+We can memoize the recurrence relationship mentioned above or build an iterative version for the same problem. We can see there are overlapping subproblems.
+
+We can maintain a 2D table of size nxn. Thus every table cell denotes f(i,j).
+
+
+
+Space Complexity: O(length(mtxSizes)^2)
+
+Time Complexity: O(length(mtxSizes)^3)

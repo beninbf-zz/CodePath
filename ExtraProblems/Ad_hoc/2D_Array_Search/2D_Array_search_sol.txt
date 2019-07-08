@@ -1,0 +1,130 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution.java
+
+
+
+Description:
+
+
+
+A naive approach would be, to iterate over entire input array arr to check if x is present or not.
+
+
+
+Time Complexity:
+
+
+
+O(r*c*q) where r denotes number of rows of arr, c denotes number of columns of arr and q denotes number of queries.
+
+
+
+As we are iterating over entire array for each query, time complexity will be O(r*c) (for each query) and as there are q queries so total time complexity will be O(r*c*q).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+As we are not storing anything extra.
+
+
+
+Space Complexity:
+
+
+
+O(r*c) where r denotes number of rows of arr and c denotes number of columns of arr.
+
+
+
+To store input, it would take O(r*c), auxiliary space used is O(1).
+
+So, total space complexity will be O(r*c).
+
+
+
+
+
+2) optimal_solution.java
+
+
+
+Description:
+
+
+
+An optimal approach would be as follows:
+
+
+
+Steps:
+
+1) Start with top right element arr[0][c-1]
+
+2) Loop: compare this element arr[i][j] with x
+
+   -> If arr[i][j] == x, then return "present"
+
+   -> If arr[i][j] < x then move to next row (i.e. arr[i+1][j])
+
+   -> If arr[i][j] > x then move to column to its left (i.e. arr[i][j-1])
+
+3) repeat the steps in #2 till you find element and return "present" OR if out of bound of matrix then break and return "not present"
+
+
+
+Let say x is not present in first (i-1) rows.
+
+Let's say in ith row, arr[i][j] is largest number smaller than or equal to x.
+
+-> If it is equal to x, then problem solved, directly return “present”.
+
+-> If arr[i][j] < x, it can be implied that x cannot be present at arr[l][m], i < l and j < m as array is row wise and column wise sorted (ascending). So, moving on to next row, (i+1)th row, we can start checking from jth column (i.e. arr[i+1][j]).
+
+-> If arr[i][j] > x, means element x can be present in left side of column jth as row and column are sorted in ascending order. So, we start checking it with arr[i][j-1].
+
+
+
+Time Complexity:
+
+
+
+O((r+c)*q) where r denotes number of rows of arr, c denotes number of columns of arr and q denotes number of queries.
+
+
+
+As for each query maximum iteration over array can be of O(r+c) and as there can be q queries so, total complexity will be O((r+c)*q).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+As we are not storing anything extra.
+
+
+
+Space Complexity:
+
+
+
+O(r*c) where r denotes number of rows of arr and c denotes number of columns of arr.
+
+
+
+To store input, it would take O(r*c), auxiliary space used is O(1).
+
+So, total space complexity will be O(r*c).
+

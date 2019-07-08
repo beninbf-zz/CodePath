@@ -1,0 +1,23 @@
+We have provided only the optimal solution for this problem.
+
+
+
+The problem asks to split a given linked list into two linked list is such a way that consecutive nodes are in different linked list. Which means, nodes in even positions will be in a linked list and nodes in odd positions will be in another linked list. The provided solution creates two linked list. One of these holds nodes of even position and other one holds nodes of odd position.
+
+
+
+Time complexity:
+
+O(N)
+
+
+
+Auxiliary space:
+
+O(N)
+
+
+
+Space complexity:
+
+Including input, O(N)

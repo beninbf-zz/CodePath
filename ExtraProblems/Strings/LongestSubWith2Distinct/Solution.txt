@@ -1,0 +1,109 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution.java
+
+
+
+Description:
+
+
+
+A naive approach would be to iterate over all possible substrings ss of input string s, check if it is a valid (i.e. contains exactly two distinct characters) substring or not. Maximum value of length out of all valid substrings is the required output.
+
+
+
+While iterating over all substrings, we will iterate in such a manner that first all the substrings which starts from 0th index are covered, then the ones which starts from 1st index are covered, then ones from 2nd index, 3rd index and so on. And, while iterating over all substrings starting at ith index, we will break iteration while we hit on third distinct character found at index j>i.
+
+
+
+Time Complexity:
+
+
+
+O(n*n) where n is length of string s.
+
+
+
+In the worst case, where we have only two distinct characters in the whole string, all substrings are valid. So, using this approach, code will iterate over all n^2 substrings.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+We are not storing anything extra.
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is length of string s.
+
+
+
+Input of function will take O(n) to store string s and as auxiliary space used is O(1).
+
+O(n) + O(1) → O(n).
+
+
+
+2) optimal_solution.java
+
+
+
+Description:
+
+
+
+An optimal approach would be as follows:
+
+
+
+Let say, for current substring, starting point is i and j (for current value of i) is the index where there is first third distinct character, considering substring starting at i.
+
+Now, using two pointer approach, move i forward (i.e i=i+1) until there is only two distinct characters in window [i,j] representing substring. Maintain a max variable 'res', which will be updated each time you find a valid substring while iterating string using two pointer approach. For maintaining frequency of characters in current window [i,j], we can use HashMap or similar data structure which allows O(1) amortized time complexities for lookup and add.
+
+
+
+Time Complexity:
+
+
+
+O(n) where n is length of string s.
+
+
+
+As in this two pointer approach, none of the two pointers ever moves backward (i.e. to smaller value than its current value), complete string will be iterated twice only. Twice iteration of string will take O(n).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+We are just maintaining frequency map for at max three characters at any time hence O(1).
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is length of string s.
+
+
+
+Input of function will take O(n) to store string s and as auxiliary space used is O(1).
+
+O(n) + O(1) → O(n).

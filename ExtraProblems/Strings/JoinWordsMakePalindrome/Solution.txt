@@ -1,0 +1,139 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution.java
+
+
+
+Description:
+
+
+
+A naive approach would be to iterate over all ordered pairs of words from list words, i.e. (words[i], words[j]) such that i != j, 0<=i<n, 0<=j<n, check if words[i] + words[j] is palindrome or not. If we found such pair of words of forming palindrome then return that pair of words.
+
+
+
+Time Complexity:
+
+
+
+O((n^2)*l), where n is size of list words and l is the maximum length of words in list words.
+
+
+
+As there are total 2*(nC2) ordered pair of words, and for each pair, for finding whether that pair is forming palindrome or not will take O(l).So, time complexity of this solution will be O((n^2)*l).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(l) where l is the maximum length of words in list words.
+
+
+
+As we are storing result list of two words of maximum length l.
+
+
+
+Space Complexity:
+
+
+
+O(n*l) where n is size of list words and l is the maximum length of words in list words.
+
+
+
+Input will take space O(n*l) because we are storing n words of list words where maximum possible length of word can be l and auxiliary space used is O(l). So, O(n*l) + O(l) -> O(n*l).
+
+
+
+2) optimal_solution.java
+
+
+
+Description:
+
+
+
+A better approach would be as follows from some observations:
+
+
+
+Let say there exists a pair of words (words[x], words[y]), such that result = (words[x] + words[y]) is a palindrome.
+
+
+
+Two cases are possible here:
+
+
+
+CASE 1: words[x].length() >= words[y].length()
+
+
+
+Iterating over words, considering the word in the current iteration as xth word in words. Task is to find out if there exists some yth word, such that words[x] + words[y] is a palindrome. Now, if such y exists, it must be of the form stringReverse(words[x].substring(0, k)), for some 0 <= k < words[x].length().
+
+So, now we only need to find such k, such that (words[y] == stringReverse(words[x].substring(0, k))) and (words[x].substring(k+1, words[x].length())) is a palindrome, if (k+1< words[x].length())
+
+
+
+CASE 2: words[x].length() < words[y].length()
+
+Iterating over words, considering the word in the current iteration as xth word in words. Task is to find out if there exists some yth word, such that words[y] + words[x] is a palindrome. Now, if such y exists, it must be of the form stringReverse(words[x].substring(k, words[x].length())), for some 0 <= k < words[x].length().
+
+So, now we only need to find such k, such that (words[y] == stringReverse(words[x].substring(k, words[x].length()))) and (words[x].substring(0, k)) is a palindrome, if (k>0)
+
+
+
+Both cases requires a quick lookup of words in list words. So, we can use hashset or hashMap here for constant time (amortized time) lookup of words. Also, in some cases, for eg. "aaaaa", we need to know the frequency of words so that
+
+same word (same indexed word in list of words) doesn't get picked up as other word to make a palindrome. So, hashmap having word as key and frequency of that word as value will work here.
+
+
+
+See the implementation for better understanding.
+
+
+
+
+
+Time Complexity:
+
+
+
+O(n*(l^2)) where n is size of list words and l is the maximum length of words in list words.
+
+
+
+As while iterating over list of words, considering the word in current iteration as left_word, we have to do two lookups and two palindrome check for each k, 0 <= k < length(left_word), time complexity will be O(l^2) for each word left_word.
+
+So, total time complexity will be O(n*(l^2)).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n*l) where n is size of list words and l is the maximum length of words in list words.
+
+
+
+As we are maintaining a hashmap of frequencies of words for n words of list words, space complexity to maintain this will be O(n*l) and we are storing result list of two words of maximum length l.
+
+O(n*l) + O(l) → O(n*l)
+
+
+
+Space Complexity:
+
+
+
+O(n*l) where n is size of list words and l is the maximum length of words in list words.
+
+
+
+Input will take space O(n*l) because we are storing n words of list words where maximum possible length of word can be l and auxiliary space used is O(n*l). So, O(n*l) + O(n*l) -> O(n*l).

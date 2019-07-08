@@ -1,0 +1,28 @@
+We have provided only optimal solution for this problem. There are few observations:
+
+→ i’th character of input string is placed in i’th column of a row.
+
+→ 0th index character of string is placed in 3rd row. Then 4th, 8th and go on.
+
+→ 1st index character of string is placed in 2nd row. Then 3rd, 5th and go on.
+
+→ 2nd index character of string is placed in 1st row. Then 6th, 10th and go on.
+
+So, we can construct 3 string representing 3 rows using the above information.
+
+
+Time complexity:
+
+O(N)
+
+
+
+Auxiliary space:
+
+O(3*N) because of a 2D array
+
+
+
+Space complexity:
+
+Including input, O(3*N).

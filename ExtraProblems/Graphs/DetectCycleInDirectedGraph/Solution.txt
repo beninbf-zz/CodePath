@@ -1,0 +1,58 @@
+We have provided solution which contain necessary comments to understand the approach used:
+
+
+
+1) optimal_solution.java
+
+
+
+Time Complexity:
+
+
+
+O(N + M) where N is number of vertices and M is number of edges.
+
+
+
+For this solution, we used DFS (Depth First Traversal). DFS is used to traverse graph and detect cycle in graph. Traversing graph using DFS will produces a tree. We need to find out if any cycle is present in the graph or not? So, condition for cycle to be present in graph will be if any edge is from node to one of its ancestor in the tree produced by DFS, this type of edge is called back edge.
+
+We are iterating over all the unvisited nodes because if
+
+1. Graph is disconnected means graph have more than one component
+
+2. From the vertex we are starting DFS considering that node as root and not able to reach all other vertices due to no valid path.
+
+So, We are checking for back edges in all the components of graph.
+
+
+
+How to detect a back edge ..?
+
+We can keep track of vertices which are currently present in the recursion stack of DFS function that is hasCycleUtil(). If we are able to reach a vertex which is already present in recursion stack then we can declare that there is cycle in the graph and that edge which is connecting the current vertex to the ancestor vertex (vertex in recursion stack) is a back edge.
+
+
+
+We have used visited set to maintain visited vertices and is_in_stack set to maintain vertices present in recursion stack.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(N + M).
+
+As we are using two hashsets, One to maintain elements of stack and other to maintain visited vertices and also we are maintaining adjacency list for edges.  
+
+
+
+Space Complexity:
+
+
+
+O(N + M).
+
+Input is O(M) because we are storing m edges and each edge occupies O(1) space and auxiliary space used is O(N + M). So, O(M) + O(N + M) -> O(N + M).
+
+
+

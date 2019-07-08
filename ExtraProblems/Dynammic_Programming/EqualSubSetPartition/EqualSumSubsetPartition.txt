@@ -1,0 +1,133 @@
+Equal Sum Subset Partition
+
+
+
+Problem Statement:
+
+
+
+Given an array s of n integers. Your task is to partition the given set s into two subsets, say s1 and s2 such that sum of all elements in s1 is equal to the sum of all elements in set s2. If it is not possible to partition the array s then returns a blank array else return a boolean array of size n where i (0<=i<n) element is true if it is part of s1 and false if it is part of s2.  
+
+
+
+Input/Output Format For The Function:
+
+
+
+Input Format:
+
+
+
+The first and only parameter of the function that is to be implemented is the array of integers s, that is to be partitioned.
+
+
+
+Output Format:
+
+
+
+If it is possible to partition the given array s in an above-said manner then return a boolean array of size n, where its i (0<=i<N) element is true if it is the part of s1 else false if it is the part of s2. In case it is not possible to partition the array s, then return an empty array.
+
+
+
+Input/Output Format For The Custom Input:
+
+
+
+Input Format:
+
+
+
+The first line of the text file contains one single integer n, denoting number of elements in array s.
+
+Next n lines of the input, each line contains single integer denoting the ith element in the array s.
+
+
+
+If n = 3 and s = [1, 0, -1], then custom input format will be:
+
+
+
+3
+
+1
+
+0
+
+-1
+
+
+
+Output Format:
+
+
+
+If a valid partition exists, then the first line contains an integer s1, denoting the size of the first subset and next S1 line contains
+
+ith elements in the set s1 in the order they appear in the input array s. Next line contains an integer s2, denoting the size of the second subset. Next s2 lines will contain integers denoting the ith element in the set s2 in the order they appear in the input array s.
+
+In case a valid partition is not possible the output contains only one line having integer -1.
+
+
+
+For the above-provided custom input, one possible custom output could be:
+
+
+
+2
+
+1
+
+-1
+
+1
+
+0
+
+
+
+Constraints:
+
+
+
+1 <= n <= 100
+-100 <= elements in s <= 100
+
+
+Sample Test Case:
+
+
+
+n = 6
+
+s = [10, -3, 7, 2, 1, 3]
+
+
+
+Sample Output:
+
+
+
+[True, True, False, False, False, True]
+
+
+
+Explanation:
+
+
+
+For the above sample output.  There is only one possible partition to satisfy the equal subset sum condition. The two subsets are as follows:
+
+For s1 we pick the 0, 1 and 5 indexed elements
+
+s1 = [ 10 , -3 , 3 ]
+
+Here, the sum elements of s1 is 10 + 3 – 3 = 10
+
+For s2 we pick the 2, 3 and 4 indexed elements
+
+s2 = [ 7 , 2 , 1 ]
+
+Here, the sum elements of s1 is 7 + 2 + 1 = 10
+
+Hence, the sum of both the subsets s1 and s2 is 10.

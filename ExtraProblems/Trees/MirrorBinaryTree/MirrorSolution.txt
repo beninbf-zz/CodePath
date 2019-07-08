@@ -1,0 +1,78 @@
+We have provided two solutions: a recursive one and and an iterative one.
+
+
+
+1) optimal_solution1.java
+
+
+
+This is a recursive solution. The main task is to swap left and right children for every node of the tree. We are calling function recursively and making sure that leaf nodes are handled first then their parents and it goes up to the root node.
+
+
+
+Time Complexity:
+
+
+
+O(n) where n is the number of tree nodes.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n) where n is the number of tree nodes. That extra space is used for the call stack.
+
+
+
+Space Complexity:
+
+
+
+O(n).
+
+Input is O(n) because we are storing n nodes relationships and each relationship occupies O(1) space and auxiliary space used is O(n). So, O(n) + O(n) -> O(n).
+
+
+
+2) optimal_solution2.java
+
+
+
+This solution traverses the tree breadth first using a loop and a queue, without making use of recursion.
+
+
+
+We initialize the queue with the root node. Then we do the following until the queue is empty:
+
+Get next node from the queue
+Swap its left and right child nodes
+Push its left and right children into the queue
+
+
+Time Complexity:
+
+
+
+O(n) where n is the number of nodes.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n) where n is the number of nodes.
+
+We are using queue for storing nodes to do BFS traversal over tree. In the worst case scenario, queue size will be n.
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is the number of nodes.
+
+Input is O(n) because we are storing n nodes relationships and each relationship occupies O(1) space and auxiliary space used is O(n). So, O(n) + O(n) -> O(n).

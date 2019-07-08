@@ -1,0 +1,247 @@
+We will learn recursive approach by taking an example:
+
+
+
+Let's take example from sample input:
+
+
+
+inorder[] = [3, 2, 1, 5, 4, 6]
+
+preorder[] = [1, 2, 3, 4, 5, 6]
+
+
+
+Here, as per preorder traversal definition it traverse the tree recursively by travesing the root first, then left subtree and then right subtree.
+
+
+
+
+
+So, we can say that first value of preorder[] is root node value of binary tree, here its 1.
+
+
+Now, search the index of that value in inorder[]. Say you find it at position i, once you find it, make note of elements which are left to i (This will construct the left subtree) and elements which are right to i (This will construct the right subtree).
+
+
+See the above steps and recursively build left subtree and link it root.left and recursively build right subtree and link it root.right.
+
+
+
+Let's have a look how recursion will happen in our case,
+
+
+
+Root:
+
+
+
+(1's position confirmed)
+
+
+
+           1
+
+          / \
+
+   [3,2]    [5,4,6]
+
+
+
+
+
+In the left subtree of the root:
+
+
+
+(2's position confirmed)
+
+
+
+           1
+
+          / \
+
+        2 [5,4,6]
+
+        |
+
+       [3]
+
+
+
+
+
+(3's position confirmed)
+
+
+
+           1
+
+          / \
+
+        2 [5,4,6]
+
+       /
+
+     3
+
+
+
+
+
+In the right subtree of the root:
+
+
+
+(4's position confirmed)
+
+
+
+           1
+
+          / \
+
+        2 4
+
+       / |
+
+     3 [5,6]
+
+
+
+
+
+(5's position confirmed)
+
+
+
+           1
+
+          / \
+
+        2 4
+
+       / / |
+
+     3 5 [6]
+
+
+
+
+
+(6's position confirmed)
+
+
+
+           1
+
+          / \
+
+        2 4
+
+       / / \
+
+     3 5    6
+
+
+
+
+
+So, the above tree will be our binary tree for given test case. Return the root treenode which is 1 in this case.
+
+
+
+
+
+1) brute_solution.java
+
+
+
+Time Complexity:
+
+
+
+O(n^2), here n is length of given inorder[] or preorder[] array, in other words count of total treenodes of binary tree.
+
+
+
+Suppose you are given tree in which all nodes have only left child, there is no right child of any treenode, then for every preorder[] value it will take O(n) to search in inorder[].
+
+
+
+So, In worst case time complexity will be O(n^2).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n).
+
+
+
+As we are constructing the binary tree and storing values in treenodes. Every node will take constant space to store value and addresses for left and right treenode. So, it will be O(n).
+
+
+
+Space Complexity:
+
+
+
+O(n).
+
+
+
+As input is O(n) and auxiliary space used is also O(n).
+
+
+
+So, O(n) + O(n) -> O(n).
+
+
+
+
+
+2) optimal_solution.java
+
+
+
+Time Complexity:
+
+
+
+O(n).
+
+
+
+We are using hashmap to search index of value in inorder[], and hashmap takes O(1) time (search in hash map can be upto O(n) in worst case, when values are in wide range and carefullly chosen) to search value. So, in every case time complexity will be O(n).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n).
+
+
+
+As we are constructing binary tree and storing value in treenode, so every node will take constant space to store value and addresses for left and right treenode. Here, we are using hashmap to store inorder[] values with index and it will take O(n) space to store <value,index> pair. So, Auxiliary space will be O(n) + O(n) -> O(n).
+
+
+
+Space Compelxity:
+
+
+
+O(n).
+
+
+
+As input is O(n) and auxiliary space used is also O(n).
+
+
+
+So, O(n) + O(n) -> O(n).

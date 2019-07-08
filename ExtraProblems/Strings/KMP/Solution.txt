@@ -1,0 +1,212 @@
+Given a text string t of length n and a pattern string p of length m, return start indices of all occurrences of p in t.
+
+
+
+A naive approach would be iterate over all possible substrings of text t having length m and compare it with pattern p.
+
+As there are total (n-m+1) such substrings, each of length m, total no of comparisons would be O(n*m)
+
+
+
+Time Complexity: O(n*m) for each query
+
+Over all time complexity: O(q*n*m)
+
+Auxiliary Space Used (excluding output space): O(1)
+
+Space Complexity: O(n+m)
+
+File: brute_force.java
+
+
+
+An optimal approach would be as follows:
+
+
+
+KMP (Knuth Morris Pratt) Pattern Matching Algorithm
+
+
+
+The Naive pattern searching algorithm doesn’t work well in many cases as we slide the pattern by one and compare all
+
+characters at each shift untill we find a mismatch.
+
+Following are some examples.
+
+
+
+t = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCB"
+
+p = "CCCCCB"
+
+
+
+t = "CDCDCDECDCDCDECDCDCDE"
+
+p = "CDCDCE"
+
+
+
+The basic idea behind KMP’s algorithm is: whenever we detect a mismatch (after one or more matches), we already know
+
+some of the characters are going to match in the text of next window. We take advantage of this information to avoid
+
+matching the characters that we know will anyway match and thus avoiding redundant comparisons.
+
+
+
+Example:
+
+t = "CCCCCDCCCDC"
+
+p = "CCCC"
+
+
+
+We compare first window of text t with pattern p: (i.e. starting with 1st char of t)
+
+t = "CCCCCDCCCDC"
+
+p = "CCCC"  [Initial position]
+
+We find a match. This is same as naive algorithm.
+
+
+
+In the next step, we compare next window of t with p (i.e. starting with 2nd char of t)
+
+t = "CCCCCDCCCDC"
+
+p =  "CCCC" (Pattern shifted one position)
+
+This is where KMP does optimization over naive. In this second window, we only compare 4th A of pattern with 4th
+
+character of current window of text to decide whether current window matches or not. Since we know first three
+
+characters will anyway match, we skipped matching first three characters.
+
+
+
+How to know how many characters to be skipped?
+
+To know this, we pre-process pattern and prepare an integer array lps[] that tells us the count of characters to be
+
+skipped. To be precise, lps[i] = x shows that if first un-matched character is found at (i+1)th char of p, then for
+
+next comparison, you can skip first x chars of p.
+
+
+
+Preprocessing:
+
+
+
+KMP algorithm preprocesses p[] and constructs an auxiliary array lps[] of size m (same as size of pattern) which is
+
+used to skip characters while matching.
+
+Name lps indicates longest proper prefix which is also suffix. A proper prefix is prefix with whole string not allowed.
+
+For example, prefixes of “ABC” are “”, “A”, “AB” and “ABC”. Proper prefixes are “”, “A” and “AB”.
+
+Suffixes of the string are “”, “C”, “BC” and “ABC”.
+
+For each substring p[0..i] where i = 0 to m-1, lps[i] stores length of the maximum matching proper prefix which is
+
+also a suffix of the substring pat[0..i].
+
+ lps[i] = the longest proper prefix of pat[0..i]
+
+            which is also a suffix of pat[0..i].
+
+Note : lps[i] could also be defined as longest prefix which is also proper suffix. We need to use "proper" at atleast
+
+one place to make sure that the whole string is not considered.
+
+
+
+Examples of lps[] construction:
+
+For the pattern “CCCC”,
+
+lps[] is [0, 1, 2, 3]
+
+
+
+For the pattern “CDEFG”,
+
+lps[] is [0, 0, 0, 0, 0]
+
+
+
+For the pCttern “CCDCCECCDCC”,
+
+lps[] is [0, 1, 0, 1, 2, 0, 1, 2, 3, 4, 5]
+
+
+
+For the pCttern “CCCDCCCCCD”,
+
+lps[] is [0, 1, 2, 0, 1, 2, 3, 3, 3, 4]
+
+
+
+For the pCttern “CCCDCCC”,
+
+lps[] is [0, 1, 2, 0, 1, 2, 3]
+
+
+
+To build lps array, for lps[i], we keep track of the length of the longest proper prefix suffix value for the previous
+
+index(let call it 'len'). We initialize lps[0] and len as 0. If p[len] and p[i] matches, we increment len by 1 and
+
+assign the incremented value to lps[i]. If p[i] and p[len] do not match and len is not 0, we update len to lps[len-1].
+
+See the implementation for better understanding.
+
+
+
+We use a value from lps[] to decide the next characters to be matched. As mentioned before, the idea is to not match a
+
+character that we know will anyway match.
+
+
+
+How to use lps[] to know a number of characters to be skipped?
+
+
+
+We start comparison of p[j] with j = 0 with characters of current window of text.
+
+We keep matching characters t[i] and p[j] and keep incrementing i and j while pat[j] and txt[i] keep matching.
+
+When we see a mismatch, we know that characters p[0,1,..,j-1] match with t[i-j,..,i-1]
+
+(Note that j starts with 0 and increment it only when there is a match).
+
+We also know that lps[j-1] is count of characters of p[0,1,..,j-1] that are both proper prefix and suffix.
+
+From above two points, we can conclude that we do not need to match these lps[j-1] characters with txt[i-j,..,i-1]
+
+because we know that these characters will anyway match.
+
+
+
+See the implementation for better understanding.
+
+
+
+Time Complexity: O(n) for each query
+
+Over all time complexity: O(q*n)
+
+Auxiliary Space Used (excluding output space): O(m)
+
+Space Complexity: O(n+m)
+
+File: optimal_solution.java
+
+
+

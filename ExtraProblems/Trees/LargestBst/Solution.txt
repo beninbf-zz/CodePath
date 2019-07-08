@@ -1,0 +1,75 @@
+We have provided two solution for this problem. other_solution.cpp is the brute force solution and optimal_solution.cpp is the optimal solution.
+
+
+
+1.other_solution.cpp:
+
+
+
+The problem asked to find out the largest BST from the given tree. As we know, in a tree having N nodes there are N subtrees, so there can be N BST. We have to find out the size of the largest one. In this solution we check if a subtree is a BST or not. If it is a BST, counted the number of nodes in the subtree. Let’s say there are K subtree which are BST also. We know size of the K BST. Maximum of those size is our desired result.
+
+
+
+Time complexity:
+
+O(N^2)
+
+
+
+Auxiliary space:
+
+O(N^2) because of using two recursion.
+
+
+
+Space complexity:
+
+Including input, O(N^2)
+
+
+
+
+
+2.optimal_solution.cpp:
+
+
+
+In this solution we first checked if the left subtree and right subtrees are BST or not. There are few cases. Cases are described below:
+
+Leaf node: Leaf node is a valid BST
+Both subtrees are valid BST:
+If root’s value is between left child value and right child value, then subtree rooted at current tree is a valid, otherwise not.
+
+
+
+One of the subtree is not a valid BST:
+Subtree rooted at current tree is not a valid BST.
+
+
+
+In each case, we few parameters of current subtree. To make this process easier, we used a class which held 5 values. These are:
+
+mn: Minimum node value of current subtree
+mx: Maximum node value of current subtree
+isBST: true or false to denote whether current subtree is a valid BST or not
+size: Number of nodes in current subtree
+mxSize: Size of the largest BST in current subtree
+Please note that, when isBST is false, variables mn, mx and size are insignificant. The mxSize variables stores the result we are expecting.
+
+
+
+Time complexity:
+
+O(N)
+
+
+
+Auxiliary space:
+
+O(N) because of using two recursion.
+
+
+
+Space complexity:
+
+Including input, O(N)

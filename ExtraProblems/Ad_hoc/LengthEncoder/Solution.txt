@@ -1,0 +1,18 @@
+We have provided only optimal solution for this problem. The problem asks to encode the input string in such a way so that it’s length remain same or decrease. To do so, we counted repeated consecutive characters. If the count is more than one, we replaced the repeated portion by the number following the character only.
+
+
+Time complexity:
+
+O(N)
+
+
+
+Auxiliary space:
+
+O(N) because of storing output
+
+
+
+Space complexity:
+
+Including input, O(N).

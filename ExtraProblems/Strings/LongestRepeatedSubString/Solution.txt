@@ -1,0 +1,224 @@
+Given a string str of length n, find the longest repeated substring in it.
+
+
+
+Naive approach would be as follows:
+
+Iterating over all possible non empty substrings, find the no. of occurrences of each substring in inputStr. The longest length substring having no. of occurrences greater than 1 is the required substring.
+
+
+
+As there are total O(n^2) substrings, and for each substring, we are computing its no. of occurrences in O(n^2), time complexity of this approach would be O(n^4)
+
+
+
+Time complexity: O(n^4)
+
+Auxiliary Space Used: O(n)
+
+Space Complexity: O(n)
+
+File: brute_force.java
+
+
+
+To find the no. of occurrences of substring in inputStr here, we can use any linear order pattern matching algorithm, for example KMP. Then, we will be able to compute no. of occurrences for each possible substring in O(n) time complexity. Time complexity of the above mentioned approach using this optimization will be O(n^3).
+
+
+
+(
+
+Notations:
+
+- lrs => Longest Repeated Substring
+
+- lrslen => length of Longest Repeated Substring
+
+- ith suffix of string str => substring starting at index i and ending at end of string
+
+- lcp => longest common prefix
+
+)
+
+
+
+Better approach would be as follows:
+
+
+
+Let's say we have lrs of length lrslen, which starts at ith index and jth index of inputStr. That means longest matching prefix of ith suffix and jth suffix is lrs. As it is lrs, no other pair of distinct suffixes has longer matching prefix.
+
+So, our problem boils down to finding the length of longest matching prefix for all pair of distinct suffixes and the pair (xth suffix, yth suffix) with largest length of lcp will lead to the solution.
+
+This is a dynamic programming problem.
+
+Let say lcp[i][j] denotes longest common prefix for a pair of ith suffix and jth suffix. Then,
+
+
+
+if inputStr[i] == inputStr[j]
+
+  lcp[i][j] = 1 + lcp[i+1][j+1]
+
+else
+
+  lcp[i][j] = 0
+
+
+
+And lrslen = max(lcp[i][j]), where i!=j, 0 <= i,j <= n-1
+
+And let say, (x,y) is a value of (i,j) for which lrslen = lcp[i][j], then inputStr.substring(x,x+lrslen-1) is the required lrs.
+
+
+
+As we are finding lcp, in O(1), for all O(n^2) pair of suffixes, time complexity will be O(n^2) and as we need to store entire lcp array of size n*n, space complexity will be O(n^2).
+
+Space complexity can be optimized to O(n) with a better implementation of this approach. (Exercise for reader :D )
+
+
+
+Time complexity: O(n^2)
+
+Auxiliary Space Used: O(n^2)
+
+Space Complexity: O(n^2)
+
+File: other_solution.java
+
+
+
+It can be further optimized using Suffix Tree Data Structure.
+
+
+
+Please read about what suffix tree is and its construction from:
+
+https://www.geeksforgeeks.org/ukkonens-suffix-tree-construction-part-1/
+
+
+
+(
+
+- Path length of node here means no. of characters in path from root to this node, unless explicitly mentioned other
+
+meaning
+
+- Just to be clear, root node is not considered as an internal node
+
+- ith suffix is a suffix having start index i
+
+- ith suffix has suffixIndex = i
+
+- Each node in Suffix Tree constructed here has fields: begin, end, depth, parent, childrens[], suffixIndex, suffixLink
+
+)
+
+
+
+As mentioned in previous approach, our problem of finding longest repeated substring boils down to finding a pair of suffixes having longest common prefix.
+
+Rewriting this in context of suffix tree, we need to find node resNode, such that:
+
+- resNode is a maximum path length node such that more than one leaf node in it's subtree, i.e. resNode has more than one suffixes ends in resNode's subtree.
+
+That implies resNode is one of the internal nodes.
+
+
+
+Now the claim is, the resNode is one of the immediate parent nodes of leaf nodes.
+
+
+
+To prove this claim, let's say resNode is not one of the immediate parent nodes of leaf nodes. That implies resNode has atleast one internal node iNode as it's child node. Now as iNode is an internal node, it has more than one leaf node in it's subtree. Also, as it is child of resNode, pathLength(iNode)>pathLength(resNode) always as edge between resNode and iNode must contain atleast one character. CONTRADICTION as we found another node iNode in suffix tree which has more than one leaf in it's subtree and it's pathlength is greater that pathlength of resNode. So, our assumption that resNode is not one of the immediate parent nodes of leaf nodes can't be true.
+
+
+
+So, we are now ready with all subparts to solve this problem.
+
+
+
+Here is the pseudoCode.
+
+
+
+lrsLength = 0, lrsSuffixIndex=-1
+
+findLRS(Node node){
+
+  isLeaf = true;
+
+  for (Node childNode : node.childrensList) {
+
+    isLeaf = false;
+
+    findLRS(childNode);
+
+  }
+
+  if (isLeaf) {
+
+    currLength = node.parent.pathLength;
+
+    if (currLength > lrsLength) {
+
+      lrsLength = currLength;
+
+      lrsSuffixIndex = node.suffixIndex;
+
+    }
+
+  }
+
+}
+
+
+
+Substring starting at (lrsSuffixIndex) and ending at (lrsSuffixIndex+lrsLength-1) is the longest repeated substring
+
+(There maybe multiple lrs in inputStr. Here, we are finding any one.)
+
+
+
+As time complexity to construct suffix tree is O(n), and we are traversing all O(n) nodes of suffix tree to find lrs, overall time complexity of solution will be O(n).
+
+As there are O(n) nodes in suffix tree, overall space complexity of this approach will be O(n).
+
+
+
+There are minor changes in implementation of this approach. See the solution code file for better understanding of approach and implementation.
+
+
+
+Time complexity: O(n)
+
+Auxiliary Space Used: O(n)
+
+Space complexity: O(n)
+
+File: optimal_solution.java
+
+Reference : https://sites.google.com/site/indy256/algo/suffix_tree
+
+          https://en.wikipedia.org/wiki/Ukkonen%27s_algorithm
+
+
+
+We note that time and space complexities of suffix tree construction depends on size of allowed set of characters, depending on the type of implementation. Ukkonen’s algorithm for suffix tree construction, which we have used here, runs in O(n) if size of allowed set of characters is constant and O(n*NO_OF_CHARACTERS) without this assumption. As we have constant size of set of allowed characters mentioned in this problem, it is O(n) time and space complexity.
+
+
+
+Exercise for readers:
+
+- This problem can also be solved using:
+
+1. Suffix array
+
+2. String hashing, binary search
+
+
+
+- Extension of this problem:
+
+Find longest repeated substring for a given string s of length n, which occurs atleast k times. Same constraints.
+

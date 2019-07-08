@@ -1,0 +1,111 @@
+Skyline
+
+
+
+Problem Statement:
+
+
+
+Given n buildings on a 2D plane, find the skyline of these buildings. Each building on the 2D plane has a start coordinate, end coordinate, and height. The skyline is defined as a unique representation of rectangular strips of different heights which are created after the overlap of multiple buildings in the 2D plane. Refer this image for clarity, on the left are multiple buildings and on the right is the skyline for the same. The output skyline is sorted on the x coordinate of the rectangular strip.
+
+
+
+
+
+
+
+Input/Output Format For The Function:
+
+
+
+Input Format:
+
+
+
+The input of buildings is given in a 2D integer array format. The outer array contains multiple buildings where each building is an array of integers of size 3. The first integer represents the start coordinate of the building, the second integer represents the end coordinate of the building and the third integer represents its height.
+
+
+
+Output Format:
+
+
+
+Return a 2D integer array. The outer array has different rectangular strips, each element is an array of size two. The first element in the inner array is the x coordinate of the strip and the second element is the y coordinate of the strip (red dots in the image above).
+
+
+
+Input/Output Format For The Custom Input:
+
+
+
+Input Format:
+
+
+
+The first line in the input contains an integer n, the number of buildings. The next n lines contain three integers: x, y, height representing the buildings.
+
+
+
+Output Format:
+
+
+
+Each line represents the unique rectangular strip in a sorted format. Each line has 2 integers, x0, and y0 coordinates respectively of the strip.
+
+
+
+Constraints:
+
+
+
+1 <= n <= 10^5
+1 <= x, y, height <= 2 * 10^9
+
+
+Sample Test Case:
+
+
+
+Sample Input:
+
+
+
+5
+
+2 9 10
+
+3 7 15
+
+5 12 12
+
+15 20 10
+
+19 24 8
+
+
+
+Sample Output:
+
+
+
+2 10
+
+3 15
+
+7 12
+
+12 0
+
+15 10
+
+20 8
+
+24 0
+
+
+
+Explanation:
+
+
+
+From the image referenced above, we see the blue building at the start and the corresponding red dot in the right image at (2,10). The next change in skyline occurs at an x coordinate of 3 with red building coming up at the height of 15, so in the output, the next line is printed as 3 15. Similarly, all the buildings are traversed to find the output as given in the sample output section.

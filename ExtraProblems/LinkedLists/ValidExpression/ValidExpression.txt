@@ -1,0 +1,128 @@
+Valid Expression
+
+
+
+Problem Statement:
+
+
+
+You have to check whether a given string is a valid mathematical expression or not. The given string is considered to be valid if it contains matching opening and closing parenthesis as well as valid mathematical operations. The string contains the following set of parentheses ‘(‘, ’)’, ’[’, ’]’, ’{’, ’}’, numbers from 0 to 9 and following operators ‘+’, ’-’ and ‘*’. A expression containing only parentheses is considered to be valid if it contains correct opening and closing parenthesis. Example: “{()}” is considered valid.
+
+
+
+Input/Output Format For The Function:
+
+
+
+Input Format:
+
+
+
+There is a single argument in the input, a string named expression.
+
+
+
+Output Format:
+
+
+
+Return a Boolean value of true if the expression is valid else return the value false.
+
+
+
+Input/Output Format For The Custom Input:
+
+
+
+Input Format:
+
+
+
+The first line of input contains string expression.
+
+
+
+If expression = “(1+2)*3” then input should be:
+
+
+
+(1+2)*3
+
+
+
+Output Format:
+
+
+
+Output in a single line an integer value which is either 1 or 0 if the result is true and false respectively.
+
+
+
+For input expression = “(1+2)*3”
+
+
+1
+
+
+
+Constraints:
+
+1 <= length(expression) <= 100000
+Characters in expression string can be from ‘+’, ‘-’, ‘*’ and [0-9].
+
+
+Sample Test Cases:
+
+
+
+Sample Test Case 1:
+
+
+
+Sample Input 1:
+
+
+
+{(1+2)*3}+4
+
+
+
+Sample Output 1:
+
+
+
+1
+
+
+
+Explanation 1:
+
+
+
+We can clearly see that the above expression is a valid mathematical expression, as well as the parentheses, are valid.
+
+
+
+Sample Test Case 2:
+
+
+
+Sample Input 2:
+
+
+
+((1+2)*3*)
+
+
+
+Sample Output 2:
+
+
+
+0
+
+
+
+Explanation 2:
+
+Here the parentheses are valid but the mathematical expression is not valid. There is an operator ‘*’ without any operand after it.

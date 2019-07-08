@@ -1,0 +1,174 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution.java
+
+
+
+Description:
+
+
+
+This approach is very simple and a brute force solution. For every query word find all first index of character of word from text string which is matching.
+
+
+
+Time Complexity:
+
+
+
+O(n*q*l) where n is number of words in text string and q is number of queries of words and l is maximum length of word.
+
+
+
+As we are finding solution for each query in O(n*l) and there can be q queries so it will take O(n*q*l) time.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(q+n) where n is number of words in text string and q is number of queries of words.
+
+As we storing indices of query words which we found and as it is possible that result list can contain all indices of words of text string which can be equal to n. (Given that the query words will be unique, hence any word in text string can match <= 1 query word. Hence summation of matching indices in returned list of lists can not be more than n .)
+
+
+
+Space Complexity:
+
+
+
+O((n+q)*l) where n is number of words in text string, q is number of queries of words, l is maximum length of word.
+
+For input we are storing q words of maximum length l in O(q*l) and for storing text string it will be O(n*l) and auxiliary space used is O(q+n).
+
+So, O(q*l) + O(n*l) + O(q+n) -> O((n+q)*l).
+
+
+
+2) optimal_solution1.java
+
+
+
+Description:
+
+
+
+In this solution, we are using HashMap to maintain indices list for words. We are populating hashmap while iterating over given words of text string. Then for each query we are getting query indices of matching word from maintained hashmap.
+
+
+
+Time Complexity:
+
+
+
+O((n+q)*l) where n is number of words in text string and q is number of queries of words and l is maximum length of word.
+
+
+
+To populate hashmap, time complexity will be O(n*l) and for getting result of q queries time complexity will be O(q*l).
+
+O(n*l) + O(q*l) → O((n+q)*l)
+
+
+
+Auxiliary Space Used:
+
+
+
+O((n*l)+q) where n is number of words in text string and q is number of queries of words and l is maximum length of word.
+
+
+
+As we are maintaining hashmap for indices list of words in O(n*l) and storing indices of query words which we found in O(q + n) as it is possible that result list can contain all indices of words of text string which can be equal to n. (Given that the query words will be unique, hence any word in text string can match <= 1 query word. Hence summation of matching indices in returned list of lists can not be more than n .)
+
+So, O(n*l) + O(q+n) → O((n*l)+q)
+
+
+
+Space Complexity:
+
+
+
+O((n+q)*l) where n is number of words in text string, q is number of queries of words, l is maximum length of word.
+
+
+
+For input we are storing q words of maximum length l in O(q*l) and for storing text string it will be O(n*l) and auxiliary space used is O((n*l)+q).
+
+So, O(q*l) + O(n*l) + O((n*l)+q) -> O((n+q)*l).
+
+
+
+3) optimal_solution2.java
+
+
+
+Description:
+
+
+
+In this solution, we are using Trie tree. First we will iterate over all the words in text string and inserting them to Trie tree. Now whenever we need to find matching words from text string we search it in Trie and return result indices.
+
+
+
+optimal_solution2 (using trie tree) will be better than optimal_solution1 (using hashmap) in cases where prefix of strings are overlapping. Because space will be less to store n number of strings where some strings prefixes are overlapping.
+
+
+
+In actual interview, interviewer will expect a Trie solution from you instead of hashmap one.
+
+
+
+For more information on when to use hashmap and when to use trie tree. Look at this stackoverflow answer.
+
+https://stackoverflow.com/questions/245878/how-do-i-choose-between-a-hash-table-and-a-trie-prefix-tree
+
+
+
+Time Complexity:
+
+
+
+O((n+q)*l) where n is number of words in text string and q is number of queries of words and l is maximum length of word.
+
+
+
+As Insert and search in Trie tree will be O(l).
+
+To populate trie tree, it will iterate over all words in text string hence will take O(n*l).
+
+And, to search for q queries, it will iterate over all q queries hence will take O(q*l)
+
+So, O(n*l) + O(q*l) → O((n+q)*l)
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n*l + q) where n is number of words in text string, l is maximum length of word and q is number of queries of words.
+
+
+
+As we are storing n words of maximum length l in trie tree and storing indices of query words which we found in O(q + n) as it is possible that result list can contain all indices of words of text string which can be equal to n. (Given that the query words will be unique, hence any word in text string can match <= 1 query word. Hence summation of matching indices in returned list of lists can not be more than n .)
+
+O(n*l) + O(q+n) → O(n*l + q)
+
+
+
+Space Complexity:
+
+
+
+O((n+q)*l) where n is number of words in text string, q is number of queries of words, l is maximum length of word.
+
+
+
+For input we are storing q words of maximum length l in O(q*l) and for storing text string it will be O(n*l) and auxiliary space used is O(n*l + q).
+
+So, O(q*l) + O(n*l) + O(n*l + q) -> O((n+q)*l).
+

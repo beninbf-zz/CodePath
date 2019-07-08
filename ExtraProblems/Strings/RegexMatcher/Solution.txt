@@ -1,0 +1,141 @@
+We have provided two solutions and both solutions contain necessary comments to understand the approach used:
+
+
+
+In both the solution we are making simplified pattern string from pattern string (explained below with examples). Basically, We are removing duplicate '*' character from pattern string and '*' itself also. We are also maintaining isStarChar boolean array to store whether simplified pattern character was followed by '*' in pattern string or not.
+
+
+
+e.g. If pattern = [abc*c*c*dd*] then simplified pattern string = "abcdd" and isStarChar = [false, false, true, false, true].
+
+
+
+Here, in this example we have removed [c*c*c*] and keep only one [c]. [c]'s position in simplified pattern string is 3. So, we have stored true at position 3 of isStarChar and also removed '*' from pattern string. Same for character 'd*'.
+
+
+
+
+
+1) brute_solution.java
+
+
+
+Time Complexity:
+
+
+
+O(2^(len_simpl_pat + len_text))
+
+
+
+Auxiliary Space Used:
+
+
+
+O(len_pat + len_text).
+
+
+
+We are using one extra character array and one boolean array to make simplified pattern string. Also, O(len_pat + len_text) space will be used by recursion stack.
+
+
+
+Space Complexity:
+
+
+
+O(len_pat + len_text).
+
+
+
+As input is O(len_pat + len_text) and auxiliary space used is also O(len_pat + len_text). So, O(len_pat + len_text) + O(len_pat + len_text) -> O(len_pat + len_text).
+
+
+
+
+
+2) optimal_solution.java
+
+
+
+Time Complexity:
+
+
+
+O(len_simpl_pat * len_text + (len_simpl_pat + len_text)).
+
+
+
+O(len_simpl_pat + len_text) for reading input and simplifying pattern string.
+
+
+
+This solution is using Dynamic Programming. In this method, We build a dp[][] 2D boolean array from top to bottom such that dp[i][j] indicates first i character of text string matches to first j character of pattern string or not.
+
+
+
+Here, 3 cases will arise,
+
+
+
+Case 1:
+
+
+
+dp[i][j-1] is true.
+
+
+
+It means first i character of text string matches with first j-1 character of simplified pattern string. So, dp[i][j] will be true if jth character of simplified pattern string is '*', it means isStarChar[j] should be true.
+
+
+
+Case 2:
+
+
+
+dp[i-1][j-1] is true.
+
+
+
+It means first i-1 character of text string matches with first j-1 character of simplified pattern string. So, dp[i][j] will be true if jth character of simplified pattern string matches with ith character of text string. It can only be match if jth character of pattern string is '.' or same as ith character of text string.
+
+
+
+Case 3:
+
+
+
+dp[i-1][j] is true.
+
+
+
+It means first i-1 character of text string matches with first j character of simplified pattern string. So, dp[i][j] will be true if jth character of simplified pattern string is '*' and can be match with ith character of text string. It can only be match if jth character of pattern string is '.' or same as ith character of text string.
+
+
+
+
+
+Auxiliary Space Used:
+
+
+
+O(len_simpl_pat * len_text + (len_pat + len_text)).
+
+
+
+As we are using boolean array of size (len_simpl_pat * len_text) to store dp values, Char array of size len_pat to get simplified pattern string, boolean array of size len_pat to store is that toStarChar or not.
+
+
+
+
+
+Space Compelxity:
+
+
+
+O(len_simpl_pat * len_text + (len_pat + len_text)).
+
+
+
+As input is O(len_pat + len_text) and auxiliary space used is O(len_simpl_pat * len_text + (len_pat + len_text)). So, O(len_pat + len_text) + O(len_simpl_pat * len_text + (len_pat + len_text)) -> O(len_simpl_pat * len_text + (len_pat + len_text)).

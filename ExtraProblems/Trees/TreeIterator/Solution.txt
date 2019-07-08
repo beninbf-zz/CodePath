@@ -1,0 +1,23 @@
+We have provided only the optimal solution for this problem.
+
+
+
+The problem asks to implement an iterator over a binary search tree so that hasNext() method of the iterator returns a true of false flag denoting the next nodes presence. And another method next() which return next node’s value. Iterator must iterate from the left most node to right most node so that nodes are in ascending order. The idea is that, the iterator should traverse the tree in in-order traversal approach. So, while initializing, we pushed root, root’s left child, root’s left child’s left child untile reach a null node into the stack. After initialization, left most node is at the top of stack. When next() method is invoked, top element from the stack is popped. As all left nodes are pushed from current top node, we push all left nodes starting from top node’s right child. This process continues until all nodes are traversed and popped from the stack.
+
+
+
+Time complexity:
+
+O(N)
+
+
+
+Auxiliary space:
+
+O(N) because of using stack
+
+
+
+Space complexity:
+
+Including input, O(N)

@@ -1,0 +1,56 @@
+Alternative Node Split
+
+
+
+Problem Statement:
+
+
+
+Given a linked list, split it into two such that every other node goes into the new list. For lists with odd number of nodes, first one should be longer. For example: an input list: {a, b, c, d, e, f, g} results in {a, c, e, g} and {b, d, f}.
+
+
+
+Input format:
+
+There is only one argument named head denoting the head of the input linked list.
+
+
+
+Output format:
+
+Return an array of linked list which contains two linked list.
+
+
+
+Constraints:
+
+0 <= number of nodes <= 100000
+1 <= values stored in the nodes <= 1000000000
+Input will be a singly linked list
+
+
+Sample Test Case:
+
+
+
+Sample Input:
+
+
+
+1 -> 2 -> 3 -> 4 -> 5
+
+
+
+Sample Output:
+
+
+
+1 -> 3 -> 5
+
+2 -> 4
+
+
+
+Explanation:
+
+Process is explained in the problem statement.

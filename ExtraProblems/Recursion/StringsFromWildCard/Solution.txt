@@ -1,0 +1,113 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution.java
+
+
+
+Description:
+
+
+
+A naive approach would be generate all possible strings having '0's and '1's only, of length n, and filter out to select the ones which has mismatch with s only at all index i, where s[i] = '?', 0 <= i <= (n-1).
+
+
+
+Time Complexity:
+
+
+
+O(n*(2^n)) where n is length of s string.
+
+
+
+As there are 2^n possible strings containing '0's and '1's only, and we are traversing through each generated string, to find out whether that generated string is equivalent to s or not if we ignore places where in s character is ‘?’.
+
+As we are iterating over 2^n possible strings and to iterate over a single generated string it takes O(n) where n is length of generated string.
+
+So, total time complexity will be O(n*(2^n)).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n) where n is length of given string.
+
+
+
+As at any time we are just generating and storing single possible string to compare that whether generated string will be included in result or not. So, extra space will be equivalent to length of possible string.
+
+
+
+Space Complexity:
+
+
+
+O(n*(2^m)) where n is length of s string and m is number of ‘?’ (wild card) characters in s string.
+
+
+
+To store input, it will take O(n) and result list will contains number of strings equal to 2^(number of ‘?’ characters in s i.e. m) so, space for result list will be O(n *(2^m)) and auxiliary space used is taking O(n).
+
+Total space complexity will be
+
+O(n*(2^m)) + O(n) → O(n*(2^m))
+
+
+
+2) optimal_solution.java
+
+
+
+Description:
+
+
+
+Better approach would be only to generate valid possible strings matching with s instead of generating all possible strings.
+
+For doing this we can replace every ‘?’ with ‘0’ and ‘1’. This approach would be a recursive approach. Because every time after replacing a single ‘?’ at index i ( 0 <= i <= n-1 where n is length of s ) we are trying to replace remaining ‘?’ in string having index j ( i < j < n-1 ).
+
+
+
+Time Complexity:
+
+
+
+O(n*(2^m)) where n is length of s string and m is number of ‘?’ (wild card) characters in s string.
+
+
+
+As, two recursive calls will be made when s[i] == '?', and there are total m '?' and we are generating that possible string when we are reaching at the end of s to be added in final result list.
+
+So, total time complexity will be O(n*(2^m)).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n) where n is length of given string.
+
+
+
+As at any time we are maintaining current possible string generated in the solution and length of that string can be n.
+
+
+
+Space Complexity:
+
+
+
+O(n*(2^m)) where n is length of s string and m is number of ‘?’ (wild card) characters in s string.
+
+
+
+To store input, it will take O(n) and result list will contains number of strings equal to 2^(number of ‘?’ characters in s i.e. m) so, space for result list will be O(n *(2^m)) and auxiliary space used is taking O(n).
+
+Total space complexity will be
+
+O(n*(2^m)) + O(n) → O(n*(2^m))

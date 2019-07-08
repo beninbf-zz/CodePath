@@ -1,0 +1,114 @@
+Given a linked list with two standard attributes data and next pointer for each of its node. Also, the nodes in the given list may or may-not contain one extra attribute : randomPointer, that can point to any node of the given linked list.
+
+
+
+Our task is to clone the given linked list. Also, no node in our cloned list should be in the given linked list.
+
+
+
+Brute-force Solution:
+
+
+
+One thing is pretty much state forward that we can easily clone the linked list without the randomPointer. We can start traversing from the head node and keep cloning the consecutive next pointer nodes in a linear time O(n), where n is the number of nodes in the linked list. After this we can work on cloning the randomPointer links for the necessary nodes. So, till now we have done a linear traversal on the linked list and cloned the nodes by following the next pointer links. The process till now is O(n). Next, let’s see how we can link the random nodes. Consider some node X in original linked list which has a randomPointer link. Now after the first cloning iteration we have some node X’ that is cloned node for X. Now, we first go to the randomPointer node of the X node and get its distance(location) from the head node. Once, we get that distance we move that distance linearly from newly cloned head node and reach some node S . Now, this node S, should be the randomPointer node for the X’ node. Hence, we now link the randomPointer of X’ to S node. We do the same process for all the nodes in the cloned list and make all the randomPointer links for the cloned nodes.
+
+
+
+Let’s sum up the time complexities for both steps to get the overall time complexity. The first step of cloning the linked list without the randomPointer links takes a linear amount of time O(n) as we are simply iterating on the nodes from head to tail and each time we visit a node we are cloning it and linking it with its previous cloned node.
+
+In second step we first find the location of the randomPointer node from the head node in the original node. This is again a linear traversal from head node till the randomPointer node and takes O(n) in worst case. Next, after getting the distance of the random node in the original list from its head node, we then move the same distance in the cloned list from its head node to get the cloned randomPointer node. This again takes order of O(n) time to reach the cloned randomPointer node from the cloned list. Then linking the cloned node with its randomPointer node is O(1) time. So, to link the randomPointer node for a node in the cloned list takes O(n) + O(n) i.e. O(2*n) time. So, to do this for all the nodes it will take O(n*(2*n)) time i.e. O(2*n*n). Hence, the total time complexity sums up to O(n) + O(2*n*n) ~ O(2*n*n) ~ O(n*n).
+
+
+
+Talking of Space complexity the input space complexity is O(n) as it gives us a linked list on n length. The auxiliary space complexity is again O(n) as we are cloning a linked list as the same size of the input linked list and for doing so we are using constant memory O(1) extra memory to hold the randomPointer node one at a time. Hence, the Total Space complexity is O(n) + O(n) ~ O(n)
+
+
+
+Optimal Solution:
+
+
+
+We will now try solve it in linear amount of time O(n) and using same constant extra memory O(1) like in the brute force approach. This approach is highly intuitive and knowing this trick is a plus point during your interview.
+
+
+
+Now, let’s jump to the solution:
+
+
+
+Assume the given input linked list is as below for n = 5:
+
+
+
+
+
+
+
+Step 1:
+
+
+
+Now, we clone the ith node and insert it in between ith and (i+1)th node in the below manner.  Nodes in bracket are the cloned nodes.
+
+
+
+
+
+
+
+Step 2:
+
+
+
+Now we traverse the above linked list by moving 2 steps at a time and for every node x that we traverse and has a randomPointer link , we will link the randomPointer of next of x with the next link node of the x’s randomPointer node.
+
+
+
+
+
+To be more specific we will do the below operation of every node x :
+
+
+
+If x->randomPointer != null:
+
+x->next->randomPointer = x->randomPointer->next
+
+
+
+After performing this step all randomPointer links will be done for the newly cloned nodes in step 1 .
+
+
+
+Our linked list will now look like the below depicted linked list :
+
+
+
+
+
+
+
+Step 3:
+
+
+
+Now our last step will be to extract the cloned nodes from the above list by connecting the consecutive cloned nodes by linking their next links. This extraction can be done in a single traversal on the linked list from the head node. In our traversal for every node that we visit we simply re-link its next pointer with its next of next pointer (simply connecting the next pointer 2 steps ahead of current node to counter the modification we did in step 1).
+
+
+
+Hence, now we have our cloned list for the given initial input linked list.
+
+
+
+
+
+Now, let’s do the Time Complexity analysis of the above three steps and all of them are pretty simple. In our first step we traversed on the given input linked list of size n . So , its Time Complexity is O(n).
+
+Similarly, for second and third step we are again traversing the linked list from head to tail node and hence take O(n) time individually. Summing the Time complexities of all the three steps : O(n) + O(n) + O(n) = O(3*n) ~ O(n).
+
+
+
+Talking of Space Complexity, the given input space is size of linked list O(n). The intermediate cloned nodes that we created in step 1 take space equal to original linked list O(n) and these intermediate nodes are then chained and returned as the final cloned list after linking their randomPointer nodes. So, we do not allocate any more memory for cloning the linked list. Hence , the overall Space Complexity is O(2*n) ~ O(n) by using O(1) constant extra memory for cloning process.
+
+
+

@@ -1,0 +1,23 @@
+We have provided one solution for this problem. This is the optimal solution.
+
+
+
+The problem asks to clone a binary tree. We do it recursively. First we create a new node using the current root node value. We clone the current node’s left child and assign as left child of new node. We do the same for right child.
+
+
+
+Time complexity:
+
+O(N)
+
+
+
+Auxiliary space:
+
+O(N) because of using stack
+
+
+
+Space complexity:
+
+Including input, O(N)

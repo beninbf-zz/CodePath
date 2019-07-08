@@ -1,0 +1,209 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution.java
+
+
+
+Description:
+
+
+
+A naive approach would be to check area of all possible rectangles that can be made using bars in given histogram and find the max area rectangle.
+
+To implement this approach, iterate over all bars j for each bar i, j>=i, find the smallest height bar 'hsmall' from (i, i+1, i+2, ..., j)th bars. Then area of largest rectangle made using (i, i+1, i+2 , ..., j)th bars would be currentArea = (hsmall * (j - i + 1)). Compare with max area 'maxArea' found till now and replace it if maxArea < currentArea.
+
+
+
+Time Complexity:
+
+
+
+O(n*n) where n is length of input array arr.
+
+
+As we are iterating over all possible subarrays, it will take O(n*n).
+
+This time complexity is for function findMaxPossibleArea.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+As we are not storing anything extra.
+
+This auxiliary is for function findMaxPossibleArea.
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is length of input array arr.
+
+
+
+To store array it will take O(n) and as auxiliary space used is O(1).
+
+So, O(n) + O(1) → O(n).
+
+This space complexity is for function findMaxPossibleArea.
+
+
+
+2) optimal_solution1.java
+
+
+
+Description:
+
+
+
+The optimal would be as follows:
+
+As we are calling this function with given l and r.
+
+For each element arr[i+l], find the first element smaller than it on its left (only consider upto index l) and that on its right (only consider upto index r) and build arrays leftSmaller and rightSmaller.
+
+Thus, leftSmaller[i] = j, implies that j is greatest index smaller than i+l such that arr[i+l]>arr[j] and rightSmaller[i] = j, implies that j is smallest index greater than i+l such that arr[i+l]>arr[j].
+
+Notice that all elements in subarray arr[leftSmaller[i]+1], arr[leftSmaller[i]+2],..., arr[rightSmaller[i]-1] are greater than or equal to arr[i+l]. So, the max area a rectangle can have such that it must contain ith bar is (arr[i+l]*((rightSmaller[i]-1) - (leftSmaller[i]+1) + 1).
+
+
+
+Time Complexity:
+
+
+
+O(n) where n is length of input array arr.
+
+
+
+Arrays leftSmaller and rightSmaller can be generated in a single traversal of arr input array, one traversal of arr array for each using stack.
+
+So, to create leftSmaller and rightSmaller array it will take O(n) and to find result it will take O(n).
+
+So, O(n) + O(n) → O(n).
+
+This time complexity is for function findMaxPossibleArea.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n) where n is length of input array arr.
+
+
+
+To store leftSmaller and rightSmaller array in generating them stack used which will take O(n) space.
+
+This auxiliary is for function findMaxPossibleArea.
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is length of input array arr.
+
+
+
+As to store input array it will take O(n) and auxiliary space used is O(n).
+
+Hence, O(n) + O(n) → O(n).
+
+This space complexity is for function findMaxPossibleArea.
+
+
+
+3) optimal_solution2.java
+
+
+
+Description:
+
+
+
+This would be more optimal approach in comparison to approach of optimal_solution2.java.
+
+In optimal_solution1, we traverse array 3 times to find answer but here we will traverse array once to find our answer.
+
+For every bar ‘x’, we calculate the area with ‘x’ as the smallest bar in the rectangle. If we calculate such area for every bar ‘x’ and find the maximum of all areas, our task is done. How to calculate area with ‘x’ as smallest bar? We need to know index of the first smaller (smaller than ‘x’) bar on left of ‘x’ and index of first smaller bar on right of ‘x’. Let us call these indexes as ‘left index’ and ‘right index’ respectively.
+
+We traverse all bars from left to right, maintain a stack of bars.
+
+Every bar is pushed to stack once. A bar is popped from stack
+
+when a bar of smaller height is seen. When a bar is popped, we calculate the area with the popped bar as smallest bar. How do we get left and right indexes of the popped bar – the current index tells us the ‘right index’ and index of previous item in stack is the ‘left index’. Following is the complete algorithm.
+
+
+
+1) Create an empty stack.
+
+
+
+2) Start from first bar, and do following for every bar ‘arr[i]’ where ‘i’ varies from l to r (As we are calling this function for each query with given l and r).
+
+……a) If stack is empty or arr[i] is higher than the bar at top of stack, then push ‘i’ to stack.
+
+……b) If this bar is smaller than the top of stack, then keep removing the top of stack while top of the stack is greater. Let the removed bar be arr[tp]. Calculate area of rectangle with arr[tp] as smallest bar. For arr[tp], the ‘left index’ is previous (previous to tp) item in stack and ‘right index’ is ‘i’ (current index).
+
+
+
+3) If the stack is not empty, then one by one remove all bars from stack and do step 2.b for every removed bar.
+
+For better understanding, please look solution once.
+
+
+
+Time Complexity:
+
+
+
+O(n) where n is length of input array arr.
+
+
+
+As we are traversing through array to calculate our answer and size of array is r-l+1 in worst case it can be n. So, time complexity will be O(n).
+
+This time complexity is for function findMaxPossibleArea.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n) where n is length of input array arr.
+
+
+
+To maintain stack of size r-l+1 in worst case it can be n which is length of input array arr. So, auxiliary space used will be O(n).
+
+This auxiliary is for function findMaxPossibleArea.
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is length of input array arr.
+
+
+
+As to store input array it will take O(n) and auxiliary space used is O(n).
+
+Hence, O(n) + O(n) → O(n).
+

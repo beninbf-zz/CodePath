@@ -1,0 +1,130 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution:
+
+
+
+Description:
+
+
+
+This partition problem simply reduces to find a subset of the given array such that the sum of the given array is equal to sum/2, where the sum is the total sum of elements of the given array. Also, if the value of the sum is odd then we cannot partition it into two equal subsets. So, in case the value of the sum is odd we simply return an empty array.
+
+Now, In this approach, we iterate on all possible combinations of subsets of the given array and check if the current subset sums to sum/2. If we are able to find once such subset then we declare this subset as s1 and rest of other remaining elements of the subset as s2 and return the denomination array as specified in the output section on the problem statement. Kindly, refer to the code for better understanding of the approach.
+
+
+
+Time Complexity:
+
+
+
+O(n*2^n) where n is the number of elements in the given input array.
+
+
+
+As we are iterating on all possible subsets i.e. 2^n subsets for an array of size n. Hence, we are doing O(2^n) iterations and then for each subset, we are computing its sum. To do this we need to iterate on each element of the subset that takes O(n) time of each individual subset. Hence, the total time complexity becomes O(2^n) * O(n) ~ O(n*2^n).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n) where n is the number of elements in the given input array.
+
+
+
+To generate all partitions we are recursively backtracking on all indexes of the array. So, at any point of time the recursion stack will occupy max O(n) stack size.
+
+Apart this we are only traversing on the given subarray multiple times for different subsets without maintaining any state information, hence we do not allocate any space for processing. The only space we allocate is the final return array that is of size n and hence the total auxiliary space complexity is O(n) +  O(n) ~ O(n).
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is the number of elements in the given input array.
+
+
+
+Auxiliary space + the Input Space i.e. O(n) + O(n) →  O(n).
+
+
+
+
+
+2) optimal_solution:
+
+
+
+Description:
+
+
+
+As discussed in the brute_force approach we have simply reduced this problem to a subset sum problem such that given an array s and we need to first check if a subset exists with the subset sum of sum/2. If it exists then we need to separate that subset from the rest of elements of the array. We will be using dynamic programming to solve this problem. Our first aim will be to check if a subset with sum sum/2 exists or not. To do so, we will be maintaining a 2D DP state as following :
+
+Boolean state(idx, sum).
+
+Here, state(idx, sum) tell us if it is possible to get a subset sum of the sum provided the elements from 0 to idx of the given array.
+
+
+
+Now, our state transition will look like below:
+
+
+
+state(idx, sum) = state(idx-1, sum) | state(idx, sum – s[idx])
+
+
+
+So, using the above state transition we will populate all our DP states. Now, we simply check the value of state(n-1, sum/2) (assumed 0-based array index). If it is true then it is possible to partition the given array and if it is false then once again we return an empty array.
+
+
+
+Now, to get the partition we start a top-down lookup on our DP states. We start from the state(n-1, sum/2). If this state is true and state(n-2, sum/2) is false this means s[n-1] contributed in the subset sum and if it is false we go to state(n-2, sum/2) to identify our contributors of the subset sum of sum/2. We repeat this reverse DP transition until the point we reach the first index of the array or till the point, the required sum becomes 0. While doing these reverse DP transitions we also mark the contributed elements as s1 subset elements and rest of the array as s2 elements.
+
+
+Because the elements in our array can also be negative and hence we use a hash-based container like unordered_map in C++ to overcome this problem of negative indexing.
+
+
+
+Kindly, refer to the solution for implementation details.
+
+
+
+Time Complexity:
+
+
+
+O(n*range_sum) since this is a pseudo-polynomial time problem where n is the number of elements in the given input array and range_sum is the absolute difference between the maximum sum and the minimum sum possible in the given input array s.
+
+
+
+As we are visiting all the DP states i.e. n*range_sum, hence we will be doing n*range_sum iterations and for each state, we are doing O(1) amount of work and also because of memorization each state is being visited once. Hence, the total time complexity of this solution is O(n*range_sum).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n*range_sum) where n is the number of elements in the given input array and range_sum is the absolute difference between the maximum sum and the minimum sum possible in the given input array s.
+
+
+
+Since we are using an auxiliary container of size n*range_sum to store the DP states. So, the auxiliary space complexity is O(n*range_sum).
+
+
+
+Space Complexity:
+
+
+
+O(n*range_sum) where n is the number of elements in the given input array and range_sum is the absolute difference between the maximum sum and the minimum sum possible in the given input array s.
+
+
+
+Auxiliary space + the Input space i.e. O(n*range_sum) + O(n) →  O(n*range_sum).

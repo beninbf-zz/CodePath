@@ -1,0 +1,102 @@
+Longest Common Subsequence
+
+
+
+Problem Statement:
+
+
+
+Given two strings a and b, find the longest common subsequence.
+
+A subsequence is a sequence that can be derived from another sequence by zero or more elements, without changing the order of the remaining elements.
+
+Find such longest subsequence which is common to both a and b. If multiple such subsequences occur, return any one of them and if no such subsequence found then return “-1”.
+
+
+
+Input/Output Format For The Function:
+
+
+
+Input Format:
+
+
+
+There are two arguments, both strings a and b.
+
+
+
+Output Format:
+
+
+
+Return one string which is the longest common subsequence.
+
+
+
+Input/Output Format For The Custom Input:
+
+
+
+Input Format:
+
+
+
+The first line in the input contains string a and next line contains string b.
+
+
+
+ABCDE
+
+AECBD
+
+
+
+Output Format:
+
+
+
+A string which is the longest common subsequence.
+
+
+
+ABD
+
+
+
+Constraints:
+
+
+
+1 <= len(a), len(b) <= 400
+
+Characters of string a and string b can be from [a, z], [A, Z] and [0-9].
+
+
+Sample Test Case:
+
+
+
+Sample Input:
+
+
+
+ABCDE
+
+AECBD
+
+
+
+Sample Output:
+
+
+
+ABD
+
+
+
+Explanation:
+
+
+
+ABD occurs in both ABCDE and AECBD in the same relative order as the subsequence. There is no other subsequence longer than 3. Also, do note that ACD is also a valid subsequence of length 3, in such cases return any of them.

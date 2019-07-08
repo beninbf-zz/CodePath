@@ -1,0 +1,145 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution.java
+
+
+
+Time Complexity:
+
+
+
+O(n) where n is number of elements in array.
+
+
+
+This approach is very simple, We just need to iterate over the given array and maintain the minimum value found and return that minimum value which will be our answer.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+As we are not storing anything.
+
+
+
+Space Complexity:
+
+
+
+O(n).
+
+Input is O(n) because we are storing n elements of array and auxiliary space used is O(1). So, O(n) + O(1) -> O(n).
+
+
+
+2) suboptimal_solution.java
+
+
+
+Time Complexity:
+
+
+
+Time complexity for the function find_minimum: O(log n) where n is number of elements in array.
+
+Time complexity for the complete program: O(n) where n is number of elements in array, because size of input is n.
+
+
+
+In this approach we used recursive binary search.
+
+If we take some examples and look closely, we would observe some patterns:
+
+If array was previously sorted in ascending order:
+
+The minimum element is the only element whose previous element is greater than it.
+If we found any subarray ( from low to high ) which is ascending sorted then minimum element will be element at low.
+Else minimum element lies in either left half or right half.
+If middle element is greater than element at low, then the minimum element lies in right half.
+Else minimum element lies in left half.
+
+
+If array was previously sorted in descending order:
+
+We use these patterns to make solution:
+
+The minimum element is the only element whose next element is greater than it.
+If we found any subarray ( from low to high ) which is descending sorted then minimum element will be element at high.
+Else minimum element lies in either left half or right half.
+If middle element is less than element at low, then the minimum element lies in right half.
+Else minimum element lies in left half.
+
+
+As the time complexity of binary search will be
+
+T(n) = T(n/2) + c ( Each iteration reducing array in half ).
+
+
+
+The above function can be solved either using recurrence Tree method or Master method. It falls in case II of Master Method and solution of the function is O(log n) hence, complexity of our solution (find_minimum function) is O(log n).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(log n) where n is number of elements in array.
+
+Similarly by above logic for time complexity, number of recursive calls will be O(log n) and hence size of function stack used will be O(log n).
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is number of elements in array.
+
+Input is O(n) because we are storing n elements of array and auxiliary space used is O(1). So, O(n) + O(1) -> O(n).
+
+
+
+3) optimal_solution.java
+
+
+
+Time Complexity:
+
+
+
+Time complexity for the function find_minimum: O(log n) where n is number of elements in array.
+
+Time complexity for the complete program: O(n) where n is number of elements in array, because size of input is n.
+
+
+
+Here we are using iterative approach of binary search. Explanation will same as mentioned above for suboptimal_solution.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+As we are using only constant extra space.
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is number of elements in array.
+
+Input is O(n) because we are storing n elements of array and auxiliary space used is O(1). So, O(n) + O(1) -> O(n).

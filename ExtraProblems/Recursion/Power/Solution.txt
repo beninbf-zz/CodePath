@@ -1,0 +1,201 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution:
+
+
+
+Description:
+
+
+
+In this approach, we simply keep multiplying the integer a, b number of times and after each multiplication if the product so far has increased the MOD value then we apply the mod (%) operator on it.
+
+
+
+Time Complexity (assuming that input arguments are already given and excluding time used in declaration of output):
+
+
+
+O(b), where b is the exponent
+
+
+
+To calculate a^b we are iterating from 1 to b, Hence the time complexity is O(b).
+
+
+
+Time Complexity:
+
+
+
+O(b), where b is the exponent
+
+
+
+To calculate a^b we are iterating from 1 to b, Hence the time complexity is O(b).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1)
+
+
+
+As we use just one variable to store the incremental product variable after each iterative multiplication.
+
+
+
+Space Complexity:
+
+
+
+O(1)
+
+
+
+The function parameters are two integers that takes O(1) space. Hence, the total Space Complexity auxiliary space plus input space i.e. O(1) + O(1) ~ O(1).
+
+
+
+2) other_solution:
+
+
+
+Description:
+
+
+
+In this approach we will try to solve this problem in a recursive manner. Let’s say we need to calculate a^b. Now, this can be reduced to a^b = a^(b/2) * a^(b/2) , if b is even and for the case when b is odd then we can say that a^b = a^(b/2) * a^(b/2) * a.
+
+
+
+Let’s say f(a,b) is the power function that denotes a^b. So, f(a,b) can be represented as:
+
+
+
+f(a , b) = { f(a , b/2) * f(a , b/2) , when b is even;
+
+      f(a , b/2) * f(a , b/2) * a , when b is odd;
+
+      1, when b is zero }
+
+
+
+We will use the above recursive relation to evaluate a^b.
+
+
+
+Time Complexity (assuming that input arguments are already given and excluding time used in declaration of output):
+
+
+
+O(log(b)), where b is the exponent.
+
+
+
+The recursive equation that we are using keeps reducing the exponent by half at each step till the exponent reduces to zero. Therefore, this takes O(log(b)) iterations to evaluate a^b.
+
+
+
+Time Complexity:
+
+
+
+O(log(b)), where b is the exponent.
+
+
+
+The recursive equation that we are using keeps reducing the exponent by half at each step till the exponent reduces to zero. Therefore, this takes O(log(b)) iterations to evaluate a^b.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(log(b)), where b is the exponent.
+
+
+
+The recursive function calls consumes a recursive stack memory for each function call that is equal to O(log(b)).
+
+
+
+Space Complexity:
+
+
+
+O(log(b)), where b is the exponent.
+
+
+
+The total space complexity is equal to the auxiliary space plus the input and output space. Here the input and output space complexity is constant O(1) as we are only taking two integers as input and returning one integer as output. Hence, the total space complexity becomes O(log(b)) + O(1) ~ O(log(b)).
+
+
+
+2) optimal_solution:
+
+
+
+Description:
+
+
+
+In this approach we will use the same power doubling principal as used in the other_solution approach. In the above solution we used top down approach by spiting into half at each step. Here, in this approach we will solve it using bottom up approach by doubling at each step. Below is the mathematical illustration of the approach using an example :
+
+
+
+So, this will be our approach in solving this problem in bottom-up fashion. We will start with the least significant bit of the exponent when represented in binary and for each set bit we keep on multiplying that power of the base into our final result. Kindly, refer to the implementation for better understanding.
+
+
+
+Time Complexity (assuming that input arguments are already given and excluding time used in declaration of output):
+
+
+
+O(log(b)), where b is the exponent.
+
+
+
+To evaluate the power we are iterating over all set-bits of the exponent which takes O(b) iterations.
+
+
+
+Time Complexity:
+
+
+
+O(log(b)), where b is the exponent.
+
+
+
+To evaluate the power we are iterating over all set-bits of the exponent which takes O(b) iterations.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1)
+
+
+
+This is a bottom up iterative approach. Hence, no stack memory is consumed in recursive function calls as compared to the other_solution.
+
+
+
+Space Complexity:
+
+
+
+O(1)
+
+
+
+The total space complexity is equal to the auxiliary space plus the input and output space. Here the input and output space complexity is constant O(1) as we are only taking two integers as input and returning one integer as output. Hence, the total space complexity becomes O(1) + O(1) ~ O(1).

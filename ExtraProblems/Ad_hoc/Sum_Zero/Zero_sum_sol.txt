@@ -1,0 +1,107 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution.java
+
+
+
+Description:
+
+
+
+A naive approach would be, to iterate over all possible subarrays of input array arr, such that while on subarray [i,j], i.e. subarray starting from ith index and ending at jth index, find sum of elements in it and if it's zero, return {i,j}. If no such subarray found, return {-1}.
+
+
+
+Time Complexity:
+
+
+
+O(n*n) where n is length of input arr.
+
+
+
+As we are iterating over all possible subarrays of input array arr, time complexity will be O(n*n).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+We are not storing anything extra.
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is length of input arr.
+
+
+
+To store input it takes O(n) and as auxiliary space used is O(1).
+
+Hence, O(n) + O(1) → O(n).
+
+
+
+2) optimal_solution.java
+
+
+
+Description:
+
+
+
+An optimal approach would be as follows:
+
+
+
+Notice that if there exists a zero sum subarray [i,j] in a given input array arr, then prefix sum (denote it as prefix where prefix[k] = arr[0] + arr[1] + arr[2] + ... + arr[k]) prefix[j] should be equal to prefix[i-1], as prefix[j] = prefix[i-1] + (arr[i] + arr[i+1] + ... + arr[j]), where the term in bracket is sum of subarray [i,j], which is 0.
+
+Considering this fact, build prefix sum array prefix. If for some i, j, 0 <= i <= j < n, prefix[i-1] = prefix[j], then subarray [i,j] is the zero sum subarray.
+
+
+
+Time Complexity:
+
+
+
+O(n) where n is length of input arr.
+
+
+
+To find out if any two sums of subarrays are equal or not we will store them in HashMap as prefix[k] (i.e. sum) as key and k as value. To maintain hashmap it will take O(n) time complexity in worst case to get and store n sums.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n) where n is length of input arr.
+
+
+
+We are using hashmap to store sums. It will take O(n) of space.
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is length of input arr.
+
+
+
+To store input it takes O(n) and as auxiliary space used is O(n).
+
+Hence, O(n) + O(n) → O(n).

@@ -1,0 +1,93 @@
+Join Words To Make A Palindrome
+
+
+
+Problem Statement:
+
+
+
+Given a list of strings words, of size n, check if there is any pair of words, that can be joined (in any order) to form a palindrome then return the pair of words forming palindrome.
+
+
+
+Input Format:
+
+
+
+Only argument for function, list of strings words.
+
+
+
+Output Format:
+
+
+
+Return a pair of words (i.e. list of string result of size 2 such that result[0] + result[1] is a palindrome).
+
+In case of multiple answer return any one of them.
+
+In case of no answer return list [“NOTFOUND”, “DNUOFTON”].
+
+
+
+Constraints:
+
+
+
+Length l for each word of words list, 1<= l <= 30.
+
+Size of list words n, 2 <= n <= 20000.
+
+Characters for each word can be from [a-z], [A-Z], [0-9].
+
+
+
+Sample Test Case:
+
+
+
+Sample Input 1:
+
+
+
+words = [ “bat”, “tab”, “zebra” ]
+
+
+
+Sample Output 1:
+
+
+
+result = [ “bat”, “tab” ]
+
+
+
+Explanation 1:
+
+
+
+As “bat” + “tab” = “battab”, which is a palindrome.
+
+
+
+Sample Input 2:
+
+
+
+words = [ “ant”, “dog”, “monkey” ]
+
+
+
+Sample Output 2:
+
+
+
+result = [ “NOTFOUND”, “DNUOFTON” ]
+
+
+
+Explanation 2:
+
+
+
+As for each 6 combinations of string of words, there is no single generated word which is a palindrome hence result list will be [ “NOTFOUND”, “DNUOFTON” ].

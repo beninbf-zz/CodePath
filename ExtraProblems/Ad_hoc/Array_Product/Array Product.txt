@@ -1,0 +1,204 @@
+Array Product
+
+
+
+Problem Statement:
+
+
+
+Given an array of numbers nums of size n, find an array of numbers products of size n, such that products[i] is the product of all numbers nums[j], where j != i.
+
+
+
+Input/Output Format For The Function:
+
+
+
+Input Format:
+
+
+
+There is only one argument: nums, denoting input array.
+
+
+
+Output Format:
+
+
+
+Return an array of numbers products, denoting the required product array where products[i] is the (product of all numbers nums[j]) % (10^9 + 7), where j != i.
+
+
+
+Input/Output Format For The Custom Input:
+
+
+
+Input Format:
+
+
+
+The first line of the input should contain a single integer n denoting the size of input array.
+
+In the next n lines, each line should contain a number Ai, denoting ith number of the input array A, (0<=i<n).
+
+If n = 5 and nums = [1, 2, 3, 4, 5], then input should be:
+
+
+
+5
+
+1
+
+2
+
+3
+
+4
+
+5
+
+
+
+Output Format:
+
+
+
+There will be n lines, each line containing a number Pi, denoting ith number of the resultant product array P.
+
+
+
+For input n = 5 and nums = [1, 2, 3, 4, 5], output will be:
+
+
+
+120
+
+60
+
+40
+
+30
+
+24
+
+
+
+Constraints:
+
+
+
+You can't use division anywhere in solution.
+2 <= n <= 100000
+-10^9 <= nums[i] <= 10^9, i = 0, 1, 2, … , n-1
+products[i] >=0, i = 0, 1, 2, ... , n-1
+You are allowed to use only constant extra space and resultant product array will not be considered as extra space.
+
+
+Notes:
+
+
+
+Usage of resultant products array will not be considered as extra space used.
+Without using division is the key constraint to remember.
+
+
+Sample Test Cases:
+
+
+
+Sample Input 1:
+
+
+
+5
+
+1
+
+2
+
+3
+
+4
+
+5
+
+
+
+Sample Output 1:
+
+
+
+120
+
+60
+
+40
+
+30
+
+24
+
+
+
+Explanation 1:
+
+
+
+Resultant Product array products = [products[0], products[1], products[2], products[3], products[4]]
+
+= [(nums[1]*nums[2]*nums[3]*nums[4]), (nums[0]*nums[2]*nums[3]*nums[4]), (nums[0]*nums[1]*nums[3]*nums[4]), (nums[0]*nums[1]*nums[2]*nums[4]), (nums[0]*nums[1]*nums[2]*nums[3])]
+
+= [(2*3*4*5), (1*3*4*5), (1*2*4*5), (1*2*3*5), (1*2*3*4)]
+
+= [120, 60, 40, 30, 24]
+
+
+
+Sample Input 2:
+
+
+
+3
+
+4
+
+9
+
+10
+
+
+
+Sample Output 2:
+
+
+
+90
+
+40
+
+36
+
+
+
+Explanation 2:
+
+
+
+Resultant Product array products = [products[0], products[1], products[2]]
+
+= [(nums[1]*nums[2]), (nums[0]*nums[2]), (nums[0]*nums[1])]
+
+= [(9*10), (4*10), (4*9)]
+
+= [90, 40, 36]
+
+
+
+Suggestions:
+
+﻿﻿﻿﻿﻿﻿﻿
+
+Suggested time in interview: 20 minutes.
+
+The “Suggested Time” is the time expected to complete this question during a real-life interview, not now in homework i.e. For the first attempt of a given homework problem, the focus should be to understand what the problem is asking, what approach you are using, coding it, as well as identifying any gaps that you can discuss during a TC session. Take your time, but limit yourself to 2 one hour sessions for most problems.

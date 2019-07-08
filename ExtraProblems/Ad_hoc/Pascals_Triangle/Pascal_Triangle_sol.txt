@@ -1,0 +1,103 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution.java
+
+
+
+Description:
+
+
+
+A naive approach would be to calculate each (binomial coefficient % mod) separately. Binomial coefficient nCr = n!/((n-r)! * r!). So, calculate numerator = (n! % mod) , denominator = (((n-r)! * r!) % mod). Finally nCr can be found as ((numerator * moduloInverse(denominator)) % mod).
+
+
+
+Time Complexity:
+
+
+
+O(n^3) where n is given number.
+
+
+
+As there are n rows and each row can have n element in worst  cases. For calculating nCr for each element it will take O(n). Hence for n*n elements it will take O(n^3).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+As we are not storing anything extra. (Here we are ignoring space used to store output 2d array result which will be O(n*n))
+
+
+
+Space Complexity:
+
+
+
+O(n * n).
+
+
+
+As input is O(1), auxiliary space used is O(1) and output space is O(n * n).
+
+
+
+2) optimal_solution.java
+
+
+
+Description:
+
+
+
+An optimal approach would be as follows:
+
+
+
+As we know that for pascals triangle pascalsTriangle[i][j] = pascalsTriangle[i-1][j] + pascalsTriangle[i-1][j-1] and pascalsTrianlge[i][0] = 1 and pascalsTriangle[i][i]=1. For 0<=i<n and 0<=j<=i.
+
+We use these facts and iterate each row and find out the pascalsTriangle.
+
+
+
+Time Complexity:
+
+
+
+O(n^2) where n is given number.
+
+
+
+As there are n rows and each row can have n element in worst  cases so, to iterate over n*n elements it will take O(n^2).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+As we are not storing anything extra. (Here we are ignoring space used to store output 2d array result which will be O(n*n))
+
+
+
+Space Complexity:
+
+
+
+O(n * n).
+
+
+
+As input is O(1), auxiliary space used is O(1) and output space is O(n * n).

@@ -1,0 +1,183 @@
+Count Basins
+
+
+
+Problem Statement:
+
+
+
+You are given a matrix where each number represents altitude of that cell, such that, water flows towards lower altitudes. If a cell’s four neighboring cells all have higher altitudes, we call this cell a sink; water collects in sinks.
+
+
+
+Otherwise, water will flow to the neighboring cell with the lowest altitude. If a cell is not a sink, you may assume it has a unique lowest neighbor and that this will be lower than the cell.
+
+
+
+Cells that drain into the same sink – directly or indirectly – are said to be part of the same basin. Your challenge is to partition the map into basins. Your code should output the sizes of the basins, in descending order.
+
+
+
+Input/Output Format For The Function:
+
+
+
+Input Format:
+
+
+
+There will be only one argument matrix denoting the matrix of size row_count * col_count, with the altitude represented as int in each cell.
+
+
+
+Output Format:
+
+
+
+Return an array of integers in descending order., denoting the sizes of basins.
+
+
+
+Input/Output Format For The Custom Input:
+
+
+
+Input Format:
+
+
+
+The first line of the input contains a number row_count, denoting the number of rows of the matrix. The second line of the input contains a number col_count, denoting the number of columns of the matrix. Next row_count lines, contains col_count numbers denoting matrix[i][j] where 0<=i<row_count and 0<=j<col_count.
+
+For row_count=3, col_count=3 and matrix = [ [1, 5, 2], [2, 4, 7], [3, 6, 9]]
+
+
+
+3
+
+3
+
+1 5 2
+
+2 4 7
+
+3 6 9
+
+
+
+Output Format:
+
+
+
+The output contains an array of numbers basin_sizes. Values of the basin_sizes array will be represented as one on a line, and they will be in descending order.
+
+For row_count=3, col_count=3 and matrix = [ [1, 5, 2], [2, 4, 7], [3, 6, 9]], output will be:
+
+
+
+7
+
+2
+
+
+
+Constraints:
+
+1 <= row_count, col_count <= 1000.
+0 <= matrix[i][j] <= 100000 where 0<=i<row_count, 0<=j<col_count.
+
+
+Sample Test Cases:
+
+
+
+Sample Input:
+
+
+
+3
+
+3
+
+1 5 2
+
+2 4 7
+
+3 6 9
+
+
+
+Sample Output:
+
+
+
+7
+
+2
+
+
+
+Explanation:
+
+
+
+The basins, labeled with A’s and B’s, are:
+
+A A B
+
+A A B
+
+A A A
+
+
+
+Every cell labeled with A will sink at (0, 0), whereas B will sink at (0, 2).
+
+
+
+Sample Input 2:
+
+
+
+4
+
+4
+
+0 2 1 3
+
+2 1 0 4
+
+3 3 3 3
+
+5 5 2 1
+
+
+
+Sample Output 2:
+
+
+
+7
+
+5
+
+4
+
+
+
+Explanation:
+
+
+
+The basins, labeled with A’s and B’s, are:
+
+A A B B
+
+A B B B
+
+A B B C
+
+A C C C
+
+
+
+Every cell labeled with A will sink at (0, 0), B will sink at (1, 2) and C will sink at (3, 3).

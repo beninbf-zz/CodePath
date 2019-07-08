@@ -1,0 +1,111 @@
+Mirror Image Of Binary Tree
+
+
+
+
+
+Problem Statement:
+
+
+
+You are given root node of a binary tree T. You need to modify that tree in place, transform it into the mirror image of the initial tree T.
+
+
+
+Input Format:
+
+
+
+The function has one parameter of type TreeNode: the root node of binary tree T.
+
+
+
+Output Format:
+
+
+
+The function doesn’t need to return anything. The tree needs to be modified in place.
+
+
+
+Constraints:
+
+
+
+1 <= number of nodes <= 100000
+
+Nodes will have unique values between 0 and (number of nodes-1).
+
+
+
+Sample Test Case:
+
+
+
+Sample Input:
+
+
+
+        0
+
+      /   \
+
+    1	  2
+
+   /  \   / \
+
+ 3    4 5   6
+
+
+
+Sample Output:
+
+
+
+        0
+
+      /  \
+
+    2	  1
+
+   /  \   / \
+
+ 6    5 4   3
+
+
+
+Explanation:
+
+
+
+As we can easily visualise that input binary tree and output binary tree are mirror images of each other. So if A and B are two binary trees which are mirror images of each other then taking mirror image of A would generate B and vice versa.
+
+
+
+Input/Output Format For The Custom Input:
+
+
+
+Input Format:
+
+
+
+The first line will have integer n denoting the number of nodes of the binary tree.
+
+The second line will have integer root_index denoting root node index of the binary tree.
+
+Next, n lines will have three space separated integers v l r denoting node index v's left child is l and right child is r (l and r can be -1 means that child is null for node index v).
+
+
+
+Output Format:
+
+
+
+If the modified root node is representing the mirror image of the given binary tree T, then binary tree represented by the returned mirrored root node will be printed in the below mentioned tree format.
+If the modified root node is not representing the mirror image of given binary tree T, then the message “Not a mirror image” along with the binary tree represented by the returned mirrored root node will be printed in the below mentioned tree format.
+
+
+Tree Format: 
+
+There will be n lines. Each line will have three space separated integers v l r denoting node index v's left child is l and right child is r (l and r can be -1 means that child is null for node index v).

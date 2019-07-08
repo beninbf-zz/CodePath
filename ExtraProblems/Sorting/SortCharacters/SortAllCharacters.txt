@@ -1,0 +1,157 @@
+Sort All Characters
+
+
+Problem Statement:
+
+
+
+You have to sort an array of characters containing alphanumeric characters along with some other characters - ‘!’, ’@’, ’#’, ’$’, ’%’, ’^’, ’&’, ’*’, ’(‘, ’)’. You are given a character array named arr.
+
+
+
+Input/Output Format For The Function:
+
+
+
+Input Format:
+
+There is only one argument in input, a character array named arr.
+
+
+
+Output Format:
+
+Return a character array result, containing characters in sorted order of their ASCII values. You can overwrite the existing array.
+
+
+
+Input/Output Format For The Custom Input:
+
+
+
+Input Format:
+
+The first line contains the size, n, of the character array. Next n lines each contain the characters present in the array, with each character of the array in a new line.
+
+
+
+If arr = {a,z,i,#,&,l,c} then input should be:
+
+
+
+7
+
+a
+
+z
+
+i
+
+#
+
+&
+
+l
+
+c
+
+
+
+Output Format:
+
+
+
+Output each character of the array on a new line, in sorted order of their ASCII values.
+
+
+
+For above input - arr = {a,z,i,#,&,l,c}, output will be:
+
+
+
+#
+
+&
+
+a
+
+c
+
+i
+
+l
+
+z
+
+
+
+Constraints:
+
+1 <= length(arr) <= 100000
+
+
+Sample Test Case:
+
+
+
+Sample Input:
+
+
+
+10
+
+a
+
+s
+
+d
+
+f
+
+g
+
+*
+
+&
+
+!
+
+z
+
+y
+
+
+
+Sample Output:
+
+
+
+!
+
+&
+
+*
+
+a
+
+d
+
+f
+
+g
+
+s
+
+y
+
+z
+
+
+
+Explanation:
+
+Ascii values of the characters present in the character array are:
+
+a: 97, s: 115, d: 100, f: 102, g: 103, *: 42, &: 38, !: 33, z: 122, y: 121.
+
+Now sorting them according to their ascii values results in the given output.

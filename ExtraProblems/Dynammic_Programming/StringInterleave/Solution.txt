@@ -1,0 +1,69 @@
+Brute force recursive solution:
+
+
+
+First character in i should match first character in a or first character in b.
+
+* If it matches first character in a, try matching second character in i with second character in a or first character in b
+
+* If it matches first character in b, try matching second character in i with second character in b or first character in a
+
+* If it matches none of them, terminate with a false
+
+
+
+Hence, keep recursing for the rest of the strings. This is an exponential solution, O(2^(len(a)+len(b))) as you can either pick a character from a or a character from b. 
+
+
+
+
+
+
+
+
+
+
+
+Optimal solution (optimal_solution.cpp):
+
+
+
+Convention: str[0 : x] = first x chars of str.
+
+
+
+We can say that i[0 : (a_i + b_i)] is an interleaving of a[0 : a_i] and b[0 : b_i], if at least one of the below two is true:
+
+
+
+1) 
+
+  - i[0 : (a_i + b_i - 1)] should be an interleaving of a[0 : (a_i - 1)] and b[0 : b_i]
+
+  and
+
+  - a[ai - 1] == i[ai + bi - 1].
+
+
+
+or
+
+
+
+2) 
+
+  - i[0 : (a_i + b_i - 1)] should be an interleaving of a[0 : a_i] and b[0 : (b_i - 1)]
+
+  and 
+
+  - b[bi - 1] == i[ai + bi - 1].
+
+
+
+We can use DP to keep track of the already calculated values. Have a look at the solution for more detials.
+
+
+
+Space Complexity: O(len(a) * len(b))
+
+Time Complexity: O(len(a) * len(b))

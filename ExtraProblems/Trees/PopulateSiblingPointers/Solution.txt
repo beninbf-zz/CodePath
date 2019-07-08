@@ -1,0 +1,53 @@
+We have provided two solutions for this problem. Both are optimal considering time complexity and memory complexity.
+
+
+
+1.optimal_solution.cpp:
+
+
+
+In this solution we have followed BFS or level wise traversal approach to populate the next right pointer. We have pushed the nodes level wise and processed level by level. Let’s say in a level there are K nodes. In that case, i’th nodes nextRight node is (i+1)th node where i < K-1.
+
+
+
+Time complexity:
+
+O(N)
+
+
+
+Auxiliary space:
+
+O(N) because of using queue
+
+
+
+Space complexity:
+
+Including input, O(N)
+
+
+
+2.other_solution.cpp:
+
+
+
+In this solution we have followed DFS traversal approach to populate the next right pointer. Left child’s nextRight pointer is right child. Right child’s nextRight pointer is parent’s nextRight node’s left pointer.
+
+
+
+Time complexity:
+
+O(N)
+
+
+
+Auxiliary space:
+
+O(N) because of using stack
+
+
+
+Space complexity:
+
+Including input, O(N)

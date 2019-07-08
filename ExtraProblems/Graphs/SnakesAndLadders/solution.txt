@@ -1,0 +1,15 @@
+Optimal solution
+
+
+
+Consider the entire board as a graph. All cells are nodes and there is an edge of length 1 from where you stand to next 6 cells on board, as there are 6 numbers on a dice. Whenever there is a snake or a ladder, then we go to their respective ends with no cost. For instance, when we are 24 and we roll 3 to reach 27, we would check if there is a ladder or a snake at 27. If there is, we go to the end of that snake or ladder. Otherwise, we stay at 27.
+
+
+
+Hence, the entire problem is now reduced to graphs with given nodes and edges. We need to find the minimum distance to the the end node from the start node. We can run simple breadth first search(BFS) as the edges are of same weights.
+
+
+
+Space Complexity: O(n)
+
+Time Complexity: O(n)

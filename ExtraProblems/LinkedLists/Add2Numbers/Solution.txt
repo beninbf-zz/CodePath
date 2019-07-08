@@ -1,0 +1,172 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) other_solution1.java
+
+
+
+Description:
+
+
+
+Let's have a look at an approach for having sum of two numbers x and y represented in decimal number system:
+
+(Lets say string representation of number is num_str, then Least significant digit means digit represented by character at 0th index of num_str and Most significant digit means digit represented by character at (len(num_str) - 1)th index of num_str).
+
+Add trailing zeroes to make the lengths of x and y equal(in decimal system). Let say this length is N.
+Set carryForward=0 and i=0.
+Add ith significant digit of x and y and add carryForward to it(let say this sum 'sumD'). If at ith significant digit, sumD is greater than 9, we carry forward the tenth place digit of sumD to the next significant digit.
+Set carryForward = sumD/10 and ith significant digit of result to sumD % 10.
+i=i+1, Repeat #3 till i<=N-1.
+If carryForward>0, set nth significant digit of result as carryForward.
+Return result.
+
+
+Now, as numbers are represented as a linked list, with the head of the linked list being the least significant digit, ith node in linked list will be ith least significant digit of the number. We need to start traversing linked lists corresponding to given two numbers starting from their heads and follow the above mentioned steps.
+
+
+
+In this solution, we are creating extra linked list to store resultant sum. In actual interview, ignore the allocation of a new linked list, try to use constant memory when solving it. But if interviewer asks for the solution which does not modify the input linked lists, then this is the expected solution.
+
+
+
+Time Complexity:
+
+
+
+O(Math.max(lenA, lenB)) where lenA and lenB is length of given linked list l_a and l_b respectively.
+
+
+
+As we are iterating over given linked list l_a and l_b simultaneously in one iteration. Hence complexity is maximum of length of l_a and length l_b.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(Math.max(lenA, lenB)) where lenA and lenB is length of given linked list l_a and l_b respectively.
+
+
+
+We are storing resultant sum by creating new linkedlist and size of that newly created linked list can be 1 + Math.max(lenA, lenB).
+
+
+
+Space Complexity:
+
+
+
+O(lenA+lenB) where lenA and lenB is length of given linked list l_a and l_b respectively.
+
+
+
+Input will have two linked lists l_a and l_b of lenA and lenB respectively so, input takes O(lenA+lenB) and auxiliary space used is O(Math.max(lenA, lenB)).
+
+So, O(lenA+lenB) + O(Math.max(lenA, lenB)) → O(lenA+lenB)
+
+
+
+2) other_solution2.java
+
+
+
+Description:
+
+
+
+Approach will be as similar as explained other_solution1, but this approach is bit optimised in terms of space used as we will not create new linked list to store resultant sum rather than use one of the linked list l_a or l_b. We are iterating over given two linked lists to find out which one is longer and always making sure that l_b will always be longer linked list to store resultant sum if not then by swapping l_a and l_b.
+
+
+
+Time Complexity:
+
+
+
+O(lenA+lenB) where lenA and lenB is length of given linked list l_a and l_b respectively.
+
+
+
+As we are iterating over two given linked list l_a and l_b. Hence complexity is sum of length of these two given linked lists.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+We aren’t storing anything extra and using one of the two given linked list to store the resultant sum.
+
+
+
+Space Complexity:
+
+
+
+O(lenA+lenB) where lenA and lenB is length of given linked list l_a and l_b respectively.
+
+
+
+Input will have two linked lists l_a and l_b of lenA and lenB respectively so, input takes O(lenA+lenB) and auxiliary space used is O(1).
+
+So, O(lenA+lenB) + O(1) → O(lenA+lenB)
+
+
+
+3) optimal_solution.java
+
+
+
+Description:
+
+
+
+Approach will be as similar as explained other_solution1, but this approach is optimised in terms of number of iterations and extra space used as we are storing the resultant value in one of the given two input linked list only so, we don’t require to create and allocate new linked list.
+
+And we are not finding the longer linked list by iterating over given two linked list as we were doing in other_solution2 but when finding the resultant sum we are changing the pointer and appending the longer list’s remaining nodes to the linked list in which we are storing the resultant sum.
+
+For more detailed explanation refer optimal_solution.
+
+
+
+Time Complexity:
+
+
+
+O(Math.max(lenA, lenB)) where lenA and lenB is length of given linked list l_a and l_b respectively.
+
+
+
+As we are iterating over given linked list l_a and l_b simultaneously in one iteration. Hence complexity is maximum of length of l_a and length l_b.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+We aren’t storing anything extra and using one of the two given linked list to store the resultant sum.
+
+
+
+Space Complexity:
+
+
+
+O(lenA+lenB) where lenA and lenB is length of given linked list l_a and l_b respectively.
+
+
+
+Input will have two linked lists l_a and l_b of lenA and lenB respectively so, input takes O(lenA+lenB) and auxiliary space used is O(1).
+
+So, O(lenA+lenB) + O(1) → O(lenA+lenB)

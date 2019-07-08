@@ -1,0 +1,84 @@
+Clone Singly Linked List With Random Pointer
+
+
+
+
+
+Problem Statement:
+
+
+
+Given a singly LinkedList list of n elements. The data stored in the nodes of the linked list are the continuous sequence of the integral natural numbers i.e. the head node stores the integer 1 , then the  next node stores the integer 2 , so on and so forth till the last node of the linked list stores the integer n. Now, apart the standard next pointer of the linked-list node; there is a special random pointer that may or may not exists on each node. This random pointer of a node can point to any node of the linked list including itself.
+
+Your task is to clone the LinkedList List in an efficient manner both in terms of time and space.
+
+
+
+Input Format:
+
+
+
+First and only parameter of the function cloneLinkedList, that is to be implemented is the head node pointer of the given LinkedList list.
+
+
+
+Output Format:
+
+
+
+Return the head node of the newly cloned LinkedList in the cloneLinkedList function.
+
+
+
+Then code written by us will traverse the returned linked list (starting from head node) and for each node, it will print one line containing three space separated integers 1) Data of the current node 2) If next node exists, then data of the next node, else -1 3) If random pointed node exists, then data of the random pointed node else -1.
+
+
+
+Constraints:
+
+
+
+1 <= n <= 100000
+
+
+
+Sample Test Case:
+
+
+
+Sample Input:
+
+
+
+
+
+﻿Sample Output:
+
+
+
+1 2 3
+
+2 3 -1
+
+3 4 4
+
+4 5 -1
+
+5 -1 -1
+
+
+
+Explanation:
+
+
+
+Here the newly cloned list will be same as the input linkedlist. Hence, traversing from the head to tail node, code written by us will print 1 (data of the node), then 2 (data of its next node) and then 3 (data of its random pointed node). Now, it will move on the next node and print 2 (data of the node), then 3 (data of its next node), -1 (because this node has no random pointing node). Then it will move to the next node and print in the same fashion.
+
+
+
+Note:
+
+
+
+You may modify the given input linked-list list for cloning purpose.
+

@@ -1,0 +1,338 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution.java
+
+
+
+Description:
+
+
+
+In this naive approach, we will simply assign each cell a unique id. Then iterate over the matrix and change each cell’s id to the id of the cell where it sinks.
+
+
+
+For Example:
+
+
+
+1 5 2
+
+2 4 7
+
+3 6 9
+
+
+
+In this start by creating a new matrix to store ids and assign unique ids to each cell:
+
+
+
+1 2 3
+
+4 5 6
+
+7 8 9
+
+
+
+Then for each cell change its id as follows
+
+
+
+(0, 0) is a sink so its id stays the same.
+
+
+
+(0, 1) flows to (0, 0) (as it’s the minimum neighbour), so set its id to 1.
+
+...
+
+(1, 1) flows to (0, 1), then flows to (0,0) so set its id to 1.
+
+...
+
+And so on, to get a matrix like as follows:
+
+
+
+1 1 2
+
+1 1 2
+
+1 1 1
+
+
+
+Now, just count the total number of occurrences of remaining ids and return them in descending order. For better understanding look at the code.
+
+
+
+Time Complexity:
+
+
+
+O((row_count*col_count)^2) where row_count is number of rows in given matrix and col_count is number of columns in given matrix.
+
+
+
+As we have to traverse the matrix for each node and for each node in worst case we will traverse complete matrix. So the total time complexity will be (row_count*col_count) * O(row_count*col_count) → O((row_count*col_count)^2).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(row_count*col_count) where row_count is number of rows in given matrix and col_count is number of columns in given matrix.
+
+
+
+As we are maintaining another matrix for value of ids, it will take O(row_count*col_count) and recursion stack can also take O(row_count*col_count) space in worst case. Hence total complexity will be 2*O(row_count*col_count) → O(row_count*col_count).
+
+
+
+Space Complexity:
+
+
+
+O(row_count*col_count) where row_count is number of rows in given matrix and col_count is number of columns in given matrix.
+
+
+
+For storing input it will take O(row_count*col_count) and as auxiliary space used is O(row_count*col_count). Hence total complexity will be 2*O(row_count*col_count) → O(row_count*col_count).
+
+
+
+2) optimal_solution_1.java
+
+
+
+Description:
+
+
+
+This approach will be a greedy one. If we analyse the matrix closely we can easily see that, the cell with the lowest altitude in the entire matrix will always be a sink, also, that all the neighbours of the cell with the lowest altitude, will flow into that cell.
+
+
+
+We can use this fact to systematically map which cells belongs to which basin.
+
+
+
+Create a new matrix and initialize all cells with -1.
+
+
+
+Now iterate over the cells from lowest to highest altitude.
+
+If current cell is unmarked, mark it with new id.
+
+Mark all its unmarked neighbour to be the same as current cell.
+
+
+
+Finally count all the total number of times each id occurs in the new matrix and return in descending order.
+
+
+
+For example:
+
+
+
+1 5 2
+
+2 4 7
+
+3 6 9
+
+
+
+Create the id matrix as
+
+-1 -1 -1
+
+-1 -1 -1
+
+-1 -1 -1
+
+
+
+Start with the lowest altitude that is 1 at (0, 0) and mark it with a new id, and change all it’s neighbours to its id.
+
+1  1 -1
+
+1 -1 -1
+
+-1 -1 -1
+
+
+
+Now the next lowest ids are at (0, 2) and (1, 0)
+
+
+
+At (0, 2), as it is unmarked mark it with a new id, skip the neighbour already marked and change the remaining
+
+1  1 2
+
+1 -1  2
+
+-1 -1 -1
+
+
+
+Similarly for (1, 0), as it is already marked, change its neighbours to be the same as it.
+
+1  1 2
+
+1  1 2
+
+1 -1 -1
+
+
+
+Continue this till all cells have been processed.
+
+
+
+We can use hashmaps to map heights to cells, and then sort the heights in ascending order to mark the cells. For better understanding look at the code.
+
+
+
+Time Complexity:
+
+
+
+O(row_count*col_count*log(row_count*col_count)) where row_count is number of rows in given matrix and col_count is number of columns in given matrix.
+
+
+
+As we need to sort row_count*col_count elements. For processing each cell afterwards, it only takes constant operation per cell. So, the worst case complexity is O(row_count*col_count*log(row_count*col_count)).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(row_count*col_count) where row_count is number of rows in given matrix and col_count is number of columns in given matrix.
+
+
+
+As we are keeping track of ids of each element of matrix. It will take O(row_count*col_count) extra space.
+
+
+
+Space Complexity:
+
+
+
+O(row_count*col_count) where row_count is number of rows in given matrix and col_count is number of columns in given matrix.
+
+
+
+For storing input, it will take O(row_count*col_count) space and as auxiliary space used is O(row_count*col_count). Hence total complexity will be O(row_count*col_count).
+
+
+
+3) optimal_solution_2.java
+
+
+
+Description:
+
+
+
+This approach will be optimised version of brute_force approach. Same as the brute force, but this time we can mark all the cells we passed through while calculating the sink of a particular cell and ignoring any cell already processed.
+
+
+
+Start by initializing the id matrix with -1.
+Iterate over each cell in the matrix, skip cells already marked.
+For each cell recursively call the cell it flows towards till we reach a sink or a cell which is already marked.
+If current cell is marked return it’s id.
+If current cell is a sink, set it’s id if not set otherwise return the id.
+Set the returned id for each cell.
+
+
+Continue till all cells are marked.
+
+
+
+For example:
+
+
+
+2 1 3
+
+2 3 4
+
+3 2 1
+
+
+
+Initialize the id matrix:
+
+
+
+-1 -1 -1
+
+-1 -1 -1
+
+-1 -1 -1
+
+
+
+(0, 0) flows to (0, 1) which is a sink. So mark both them with 1.
+
+Skip (0, 1) already marked.
+
+1  1 -1
+
+-1 -1 -1
+
+-1 -1 -1
+
+
+
+And continue like this till all cells are marked.
+
+
+
+Time Complexity:
+
+
+
+O(row_count*col_count) where row_count is number of rows in given matrix and col_count is number of columns in given matrix.
+
+
+
+As we are iterating over matrix and each cell will be computed once. Hence time complexity will be O(row_count*col_count).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(row_count*col_count) where row_count is number of rows in given matrix and col_count is number of columns in given matrix.
+
+
+
+As we are keeping track of ids of each element of matrix. It will take O(row_count*col_count) extra space.
+
+
+
+Space Complexity:
+
+
+
+O(row_count*col_count) where row_count is number of rows in given matrix and col_count is number of columns in given matrix.
+
+
+
+For storing input, it will take O(row_count*col_count) space and as auxiliary space used is O(row_count*col_count). Hence total complexity will be O(row_count*col_count).
+

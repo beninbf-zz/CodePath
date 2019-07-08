@@ -1,0 +1,19 @@
+(This is a popular interview problem, from Programming Pearls)
+
+
+
+Given an input file with four billion integers, provide an algorithm to generate an integer which is not contained in the file. Assume you have 1 GiB memory. Follow up with what you would do if you have only 10 MiB of memory.
+
+
+
+Note:
+
+
+
+This problem is under development according to IK standards. If you'd like to contribute, then please feel free to email soham@interviewkickstart.com
+
+
+
+Till we finish developing this problem, you can look at:
+
+http://stackoverflow.com/questions/7153659/find-an-integer-not-among-four-billion-given-ones?rq=1

@@ -1,0 +1,63 @@
+We have provided a solution and the solutions contain necessary comments to understand the approach used:
+
+
+
+1) solution.java
+
+
+
+Description:
+
+
+
+We traverse the string from left to right and maintain 2 stacks – one for numbers and the other one for operators and parentheses. When we encounter a number we push it to the integer stack and similarly, in case of an operator or an open bracket, we push it to the character stack. When we encounter a closed bracket, we remove characters from the character stack until we encounter the corresponding open parentheses. Also, when we get an operator we remove 2 integers from the integer stack. In case we are not able to perform any of the operations, we return false, thus considering the expression invalid.
+
+
+
+Time Complexity (assuming that input arguments are already given and excluding time used in declaration of output):
+
+
+
+O(n) where n denotes the length of the expression string.
+
+
+
+As each character of the string enters one of the stacks at most 1 time and is removed from it at most one time, the complexity of the algorithm turns out to be O(n).
+
+
+
+Time Complexity:
+
+
+
+O(n) where n denotes the length of the expression string.
+
+
+
+As time complexity assuming that input arguments are already given and excluding time used in declaration of output is O(n), to read input it will take O(n) and to store output it will take O(1) hence total complexity will be O(n) + O(n) + O
+
+(1) → O(n).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n) where n denotes the length of the expression string.
+
+
+
+We create 2 stacks for storing the appropriate characters and numbers respectively, so the auxiliary space used is O(n) + O(n) = O(n).
+
+
+
+Space Complexity:
+
+
+
+O(n) where n denotes the length of the expression string.
+
+
+
+We will require O(n) space to store input and auxiliary space used is O(n) and O(1) to store output, hence total complexity will be O(n).

@@ -1,0 +1,53 @@
+We have provided solution which contain necessary comments to understand the approach used:
+
+
+
+1) optimal_solution.java
+
+
+
+Description:
+
+
+
+For any given string str, length of omitted characters l can 2 <= l <= n-2 where n is length of string as we can’t omit first and last characters and we need to find numeronym in which at least 2 contiguous letters were omitted.
+
+So for any given length l, we iterate over all possible positions from where omission of characters can start, find string of length l from that position and replace that with l i.e. count of omitted characters.
+
+
+
+Time Complexity:
+
+
+
+O(n^3) where n is length of given string str.
+
+
+
+As iteration will be in three loops, first over possible lengths then over possible first characters of omitted characters and then to find store newly created numeronym.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(n^3) where n is length of given string str.
+
+
+
+Maximum number of possible numeronym generated can be O(n^2) and length of each will be O(n) hence it takes O(n^3) to store output.
+
+
+
+Space Complexity:
+
+
+
+O(n^3) where n is length of given string str.
+
+
+
+It will be equal to auxiliary space as in input we are just reading a single input string of length n which takes O(n).
+
+O(n^3) + O(n) → O(n^3)

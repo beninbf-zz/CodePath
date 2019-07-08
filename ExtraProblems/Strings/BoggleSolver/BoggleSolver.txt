@@ -1,0 +1,155 @@
+Boggle Solver
+
+
+
+Problem Statement:
+
+
+
+You are given a dictionary set dictionary that contains dictionaryCount distinct words and a matrix mat of size n*m.
+
+Your task is to find all possible words that can be formed by a sequence of adjacent characters in the matrix mat.
+
+Note that we can move to any of 8 adjacent characters, but a word should not have multiple instances of the same cell of the matrix.
+
+Note: Same dictionary word can be found in the matrix multiple times. We only need to check the existence of the dictionary word in the matrix. Hence, for multiple existences for the same word only add it once in the list of all found words.
+
+
+
+Input/Output Format For The Function:
+
+
+
+Input Format:
+
+
+
+The first parameter of the function that is to be implemented is the matrix mat and the second parameter dictionary is a list of strings that are to be searched in the matrix mat.
+
+
+
+Output Format:
+
+
+
+Return array of strings containing all possible words from the dictionary that could be found in the matrix mat.
+
+
+
+Input/Output Format For The Custom Input:
+
+
+
+Input Format:
+
+
+
+The first line contains one single integer denoting the value of dictionaryCount.
+
+Next dictionaryCount lines of input, each line contains one single string denoting the word in the dictionary.
+
+Next two lines contain one integer each denoting n and m respectively. Next, n lines contain one string of length m, denoting the matrix mat.
+
+If dictionary = [ ‘’hat”, “world” ] and mat [ “aaa”, “hat”, “ccc”], then the corresponding custom input will be:
+
+
+
+2
+
+hat
+
+world
+
+3
+
+3
+
+aaa
+
+hat
+
+ccc
+
+
+
+Output Format:
+
+
+
+Print all the dictionary words found in the matrix mat in a separate line.
+
+For the above-provided custom input only one word is found and hence the custom output looks like:
+
+
+
+hat
+
+
+
+Constraints:
+
+
+
+1 <= dictionaryCount <= 1000
+1<= n*m <= 100000
+1<= length(words in dictionary) <= 100
+All the characters in mat and words in dictionary are lower case English alphabets.
+
+
+Sample Test Case:
+
+
+
+dictionary = [ “bst” , “heap” , “tree”]
+
+mat = [ “bsh”  , ”tee” , ”arh” ]
+
+
+
+Sample Output:
+
+
+
+Function returns the list result = [ “bst” , “tree” ]
+
+
+
+Explanation:
+
+
+
+The input matrix is represented below:
+
+bsh
+
+tee
+
+arh
+
+
+
+Assume here top left-most corner is at (0,0) and bottom right-most corner is (2,2).
+
+
+
+Presence of “bst” is marked bold in the below representation:
+
+(0,0) -> (0,1) -> (1,0)
+
+bsh
+
+tee
+
+arh
+
+
+
+Presence of “tree” is marked bold in the below representation:
+
+(1,0) -> (2,1) -> (1,1) -> (1,2)  
+
+bsh
+
+tee
+
+arh

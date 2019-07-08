@@ -1,0 +1,162 @@
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution:
+
+
+
+Description:
+
+
+
+In this approach we assume every cell in the matrix as the top-left. We iterate over matrix and try to see what is the maximum size of sub-square matrix we can obtain satisfying that all elements in the sub-square matrix are 1.
+
+
+
+Time Complexity:
+
+
+
+O( (n*m)^2) where n is number of rows of matrix and m is number of columns of matrix.
+
+
+
+To visit each cell and choose it as top-left cell of the sub-square matrix take O(n*m) time. Now to calculate the maximum size of sub-square matrix we start looking if it is feasible for a size 1 matrix, then for size 2 and so on. Next is to check if the corresponding size is possible or not. Since it feasible to have a sub-square matrix of all 1s for (size-1). So, for sub-matrix of size, it can done by two linear traversal one row wise and another column wise for the last row and last column of the sub-matrix.
+
+The time complexity for this step is O(min(m,n)) * (2*O(min(m,n)) → O(n*m). Therefore, the total time complexity becomes O(n*m)*O(n*m) → O((m*n)^2).
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+Since we are only traversing on the original matrix without storing anything extra.
+
+
+
+Space Complexity:
+
+
+
+O(n*m) where n is number of rows of matrix and m is number of columns of matrix.
+
+
+
+For storing input it will take space of O(n*m) and auxiliary space used is O(1).
+
+So, O(n*m) + O(1) → O(n*m).
+
+
+
+2) other_solution:
+
+
+
+Description:
+
+
+
+In this solution, we approach the problem dynamically.
+
+Let’s first decide a state for our DP solution. Here we choose state(i, j), which will tell us the maximum size of sub-square matrix with all 1s considering the cell (i, j) as the bottom-right most cell of the sub matrix. Now, we see that for a state(i, j), its value can be computed using the below state relation:
+
+
+
+state(i, j) = min(state(i, j-1) ,state(i-1, j) ,state(i-1, j-1)) + 1 if mat[i][j] = 1
+
+state(i, j) = 0 otherwise.
+
+
+
+Now we, just add memorization to the above states, So that we do not calculate same state more than once. As discussed till now, our DP state will look something like dp[n][m]. But here is one catch, If you observe carefully then to calculate a particular state we only look to its neighbouring 3 states. So, there is no requirement cache all the state. Will simply cache the corresponding 3 states and it solves our problem. As, described in the above state relation, two lookup states belong to the row just above the current state and one state lies in the same row and just in the previous column of the current state. Hence, we will now only maintain a linear memorization table that caches the state solutions of the previous row. The same memorization table is updated every time we calculate a state so that it can be used for the states that belong to the next row. Kindly, refer to the solution for better understanding.
+
+
+
+Time Complexity:
+
+
+
+O(n*m) where n is number of rows of matrix and m is number of columns of matrix.
+
+
+
+As there are a total of m*n states and each state is being calculated only once and to calculate each state me make three lookups. Hence, the time complexity of the dp solution is (number of states) * (number of state lookups) → O(n*m) * 3 → O(m*n).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(m) where m is number of columns of matrix.
+
+As we are storing dp array of size equal to column of matrix while iterating over matrix.
+
+
+
+Space Complexity:
+
+
+
+O(n*m) where n is number of rows of matrix and m is number of columns of matrix.
+
+
+
+To store input matrix, it will take O(n*m), the size of the given matrix mat and auxiliary space used id O(m).
+
+So, O(n*m) + O(m) → O(n*m).
+
+
+
+3) optimal_solution:
+
+
+
+Description:
+
+
+
+The approach in this solution is same as the other_solution that uses the same dynamic programming state relation. Here, instead of taking an auxiliary memory we use the provided input matrix to store the DP state and once when all the DP states are computed and we have our answer.
+
+
+
+Time Complexity:
+
+
+
+O(n*m)
+
+
+
+Same as other_solution O(n*m) as the algorithm remains the same.
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+Since we are using the original input matrix to store DP states.
+
+
+
+Space Complexity:
+
+
+
+O(n*m) where n is number of rows of matrix and m is number of columns of matrix.
+
+
+
+For storing input it will take space of O(n*m) and auxiliary space used is O(1).
+
+So, O(n*m) + O(1) → O(n*m).

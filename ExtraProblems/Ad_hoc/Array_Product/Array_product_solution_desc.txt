@@ -1,0 +1,124 @@
+Are you getting wrong answer for some of the test cases, but still think your logic is correct?
+
+
+
+Check for the overflow.
+
+
+
+If a = 10^9, b = 10^9 and we do, int c = (a * b) % (10^9 + 7), then it will overflow. 
+
+
+
+Instead, we should use something like int c = (a * (long long int) 1 * b) % (10^9 + 7), to avoid overflow. By multiplying with (long long int) 1, we make sure that the calculation is done in long long int, instead of int.
+
+
+
+
+
+
+
+We have provided solutions which contain necessary comments to understand the approach used:
+
+
+
+1) brute_force_solution.java
+
+
+
+Description:
+
+
+
+A naive approach would be, to find ith element of output array (i.e. products[i]), iterate over an entire input array nums to get the product of all elements nums[j], such that j != i.
+
+
+
+Time Complexity:
+
+
+
+O(n*n) where n is length of input array nums.
+
+
+
+As we are iterating over complete array to find products[i] and as i can be 0<=i<=n-1. Each calculation of element of products array will take O(n) so total complexity will be O(n*n).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+As we are not storing anything extra and excluding space used to store output array products.
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is length of input array nums.
+
+
+
+As storing input array nums of length n will take O(n) and auxiliary space used is O(1). So, O(n) + O(1) → O(n).
+
+
+
+2) optimal_solution.java
+
+
+
+Description:
+
+
+
+An optimal approach would be as follows:
+
+Notice that for products[i], product of all input array elements other than ith element is nothing but (product of all elements nums[j], 0 <= j <= (i-1)) * (product of all elements nums[j], (i+1) <= j <= (n-1)) = (nums[0]*nums[1]*...*nums[i-1]) * (nums[i+1]*nums[i+2]*...*nums[n-1]).
+
+So, iterate input array nums twice to fill output array products, once for updating products[i] with (nums[0] * nums[1] *...*nums[i-1]), and next one for updating products[i] with (nums[i+1] * nums[i+2] * … * nums[n-1]).
+
+Please see the commented code for detailed implementation of optimal approach.
+
+
+
+Time Complexity:
+
+
+
+O(n) where n is length of input array nums.
+
+
+
+As we are iterating over input array nums two times it will take O(n).
+
+
+
+Auxiliary Space Used:
+
+
+
+O(1).
+
+
+
+As we are not storing anything extra and excluding space used to store output array products.
+
+
+
+Space Complexity:
+
+
+
+O(n) where n is length of input array nums.
+
+
+
+As storing input array nums of length n will take O(n) and auxiliary space used is O(1). So, O(n) + O(1) → O(n).
+
