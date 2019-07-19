@@ -771,6 +771,14 @@ public class TechScreens {
     }
 
     /**
+     * Problem: Given the following input
+     *         4/01     4/02    4/03    4/04
+     * MSFT |  200    |       |      | 400
+     * GOOG |  500    |       |      | 700
+     * APPL |  400    | 200   |      | 600
+     *
+     * Out put the total value of your portfolio.
+     * [(2019-04-01, 600), (2019-04-02, 900), (2019-04-03, 1100), (2019-04-04, 1700)]
      *
      * Dark store tech screen
      *
@@ -796,7 +804,7 @@ public class TechScreens {
      * unique dates.
      *
      * Considering market values of given assets change frequently, its more likely
-     * that the O(m * n) will dominate.
+     * that the O(m * n) will dominate.getTotalsFromPortfolio
      *
      * SPACE COMPLEXITY: For our bucket array we are created an Integer[] per unique date
      * where the dimension of the array is equal to the number of assets so that additional
