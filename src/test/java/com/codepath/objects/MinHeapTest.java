@@ -2,7 +2,7 @@ package test.java.com.codepath.objects;
 
 import main.java.com.codepath.objects.MinHeap;
 import main.java.com.codepath.objects.Vertex;
-import main.java.com.codepath.techscreens.objects.MyMap;
+import main.java.com.codepath.techscreens.bolt.MyMap;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
