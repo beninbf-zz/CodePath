@@ -1,20 +1,16 @@
+package main.java.com.codepath.extraproblems.sorting;
+
 import java.io.*;
-import java.math.*;
-import java.security.*;
-import java.text.*;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.*;
-import java.util.regex.*;
 import java.util.stream.*;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-class Result {
+class NearestNeighborOptimalResult {
     /*============================== START =========================================*/
     public static List<List<Integer>> nearest_neighbours(int p_x, int p_y, int k, List<List<Integer>> n_points) {
         int len = n_points.size();
-        /*Point is a class with two attributes for each point 
+        /*Point is a class with two attributes for each point
         present n_points- index and distance from point P.*/
         Point[] pnt = new Point[len];
         for(int i = 0; i<len; i++){
@@ -34,17 +30,17 @@ class Result {
     /* Get k points having least distance from point P.*/
     public static void topK(Point[] points, int k){
         int left = 0, right = points.length - 1;
-        /*We just need the k smallest points. We dont care whether they are 
-        sorted or not. Similarly once we get the smallest possible k elements, 
+        /*We just need the k smallest points. We dont care whether they are
+        sorted or not. Similarly once we get the smallest possible k elements,
         we can skip sorting of unnecessary sub arrays.*/
         while(left<right){
             int part = split(points, left, right);
             if (part==k) {
                 return;
-            } 
+            }
             else if(part<k) {
                 left=part+1;
-            } 
+            }
             else{
                 right=part-1;
             }
@@ -62,7 +58,7 @@ class Result {
         return a;
     }
 
-    /*Similar to the partition function of quicksort. It partitions the array along the pivot 
+    /*Similar to the partition function of quicksort. It partitions the array along the pivot
     such that elements left to the pivot are smaller than it and to the right are larger than it.*/
     public static int split(Point[] points, int left, int right) {
         Point piv = points[left];
@@ -99,7 +95,7 @@ class Result {
 }
 
 
-class Solution {
+class NearestNeighborOptimalResultSolution {
     public static void main(String args[]) {
         /*
         This function is used to increase the size of recursion stack. It makes the size of stack
@@ -116,8 +112,6 @@ class Solution {
             }
         }, "1", 1 << 26).start();
     }
-    
-    public static int MIN_POINT = -1000000000, MAX_POINT = 1000000000;
 
     public static void solve() throws IOException {
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -132,12 +126,6 @@ class Solution {
 
         int n_pointsRows = Integer.parseInt(bufferedReader.readLine().trim());
         int n_pointsColumns = Integer.parseInt(bufferedReader.readLine().trim());
-        
-        assert (MIN_POINT <= p_x && p_x <= MAX_POINT) : "invalid value of p_x";
-        assert (MIN_POINT <= p_y && p_y <= MAX_POINT) : "invalid value of p_y";
-        assert (1 <= n_pointsRows && n_pointsRows <= 100000) : "invalid value of n_pointsRows";
-        assert (1 <= k && k <= n_pointsRows) : "invalid value of k";
-        assert (n_pointsColumns == 2) : "invalid value of n_pointsColumns";
 
         List<List<Integer>> n_points = new ArrayList<>();
 
@@ -153,12 +141,7 @@ class Solution {
             }
         });
 
-        for (int i=0; i<n_pointsRows; i++) {
-            assert (MIN_POINT <= n_points.get(i).get(0) && n_points.get(i).get(0) <= MAX_POINT) : "invalid value of x coordinate";
-            assert (MIN_POINT <= n_points.get(i).get(1) && n_points.get(i).get(1) <= MAX_POINT) : "invalid value of y coordinate";
-        }
-
-        List<List<Integer>> result = Result.nearest_neighbours(p_x, p_y, k, n_points);
+        List<List<Integer>> result = NearestNeighborOptimalResult.nearest_neighbours(p_x, p_y, k, n_points);
 
         result.stream()
             .map(

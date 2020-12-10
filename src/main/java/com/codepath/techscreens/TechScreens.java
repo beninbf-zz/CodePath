@@ -72,12 +72,12 @@ public class TechScreens {
      * parse strings and string arrays which makes it difficult to see the checkIn Date of the
      * "next" booking.
      *
-     * I was struggling describing my solution because I was doing so withing the constraints
+     * I was struggling describing my solution because I was doing so within the constraints
      * of the String array, where the next booking, needed to first be split, before I could check
      * the checkIn date.
      *
      * The take away from this, is to bend the problem to my algorithm solution by transforming it
-     * some how. I should have just made a Booking Object, and then create a list of bookings
+     * some how. I should have just made a Booking Object, and then created a list of bookings
      * to iterate through.
      *
      * @param bookingsInput string of bookings where integer is day "4:8 19:35 80:160"
@@ -105,8 +105,8 @@ public class TechScreens {
      * We need to be able to find the booking date from which our start will commence.
      * That is exactly what this logic does.
      *
-     * @param bookings string a booking, i.e. "0:2"
-     * @param current_date the current date the customer is looking for bookings
+     * @param bookings an array of Bookings a booking, i.e. "0:2"
+     * @param current_date int, the current date the customer is looking for bookings
      * @return index of the booking
      */
     private int getBookingToStartSearch(Booking[] bookings, int current_date) {
@@ -192,7 +192,7 @@ public class TechScreens {
      *
      * When you do, that, writing the code afterwards becomes much cleaner.
      *
-     * Essentially this solution works, by starting at cell 0, 0, it then generates all square sub matrices
+     * Essentially this solution works, by starting at cell (0, 0), it then generates all square sub matrices
      * of length, 1, 2, 3, up to the bounds of the matrix.
      *
      * For each sub matrix a check is performed to determine if the sub matrix contains all ones or not.
@@ -201,7 +201,7 @@ public class TechScreens {
      * is necessary.
      *
      * In this problem we start with dimension 0, knowing it won't count, but that's no problem, as proceed
-     * to dimension, as the cell 0,0 will be counted because 0 < 1.
+     * to dimension, as the cell (0,0) will be counted because 0 < 1.
      *
      * I'm pretty sure this problem is a prime candidate for a dynamic programming solution, because
      * there would appear to be a lot of overlapping sub problems.
@@ -218,7 +218,7 @@ public class TechScreens {
      *
      *
      * @param arr 2-D array of zeros and ones
-     * @return int the largest dimension of a subm atrix containing all ones
+     * @return int the largest dimension of a sub matrix containing all ones
      */
     public int largestSquareMatrix(List<List<Integer>> arr) {
 

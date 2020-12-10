@@ -6,12 +6,9 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.*;
 
-public class optimal_solution{
-
-
+public class SortCharsOptimalSolution {
     public static void main(String[] args) throws IOException{
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(System.out));
-
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
         int arrCount = Integer.parseInt(bufferedReader.readLine().trim());
@@ -23,42 +20,35 @@ public class optimal_solution{
             arr.add(arrItem);
         }
 
-        List<Character> result = Result.sort_array(arr);
-
+        List<Character> result = SortCharsOptimalSolutionResult.sort_array(arr);
         for (int i = 0; i < result.size(); i++) {
             bufferedWriter.write(String.valueOf(result.get(i)));
-
             if (i != result.size() - 1) {
                 bufferedWriter.write("\n");
             }
         }
 
         bufferedWriter.newLine();
-
         bufferedWriter.close();
-
         bufferedReader.close();
     }
 
 }
-class Result {
-
-    /*====================START========================*/
+class SortCharsOptimalSolutionResult {
     public static List<Character> sort_array(List<Character> arr) {
-        int frequency[] = new int[128]; /*an array to store the number of 
-                                        occurence of each character in the string*/
+        /* an array to store the number of occurrence of each character in the string */
+        int[] frequency = new int[128]; 
         for(char c : arr){
             frequency[c]++;
         }
         arr.clear();
-        for(int i  = 0; i<128;i++){ /*traversing from charcter having 
-                              lowest ascii value to that of highest ascii value*/
-            for(int j = 0; j<frequency[i]; j++){
-                arr.add((char)i); /*appending the result with the 
-                        number of occurences of character in the string*/
+        /* traversing from character having lowest ascii value to that of highest ascii value */
+        for(int i  = 0; i < 128; i++){ 
+            for(int j = 0; j < frequency[i]; j++){
+                /* appending the result with the  number of occurrences of character in the string */
+                arr.add((char)i);
             }
         }
         return arr;
     }
-    /*====================END========================*/
 }

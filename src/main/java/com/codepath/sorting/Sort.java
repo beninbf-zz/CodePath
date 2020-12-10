@@ -37,24 +37,161 @@ public class Sort  {
      * stack. so its best case SPACE complexity is actually (log n) if counting the stack
      * @param array int[]
      */
-    public void quickSort(int[] array) {
-        quickSortHelper(array, 0, array.length - 1);
+    public void hoaresQuickSort(int[] array) {
+        if (array == null || array.length == 0) {
+            return;
+        }
+        hoaresQuickSortHelper(array, 0, array.length - 1);
     }
 
-    private void quickSortHelper(int[] array, int start, int end) {
+    private void hoaresQuickSortHelper(int[] array, int start, int end) {
+        System.out.println("start="+start+" end="+end);
         if (start >= end) {
             return;
         }
-        int pivot = choosePivot(array, start, end);
+        int pivot = (end + start) / 2;
         int index = hoaresPartition(array, start, end, array[pivot]);
-        quickSortHelper(array, start, index - 1);
-        quickSortHelper(array, index + 1, end);
+        Util.print(array);
+        System.out.println("index="+index+" ");
+        System.out.println();
+        // the lomuto's partition has the following implementation
+        // qs(array, start, index - 1)
+        // qs(array, start, index + 1)
+        // but with hoaresPartition it's different
+        hoaresQuickSortHelper(array, start, index);
+        hoaresQuickSortHelper(array, index + 1, end);
     }
 
-    private int choosePivot(int[] array, int start, int end) {
-        return (end + start) / 2;
+    /**
+     * This is another way of partitioning the array, which is more intuitive for me
+     * than the prior method.
+     *
+     * Essentially we have two pointers, one pointing at the beginning of the array (i)
+     * the other pointing at the end (j).
+     *
+     * While arr[i] < array[pivot], we move i to the right, because the element at i is already
+     * correctly partitioned, so there is no need to be concerned with it.
+     *
+     * While array[j] > array[pivot] we move j to the left, because the element at j is already
+     * correctly partitioned.
+     *
+     * We are essentially trying to find an i element, that is on the left, but greater than the
+     * pivot, then we stop moving i. We are also trying to find a j element, that is less than
+     * the pivot but on the right.
+     *
+     * When we find these elements, we check that i <= j, then we swap then, and move i to the right
+     * one step, and j to the left one step.
+     *
+     * We exit the loop when i had crossed j, or i is no longer <= to j.
+     *
+     * We then return our i pointer.
+     *
+     * TO BE USED WITH QUICK sort like such
+     *
+     * quicksort(arr, start, index - 1)
+     * quicksort(arr, index, end)
+     * @param array int[]
+     * @param start int
+     * @param end int
+     * @param pivotValue int
+     * @return i
+     */
+    public int hoaresPartition(int[] array, int start, int end, int pivotValue) {
+        int i = start - 1;
+        int j = end + 1;
+        while(true) {
+            do {
+                i++;
+            } while (array[i] < pivotValue);
+
+            do {
+                j--;
+            } while (array[j] > pivotValue);
+
+
+            if (i >= j) {
+                return j;
+            }
+            swap(array, i, j);
+        }
     }
 
+    public void myQuickSort(int[] array) {
+        if (array == null || array.length == 0) {
+            return;
+        }
+        myQuickSortHelper(array, 0, array.length - 1);
+    }
+
+    public void myQuickSortHelper(int[] array, int start, int end) {
+        System.out.println("start="+start+" end="+end);
+        if (start < end) {
+            int pivot = (end + start) / 2;
+            int index = myPartition(array, start, end, array[pivot]);
+            Util.print(array);
+            System.out.println("index="+index+" ");
+            System.out.println();
+            if (start < index - 1) {
+                myQuickSortHelper(array, start, index - 1);
+            }
+            if (index < end) {
+                myQuickSortHelper(array, index, end);
+            }
+        }
+    }
+
+    /**
+     * myPartition - The following is the partition method for quick sort that I am most comfortable with.
+     * The thing to remember about this partition routine is that the index that is returned, "i", represents
+     * the final resting place for the value stored at index i, which means a[i], is effectively in its final sorted
+     * place AFTER myPartition is executed.
+     *
+     * This method is ideal for finding the kth largest or kth smallest element in a list, because if n - k = the index
+     * i, then we can stop sorting the list.
+     * @param array - int[]
+     * @param start - int : the index the partition will begin at
+     * @param end - int : the index the partition will end at
+     * @param pivotValue - int : the value we will be partition around
+     * @return int - the index which represents the final resting place of the value at that location.
+     */
+    private int myPartition(int[] array, int start, int end, int pivotValue) {
+        int i = start;
+        int j = end;
+        while(i <= j) {
+            while (array[i] < pivotValue) {
+                i++;
+            }
+
+            while (array[j] > pivotValue) {
+                j--;
+            }
+            if (i <= j) {
+                swap(array, i, j);
+                i++;
+                j--;
+            }
+        }
+        return i;
+    }
+
+    public void lomutosQuickSort(int[] array) {
+        if (array == null || array.length == 0) {
+            return;
+        }
+        lomutosQuickSortHelper(array, 0, array.length - 1);
+    }
+
+    private void lomutosQuickSortHelper(int[] array, int start, int end) {
+        if (start < end) {
+            System.out.println("start="+start+" end="+end);
+            int index = lomutosPartition(array, start, end);
+            Util.print(array);
+            System.out.println("index="+index+" ");
+            System.out.println();
+            lomutosQuickSortHelper(array, start, index - 1);
+            lomutosQuickSortHelper(array, index + 1, end);
+        }
+    }
     /**
      * One way of partitioning the array. This is kind of slick.
      *
@@ -90,70 +227,18 @@ public class Sort  {
      */
     public int lomutosPartition(int[] array, int start, int end) {
         int pivotValue = array[end];
-        int index = start;
+        int j = start;
 
-        for (int current = start; current < end; current++) {
-            if (array[current] <= pivotValue) {
-                swap(array, current, index);
-                index++;
+        for (int i = start; i < end; i++) {
+            if (array[i] <= pivotValue) {
+                swap(array, i, j);
+                j++;
             }
         }
-        swap(array, index, end);
-        return index;
-    }
-
-    /**
-     * This is another way of partitioning the array, which is more intuitive for me
-     * than the prior method.
-     *
-     * Essentially we have two pointers, one pointing at the beginning of the array (i)
-     * the other pointing at the end (j).
-     *
-     * While arr[i] < array[pivot], we move i to the right, because the element at i is already
-     * correctly partitioned, so there is no need to be concerned with it.
-     *
-     * While array[j] > array[pivot] we move j to the left, because the element at j is already
-     * correctly partitioned.
-     *
-     * We are essentially trying to find an i element, that is on the left, but greater than the
-     * pivot, then we stop moving i. We are also trying to find a j element, that is less than
-     * the pivot but on the right.
-     *
-     * When we find these elements, we check that i <= j, then we swap then, and move i to the right
-     * one step, and j to the left one step.
-     *
-     * We exit the loop when i had crossed j, or i is no longer <= to j.
-     *
-     * We then return our i pointer.
-     *
-     * TO BE USED WITH QUICK like such
-     *
-     * quicksort(arr, start, index - 1)
-     * quicksort(arr, index, end)
-     * @param array int[]
-     * @param start int
-     * @param end int
-     * @param pivotValue int
-     * @return i
-     */
-    public int hoaresPartition(int[] array, int start, int end, int pivotValue) {
-        int i = start - 1;
-        int j = end + 1;
-        while(true) {
-            do {
-                i++;
-            } while (array[i] < pivotValue);
-
-            do {
-                j--;
-            } while (array[j] > pivotValue);
-
-
-            if (i >= j) {
-                return j;
-            }
-            swap(array, i, j);
-        }
+        Util.print(array);
+        swap(array, j, end);
+        Util.print(array);
+        return j;
     }
 
     private void swap(int[] array, int i, int j) {
@@ -248,10 +333,10 @@ public class Sort  {
      * element, and building the heap from there.
      *
      * Why start from the middle element? Because the left and right children of the middle
-     * element will be looking to the right half of the array. All we want to do, is get the
+     * element will be in the right half of the array. All we want to do, is get the
      * maximum element to the root of the array, or the 0 index.
      *
-     * After building the heap, we then swap the max element, putting at the end of the array
+     * After building the heap, we then swap the max element, putting it at the end of the array
      * (where it should be for sorting).
      *
      * We then call heapify again, on the remaining portion of the array, which is now one element smaller
@@ -267,13 +352,56 @@ public class Sort  {
      * @param array int[]
      */
     public void heapSortMax(int[] array) {
+        // First build a max heap out of the array
         for (int i = array.length / 2; i >= 0; i--) {
             maxHeapify(array, i, array.length);
         }
 
-        for (int i = array.length - 1; i >= 0; i--) {
+        for (int i = array.length - 1; i > 0; i--) {
             swap(array, i, 0);
-            maxHeapify(array, i, 0);
+            maxHeapify(array, 0, i);
+        }
+    }
+
+    /**
+     * Heapifies the array;
+     *
+     * What does is mean to heapify an array? It simply means that given an array, and an index,
+     * we need to enforce the heap property. In this case, that means, starting with the element
+     * i, check to see if its larger than both of its children at indices 2(i) + 1 and 2(i) + 2,
+     * if it is, then there is nothing left to do, and we can stop.
+     *
+     * If not, then we need to swap the element at i, with its child that is largest. Once we do that
+     * we should recursively call heapify again, on this new largest index, to ensure the array has
+     * still maintained the heap property.
+     *
+     * This is how we build our heap out of an array.
+     *
+     * To heapify a subtree rooted with node i which is
+     * an index in arr[]. n is size of heap
+     *
+     * Build Heap is O(n)
+     * @param array int[]
+     * @param n size of heap
+     * @param i index of the element we are assuming is the largest, the root of the heap
+     */
+    public void maxHeapify(int[] array, int i, int n) {
+        int largestElementIndex = i;
+
+        int leftChildIndex = 2 * i + 1;
+        int rightChildIndex = 2 * i + 2;
+
+        if (leftChildIndex < n && array[leftChildIndex] > array[largestElementIndex]) {
+            largestElementIndex = leftChildIndex;
+        }
+
+        if (rightChildIndex < n && array[rightChildIndex] > array[largestElementIndex]) {
+            largestElementIndex = rightChildIndex;
+        }
+
+        if (largestElementIndex != i) {
+            swap(array, largestElementIndex, i);
+            maxHeapify(array, largestElementIndex, n);
         }
     }
 
@@ -292,45 +420,6 @@ public class Sort  {
     private void reverse(int[] array) {
         for (int i = 0; i < array.length / 2; i++) {
             swap(array, i, array.length - i - 1);
-        }
-    }
-
-    /**
-     * Heapifies the array;
-     *
-     * what does is mean to heapify an array. It simply means that given an array, and an index,
-     * we need to enforce the heap property. In this case, that means, starting with the element
-     * i, check to see if its larger than both of its children at indices 2(i) + 1 and 2(i) + 2,
-     * if it is, then there is nothing left to do, and we can stop.
-     *
-     * If not, then we need to swap the element at i, with its child that is largest. Once we do that
-     * we should recursively call heapify again, on this new largest index, to ensure, that it has
-     * still maintained the heap property.
-     *
-     * This is how we build our heap out of an array.
-     *
-     * Build Heap is O(n)
-     * @param array int[]
-     * @param n right boundary of array
-     * @param i the element we are assuming is our largest element
-     */
-    private void maxHeapify(int[] array, int i, int n) {
-        int largestIndex = i;
-
-        int leftChildIndex = 2 * i + 1;
-        int rightChildIndex = 2 * i + 2;
-
-        if (leftChildIndex < n && array[leftChildIndex] > array[largestIndex]) {
-            largestIndex = leftChildIndex;
-        }
-
-        if (rightChildIndex < n && array[rightChildIndex] > array[largestIndex]) {
-            largestIndex = rightChildIndex;
-        }
-
-        if (largestIndex != i) {
-            swap(array, largestIndex, i);
-            maxHeapify(array, n, largestIndex);
         }
     }
 

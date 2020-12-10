@@ -1,52 +1,29 @@
 Nearest Neighbours
 
-
-
 Problem Statement:
-
-
-
 Given a point p, and other n points in two-dimensional space, find k points out of n points which are nearest to p.
 
 NOTE: Distance between two points is measured by the standard Euclidean method.
-
-
-
 Input/Output Format For The Function:
 
-
-
 Input Format:
-
-
-
-There are 4 arguments in input, an integer p_x, which is the x coordinate of point p, integer p_y, which is the y coordinate of point p, an integer k and a 2D integer array of points n_points.
+There are 4 arguments in input, an integer p_x, which is the x coordinate of point p, integer p_y,
+which is the y coordinate of point p, an integer k and a 2D integer array of points n_points.
 
 
 
 Output Format:
-
-
-
 Return a 2D integer array result, which contains k points, nearest to point p.
-
-
 
 Input/Output Format For The Custom Input:
 
-
-
 Input Format:
-
-
-
-The first line of input contains x coordinate of point p, p_x. The next line contains y coordinate of point p, p_y. The next line contains integer k. The next line contains the number of rows n in array points and the following line contains c, the number of columns in array points. It is guaranteed that c = 2 always. The following n lines contain 2 integers each, the x and y coordinates of a point.
-
-
+The first line of input contains x coordinate of point p, p_x. The next line contains y coordinate of point p, p_y.
+The next line contains integer k. The next line contains the number of rows n in array points and the following
+line contains c, the number of columns in array points. It is guaranteed that c = 2 always.
+The following n lines contain 2 integers each, the x and y coordinates of a point.
 
 Example:
-
-
 
 0
 
@@ -64,28 +41,15 @@ Example:
 
 1 0
 
-
-
 Output Format:
-
-
-
 Output k lines, each line contains two integers each representing x and y coordinates.
 
-
-
 For the above input, the output will be:
-
-
 0 1
 
 1 0
 
-
-
 Constraints:
-
-
 
 1 <= n <= 100000
 -1000000000 <= coordinates of the points <=1000000000
@@ -94,12 +58,7 @@ k <= total number of points in array points.
 
 Sample Test Cases:
 
-
-
 Sample Test Case 1:
-
-
-
 Sample Input 1:
 
 
@@ -122,26 +81,14 @@ Sample Input 1:
 
 Sample Output 1:
 
-
-
 1 0
 
-
-
 Explanation 1:
-
-
-
 The distance of point {0,0} from point p{1,1} is sqrt(2) and that of point {1,0} is 1. We need to choose 1(k) point having the minimum distance from point p. So it is {1,0}.
 
 
 Sample Test Case 2:
-
-
-
 Sample Input 2:
-
-
 
 1
 
@@ -159,20 +106,12 @@ Sample Input 2:
 
 0 1
 
-
-
 Sample Output 2:
-
-
 
 1 0
 
 2 1
 
-
-
 Explanation 2:
-
-
-
-Here, we can see that there are all the points are at the same distance from point p. So the answer can be any 2 points. Here {{1,0},{0,1}} and {{2,1},{0,1}} are equally acceptable answers.
+Here, we can see that there are all the points are at the same distance from point p. So the answer can be any 2 points.
+Here {{1,0},{0,1}} and {{2,1},{0,1}} are equally acceptable answers.

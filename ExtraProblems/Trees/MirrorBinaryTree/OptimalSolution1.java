@@ -24,27 +24,17 @@ class Result {
     public static TreeNode mirror_image_util(TreeNode root){
         if (root == null)
             return root;
-        
+
         /* do the subtrees */
         TreeNode left = mirror_image_util(root.left);
         TreeNode right = mirror_image_util(root.right);
-        
+
         /* swap the left and right pointers */
         root.left = right;
         root.right = left;
-        return root; 
+        return root;
     }
     // ============================= End ==============================
-}
-
-class TreeNode{
-    int data;
-    TreeNode left, right;
- 
-    public TreeNode(int item){
-        data = item;
-        left = right = null;
-    }
 }
 
 class Solution {
@@ -70,7 +60,7 @@ class Solution {
         int n = Integer.parseInt(bufferedReader.readLine().trim());// n = Number of vertices
         int root_index = Integer.parseInt(bufferedReader.readLine().trim());// root_index = index of root vertex
         List<List<Integer>> edges = new ArrayList<>();// To store edges
-        
+
         IntStream.range(0, n).forEach(i -> {
             try {
                 edges.add(
@@ -83,7 +73,7 @@ class Solution {
             }
         });
         bufferedReader.close();
-        
+
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(System.out));
         TreeNode root = build_tree(n, root_index, edges);
         TreeNode mirror_root = build_tree(n, root_index, edges);
@@ -95,7 +85,7 @@ class Solution {
         print_level_order(n, mirror_root, bufferedWriter);
         bufferedWriter.close();
     }
-    
+
     public static TreeNode build_tree(int n, int root_index, List<List<Integer>> edges){
         if(n==0) {
             return null;
@@ -111,7 +101,7 @@ class Solution {
             int left = edge.get(1);
             int right = edge.get(2);
             TreeNode cur_node = nodes[vertex];
-            
+
             if(cur_node==null) {
                 cur_node = new TreeNode(vertex);
             }
@@ -131,7 +121,7 @@ class Solution {
         }
         return nodes[root_index];
     }
-    
+
     public static boolean is_mirror_image(TreeNode root, TreeNode mirror_root){
         if(root==null && mirror_root==null) {
             return true;
@@ -144,20 +134,20 @@ class Solution {
         }
         boolean left_result = is_mirror_image(root.left, mirror_root.right);
         boolean right_result = is_mirror_image(root.right, mirror_root.left);
-        
+
         return left_result && right_result;
     }
-   
+
     public static void print_level_order(int n, TreeNode root, BufferedWriter bufferedWriter) throws IOException{
         if(root==null) {
             return;
         }
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
         queue.add(root);
-        
+
         int left_data = -1;
         int right_data = -1;
-        
+
         while(!queue.isEmpty()) {
             TreeNode cur_node = queue.poll();
             left_data = -1;

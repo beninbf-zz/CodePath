@@ -1,18 +1,12 @@
 package main.java.com.codepath.sorting;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
+import main.java.com.codepath.objects.Meeting;
+
+import java.util.*;
 
 public class SortingProblems {
 
+    Sort sort = new Sort();
     /**
      * This problem can be solved with an implementation of heapsort or merge sort.
      *
@@ -518,71 +512,11 @@ public class SortingProblems {
         }
 
         int pivotIdx = (end - start) / 2;
-        int partitionIdx = hoaresStandardPartition(nuts, start, end, bolts[pivotIdx]);
-        hoaresStandardPartition(bolts, start, end, nuts[partitionIdx]);
+        int partitionIdx = sort.hoaresPartition(nuts, start, end, bolts[pivotIdx]);
+        sort.hoaresPartition(bolts, start, end, nuts[partitionIdx]);
 
         nutsAndBoltsNoSortingHelper(nuts, bolts, start, partitionIdx - 1);
         nutsAndBoltsNoSortingHelper(nuts, bolts,  partitionIdx + 1, end);
-    }
-
-    public int hoaresPlusOnePartition(int[] array, int start, int end, int pivotValue) {
-        int i = start;
-        int j = end;
-        while(i < j) {
-            while (array[i] < pivotValue) {
-                i++;
-            }
-            while (array[j] > pivotValue) {
-                j--;
-            }
-
-            if (i <= j) {
-                swap(array, i, j);
-                i++;
-                j--;
-            }
-        }
-        return i;
-    }
-
-    public int hoaresStandardPartition(int[] array, int start, int end, int pivotValue) {
-        int i = start - 1;
-        int j = end + 1;
-        while(true) {
-            do {
-                i++;
-            } while (array[i] < pivotValue);
-
-            do {
-                j--;
-            } while (array[j] > pivotValue);
-
-
-            if (i >= j) {
-                return j;
-            }
-            swap(array, i, j);
-        }
-    }
-
-    public int simpleHoaresPartition(int[] array, int start, int end) {
-        int pivotValue = array[start + (end - start)/2];
-        int i = start;
-        int j = end;
-        while(true) {
-            while (array[i] < pivotValue) {
-                i++;
-            }
-
-            while (array[j] > pivotValue) {
-                j--;
-            }
-
-            if (i >= j) {
-                return i;
-            }
-            swap(array, i, j);
-        }
     }
 
     private int lomutosPartitionForNutsAndBolts(int[] array, int[] array1, int start, int end, int pivot) {
@@ -783,9 +717,9 @@ public class SortingProblems {
     }
 
     /**
-     * findKthSmallest - This problem can be one a number of ways.
+     * findKthSmallest - This problem can be solved a number of ways.
      * Probably the most intuitive although not the most optimal, is to use a heap.
-     * If using a heap the trick to remember the inverse relationship between
+     * If using a heap the trick is to remember the inverse relationship between
      * finding the kth smallest element and the use of a max heap. Or conversely
      * finding the kth largest element and using a min heap.
      *
@@ -840,10 +774,10 @@ public class SortingProblems {
      * If our partition index is less than k, then we should recurse on the right half. When
      * recursing to the right, we must make sure to understand that, if looking for the kth
      * smallest element in an array of [0......n], then looking at the right half, would be
-     * looking for the k - partitionIdex + start - 1 element or
+     * looking for the k - partitionIndex + start - 1 element or
      * [0....left.k....end], as an example. if k == 6, and our partition index was = 3, and our array
      * would be broken up like so [3, 5, 2, 6, 8, 1, 9] =>
-     * left half: [3, 5, 3], partitionIndex[6], right half: [8, 1, 9], if we recurse
+     * left half: [3, 5, 2], partitionIndex[6], right half: [8, 1, 9], if we recurse
      * to the right, we are actually looking for the element at the "2nd" index in the right half,
      * which is 6 - 3 + 0 - 1 = 2, that means when recursing to the right we look for,
      * k - partitionIndex + start - 1 (the - 1 for the zero based property).
@@ -862,7 +796,7 @@ public class SortingProblems {
     private int findKthSmallestHelper(int[] array, int start, int end, int k) {
         if (k > 0 && k <= end - start + 1) {
             int pivot = start + (end - start) / 2;
-            int partitionedIndex = hoaresStandardPartition(array, start, end, array[pivot]);
+            int partitionedIndex = sort.hoaresPartition(array, start, end, array[pivot]);
 
             if (partitionedIndex == k + start - 1) {
                 return array[partitionedIndex];
@@ -871,16 +805,65 @@ public class SortingProblems {
             if (partitionedIndex > k + start - 1) {
                 return findKthSmallestHelper(array, start, partitionedIndex - 1, k);
             }
+            // Using this example [3, 5, 2, 6, 8, 1, 9], find the 5th smallest
             // if we are looking at the right half of the array, we don't want to find the element of
-            // rank k in the right half. if we the rank we were looking for was k = 5, then looking
-            // for an element of rank = 5 in the right half, wouldn't make sense. We've already excluded
-            // the left half, so if the left half ended at 6, and the rank == 5, then we would be looking
-            // for the 6 - 5 element, in the right half. 6 - 5, is the magnitutde of difference from
-            // the start however, and rank is usually one based, so thats why its k - partitionedIndex + start - 1
+            // rank k in the right half. if the rank we were looking for was k = 5
+            // then looking for an element of rank = 5 in the right half, wouldn't make sense. We've already excluded
+            // the left half, so if the left half ended at [6], and the rank == 5, then we would be looking
+            // for the 5th element minus the index of [6], in the right half. 6 - 5, is the magnitude of difference from
+            // the start however, and rank is usually one based, so that's why its k - partitionedIndex + start - 1
             return findKthSmallestHelper(array, partitionedIndex + 1, end, k - partitionedIndex + start - 1);
         }
         return 0;
     }
+
+    /**
+     * findKthLargest - find the kth largest element of an array.
+     *
+     * This implementation is making use of a heap. Specifically a routine to heapfify an array.
+     *
+     * Everytime we "heapify" an array (for a max heap) we're finding the largest value in the array.
+     * In this case, we just want to heapify kth times.
+     *
+     * We first build a heap out of the array, if k == 1, i.e. find the first largest element, then that element,
+     * after first heapifying will be at the root index, index == 0.
+     *
+     * If kth is not equal to 1, then we simply need to keep heapifying, and stop, when we have heapified kth times.
+     *
+     * While repeatedly heapifying, starting with the end of the array, we only need to heapify kth times. In the
+     * context of the loop that means, when n - i == k. Lets assume n == 10. If we are are looking for the
+     * kth largest element, and k == 3, then we stop heapifying when 10 - i == 3, and return array[i], which would be
+     * the kth largest element.
+     *
+     * If we are trying to find the kth largest element, start with an example, say the 3rd largest element. Well,
+     * in an array like so [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], that would be 8, or to think of it another way, because
+     * arrays are 0 based, its the n - kth index, or 10 - 3, the 7th index, which is 8 in this case.
+     *
+     * @param array - int array
+     * @param kth - int the kth largest element
+     * @return in the kth largest
+     */
+    public int findKthLargest(int[] array, int kth) {
+        int n = array.length;
+        // first lets build a heap
+        for (int i = n/2; i >= 0; i--) {
+            sort.maxHeapify(array, i, n - 1);
+        }
+
+         if (kth == 1) {
+             return array[0];
+         }
+
+        for (int i = n - 1; i >= 0; i--) {
+            swap(array, 0, i);
+            sort.maxHeapify(array, 0, i);
+            if (n - i == kth) {
+                return array[i];
+            }
+        }
+        return -1;
+    }
+
 
     /**
      * Is one array a subset of another.
@@ -926,5 +909,128 @@ public class SortingProblems {
             }
         }
         return shorterBeg == shorter.length;
+    }
+
+    /**
+     * Your company built an in-house calendar tool called HiCal.
+     * You want to add a feature to see the times in a day when everyone is available. To do this, you’ll need to
+     * know when any team is having a meeting. In HiCal, a meeting is stored as a tuple ↴ of integers
+     * (start_time, end_time). These integers represent the number of 30-minute blocks past 9:00am.
+     *
+     * For Example:
+     *
+     * (2, 3)  # Meeting from 10:00 – 10:30 am
+     * (6, 9)  # Meeting from 12:00 – 1:30 pm
+     *
+     * Write a function merge_ranges() that takes a list of multiple meeting time ranges and returns a list
+     * of condensed ranges.
+     *
+     * For example, given:
+     *
+     *  [(0, 1), (3, 5), (4, 8), (10, 12), (9, 10)]
+     *
+     *  your function would return:
+     *
+     * [(0, 1), (3, 8), (9, 12)]
+     *  Do not assume the meetings are in order. The meeting times are coming from multiple teams.
+     */
+    public List<Meeting> mergeRanges(List<Meeting> meetings) {
+
+        Collections.sort(meetings, new Comparator<Meeting>() {
+            @Override
+            public int compare(Meeting m1, Meeting m2) {
+               return m1.getStartTime() - m2.getStartTime();
+            }
+        });
+
+        List<Meeting> results = new ArrayList<Meeting>();
+
+        int length = meetings.size();
+        int endingSpot = 0;
+        int currPointer = 0;
+
+        for (int i = 0; i < length - 1; i++) {
+            Meeting meeting = meetings.get(currPointer);
+            Meeting nextMeeting = meetings.get(i + 1);
+            int meetingEndTime = meeting.getEndTime();
+            if (isInBetween(meetingEndTime, nextMeeting)) {
+                Meeting mergedMeeting = new Meeting(meeting.getStartTime(), nextMeeting.getEndTime());
+                results.add(mergedMeeting);
+                i++;
+                currPointer = i + 1;
+            } else if (meetingEndTime >= nextMeeting.getEndTime()) {
+                //System.out.println("Current end time greater than next end time("+meeting+")");
+            } else {
+                //System.out.println("Adding current meeting(" + meeting +")");
+                results.add(meeting);
+                currPointer++;
+            }
+            endingSpot = i;
+        }
+
+        // Attempt to merge the last meeting in original meetings list with end of results
+        // System.out.println("END: " + endingSpot);
+        // System.out.println("RESULTS: " + results);
+
+        if (endingSpot < length - 1) {
+            // If we previously have results
+            if (!results.isEmpty()) {
+                Meeting meeting = results.get(results.size() - 1);
+                Meeting lastMeeting = meetings.get(length - 1);
+                if (isInBetween(meeting.getEndTime(), lastMeeting)) {
+                    Meeting mergedMeeting = new Meeting(meeting.getStartTime(), lastMeeting.getEndTime());
+                    results.set(results.size() - 1, mergedMeeting);
+                } else {
+                    results.add(lastMeeting);
+                }
+            } else {
+                results.add(meetings.get(endingSpot));
+            }
+        }
+        return results;
+    }
+
+
+    public boolean isInBetween(int meetingEndTime, Meeting nextMeeting) {
+        return meetingEndTime >= nextMeeting.getStartTime() && meetingEndTime <= nextMeeting.getEndTime();
+    }
+
+    public List<Meeting> officialMergeRangesSolution(List<Meeting> meetings) {
+
+        // make a copy so we don't destroy the input
+        List<Meeting> sortedMeetings = new ArrayList<>();
+        for (Meeting meeting: meetings) {
+            Meeting meetingCopy = new Meeting(meeting.getStartTime(), meeting.getEndTime());
+            sortedMeetings.add(meetingCopy);
+        }
+
+        // sort by start time
+        Collections.sort(sortedMeetings, new Comparator<Meeting>() {
+            @Override
+            public int compare(Meeting m1, Meeting m2) {
+                return m1.getStartTime() - m2.getStartTime();
+            }
+        });
+
+        // initialize mergedMeetings with the earliest meeting
+        List<Meeting> mergedMeetings = new ArrayList<>();
+        mergedMeetings.add(sortedMeetings.get(0));
+
+        for (Meeting currentMeeting : sortedMeetings) {
+
+            Meeting lastMergedMeeting = mergedMeetings.get(mergedMeetings.size() - 1);
+
+            // if the current meeting overlaps with the last merged meeting, use the
+            // later end time of the two
+            if (currentMeeting.getStartTime() <= lastMergedMeeting.getEndTime()) {
+                lastMergedMeeting.setEndTime(Math.max(lastMergedMeeting.getEndTime(), currentMeeting.getEndTime()));
+
+                // add the current meeting since it doesn't overlap
+            } else {
+                mergedMeetings.add(currentMeeting);
+            }
+        }
+
+        return mergedMeetings;
     }
 }

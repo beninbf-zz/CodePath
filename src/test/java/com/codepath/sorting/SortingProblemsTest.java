@@ -1,11 +1,13 @@
 package test.java.com.codepath.sorting;
 
+import main.java.com.codepath.objects.Meeting;
 import main.java.com.codepath.sorting.Sort;
 import main.java.com.codepath.sorting.SortingProblems;
 import main.java.com.codepath.util.Util;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,22 +25,97 @@ public class SortingProblemsTest {
     }
 
     @Test
-    public void quickSort() {
+    public void hoaresQuickSort() {
         int[] array = {8, 7, 6, 5, 4};
         int[] result = {4, 5, 6, 7, 8};
         Sort sorter = new Sort();
-        sorter.quickSort(array);
+        sorter.hoaresQuickSort(array);
         Util.print(array);
         testEquality(array, result);
     }
 
 
     @Test
-    public void quickSort1() {
+    public void hoaresQuickSort1() {
         int[] array = {8, 7, 6, 5, 8};
         int[] result = {5, 6, 7, 8, 8};
         Sort sorter = new Sort();
-        sorter.quickSort(array);
+        sorter.hoaresQuickSort(array);
+        Util.print(array);
+        testEquality(array, result);
+    }
+
+    @Test
+    public void hoaresQuickSort2() {
+        int[] array = {19, 27, 4, 6, 30, 1, 9};
+        int[] result = {1, 4, 6, 9, 19, 27, 30};
+        Sort sorter = new Sort();
+        sorter.hoaresQuickSort(array);
+        Util.print(array);
+        testEquality(array, result);
+    }
+
+    @Test
+    public void hoaresQuickSort3() {
+        int[] array = {9, 8, 7, 6, 5, 4 ,3 ,2, 1};
+        int[] result = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Sort sorter = new Sort();
+        sorter.hoaresQuickSort(array);
+        Util.print(array);
+        testEquality(array, result);
+    }
+
+    @Test
+    public void myQuickSort() {
+        int[] array = {19, 27, 4, 6, 30, 1, 9};
+        int[] result = {1, 4, 6, 9, 19, 27, 30};
+        Sort sorter = new Sort();
+        Util.print(array);
+        sorter.myQuickSort(array);
+        Util.print(array);
+        testEquality(array, result);
+    }
+
+    @Test
+    public void myQuickSort1() {
+        int[] array = {9, 8, 7, 6, 5, 4 ,3 ,2, 1};
+        int[] result = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Sort sorter = new Sort();
+        Util.print(array);
+        sorter.myQuickSort(array);
+        Util.print(array);
+        testEquality(array, result);
+    }
+
+    @Test
+    public void myQuickSort2() {
+        int[] array = {9, 8, 8, 8, 5, 4, 44, 44, 6};
+        int[] result = {4, 5, 6, 8, 8, 8, 9, 44, 44};
+        Sort sorter = new Sort();
+        Util.print(array);
+        sorter.myQuickSort(array);
+        Util.print(array);
+        testEquality(array, result);
+    }
+
+    @Test
+    public void lomutosQuickSort() {
+        int[] array = {19, 27, 4, 6, 30, 1, 9};
+        int[] result = {1, 4, 6, 9, 19, 27, 30};
+        Sort sorter = new Sort();
+        Util.print(array);
+        sorter.lomutosQuickSort(array);
+        Util.print(array);
+        testEquality(array, result);
+    }
+
+    @Test
+    public void lomutosQuickSort1() {
+        int[] array = {9, 8, 7, 6, 5, 4 ,3 ,2, 1};
+        int[] result = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Sort sorter = new Sort();
+        Util.print(array);
+        sorter.lomutosQuickSort(array);
         Util.print(array);
         testEquality(array, result);
     }
@@ -59,14 +136,25 @@ public class SortingProblemsTest {
         int[] result = {1, 3, 4, 5, 10};
         Sort sorter = new Sort();
         sorter.heapSortMax(array);
+        System.out.println("array");
         Util.print(array);
         testEquality(array, result);
 
-        int[] array1 = {8, 7, 6, 5, 4};
-        int[] result1 = {4, 5, 6, 7, 8};
-        sorter.heapSortMax(array1);
-        Util.print(array1);
-        testEquality(array1, result1);
+//        int[] array1 = {8, 7, 6, 5, 4};
+//        int[] result1 = {4, 5, 6, 7, 8};
+//        sorter.heapSortMax(array1);
+//        Util.print(array1);
+//        testEquality(array1, result1);
+    }
+
+    @Test
+    public void heapSortMax1() {
+        int[] array = {19, 27, 4, 6, 30, 1, 9};
+        int[] result = {1, 4, 6, 9, 19, 27, 30};
+        Sort sorter = new Sort();
+        sorter.heapSortMax(array);
+        Util.print(array);
+        testEquality(array, result);
     }
 
     @Test
@@ -422,5 +510,107 @@ public class SortingProblemsTest {
         for (int i = 0; i < answer.length; i++) {
             assertEquals("values should be equal", answer[i], input[i]);
         }
+    }
+
+    // tests
+    @Test
+    public void meetingsBasic() {
+        final List<Meeting> meetings = Arrays.asList(new Meeting(0, 1), new Meeting(3, 5), new Meeting(4, 8),
+                new Meeting(10, 12), new Meeting(9, 10));
+        final List<Meeting> actual = testObj.mergeRanges(meetings);
+        final List<Meeting> expected = Arrays.asList(new Meeting(0, 1), new Meeting(3, 8), new Meeting(9, 12));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void meetingsOverlapTest() {
+        final List<Meeting> meetings = Arrays.asList(new Meeting(1, 3), new Meeting(2, 4));
+        final List<Meeting> actual = testObj.mergeRanges(meetings);
+        final List<Meeting> expected = Arrays.asList(new Meeting(1, 4));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void  meetingsTouchTest() {
+        final List<Meeting> meetings = Arrays.asList(new Meeting(5, 6), new Meeting(6, 8));
+        final List<Meeting> actual = testObj.mergeRanges(meetings);
+        final List<Meeting> expected = Arrays.asList(new Meeting(5, 8));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void meetingContainsOtherMeetingTest() {
+        final List<Meeting> meetings = Arrays.asList(new Meeting(1, 8), new Meeting(2, 5));
+        final List<Meeting> actual = testObj.mergeRanges(meetings);
+        final List<Meeting> expected = Arrays.asList(new Meeting(1, 8));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void meetingsStaySeparateTest() {
+        final List<Meeting> meetings = Arrays.asList(new Meeting(1, 3), new Meeting(4, 8));
+        final List<Meeting> actual = testObj.mergeRanges(meetings);
+        final List<Meeting> expected = Arrays.asList(
+                new Meeting(1, 3), new Meeting(4, 8)
+        );
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void multipleMergedMeetingsTest() {
+        final List<Meeting> meetings = Arrays.asList(
+                new Meeting(1, 4), new Meeting(2, 5), new Meeting (5, 8));
+        final List<Meeting> actual = testObj.mergeRanges(meetings);
+        final List<Meeting> expected = Arrays.asList(new Meeting(1, 8));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void meetingsNotSortedTest() {
+        final List<Meeting> meetings = Arrays.asList(
+                new Meeting(5, 8), new Meeting(1, 4), new Meeting(6, 8));
+        final List<Meeting> actual = testObj.mergeRanges(meetings);
+        final List<Meeting> expected = Arrays.asList(
+                new Meeting(1, 4), new Meeting(5, 8)
+        );
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void oneLongMeetingContainsSmallerMeetingsTest() {
+        final List<Meeting> meetings = Arrays.asList(
+                new Meeting(1, 10), new Meeting(2, 5), new Meeting(6, 8),
+                new Meeting(9, 10), new Meeting(10, 12)
+        );
+        final List<Meeting> actual = testObj.mergeRanges(meetings);
+        final List<Meeting> expected = Arrays.asList(
+                new Meeting(1, 12)
+        );
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void sampleInputTest() {
+        final List<Meeting> meetings = Arrays.asList(
+                new Meeting(0, 1), new Meeting(3, 5), new Meeting(4, 8),
+                new Meeting(10, 12), new Meeting(9, 10)
+        );
+        final List<Meeting> actual = testObj.mergeRanges(meetings);
+        final List<Meeting> expected = Arrays.asList(
+                new Meeting(0, 1), new Meeting(3, 8), new Meeting(9, 12)
+        );
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void findKthLargest() {
+        int[] array = {19, 27, 4, 6, 30, 1, 9};
+        assertEquals("30 should be the 1st largest", 30, testObj.findKthLargest(array, 1));
+        assertEquals("27 should be the 1st largest", 27, testObj.findKthLargest(array, 2));
+        assertEquals("19 should be the 1st largest", 19, testObj.findKthLargest(array, 3));
+        assertEquals("9 should be the 1st largest", 9, testObj.findKthLargest(array, 4));
+        assertEquals("6 should be the 1st largest", 6, testObj.findKthLargest(array, 5));
+        assertEquals("4 should be the 1st largest", 4, testObj.findKthLargest(array, 6));
+        assertEquals("1 should be the 1st largest", 1, testObj.findKthLargest(array, 7));
     }
 }

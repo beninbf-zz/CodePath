@@ -1,87 +1,36 @@
+package main.java.com.codepath.extraproblems.sorting;
+
 import java.io.*;
-import java.math.*;
-import java.security.*;
-import java.text.*;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.*;
-import java.util.regex.*;
 import java.util.stream.*;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-class Result {
+class NearestNeighborBruteForceSolution {
     /*============================== START =========================================*/
     public static List<List<Integer>> nearest_neighbours(int p_x, int p_y, int k, List<List<Integer>> n_points) {
         int len = n_points.size();
-        /*Point is a class with two attributes for each point 
+        /*Point is a class with two attributes for each point
         present n_points- index and distance from point P.*/
         Point[] pnt = new Point[len];
-        for(int i = 0; i<len; i++){
+        /*We fill the values in pnt array accordingly*/
+        for(int i = 0; i<len; i++) {
             int x = n_points.get(i).get(0), y = n_points.get(i).get(1);
             pnt[i] = new Point(i, Math.sqrt((p_x-x)*1l*(p_x-x) + (p_y-y)*1l*(p_y-y)));
         }
-        /*Shuffle the array points*/
-        pnt = shuffle(pnt,new Random());
+        /*We sort the point array according to distance, that means the point
+        having least distance from point P would be at the lowest index (index 0) and the
+        point with the maximum distance would be at the last index.*/
+        Arrays.sort(pnt);
         List<List<Integer>> result = new ArrayList<>();
-        topK(pnt,k);
-        for(int i = 0; i<k; i++){
-            result.add(n_points.get(pnt[i].index));
+        /*We simply take the top k points and return them as the answer*/
+        for(int i = 0; i < k; i++){
+            int index = pnt[i].index;
+            result.add(n_points.get(index));
         }
         return result;
     }
 
-    /* Get k points having least distance from point P.*/
-    public static void topK(Point[] points, int k){
-        int left = 0, right = points.length - 1;
-        /*We just need the k smallest points. We dont care whether they are 
-        sorted or not. Similarly once we get the smallest possible k elements, 
-        we can skip sorting of unnecessary sub arrays.*/
-        while(left<right){
-            int part = split(points, left, right);
-            if (part==k) {
-                return;
-            } 
-            else if(part<k) {
-                left=part+1;
-            } 
-            else{
-                right=part-1;
-            }
-        }
-    }
-
-    /*Shuffles the array randomly*/
-    public static Point[] shuffle(Point[] a, Random gen){
-        for (int i = 0, n = a.length; i < n; i++){
-            int ind = gen.nextInt(n - i) + i;
-            Point d = a[i];
-            a[i] = a[ind];
-            a[ind] = d;
-        }
-        return a;
-    }
-
-    /*Similar to the partition function of quicksort. It partitions the array along the pivot 
-    such that elements left to the pivot are smaller than it and to the right are larger than it.*/
-    public static int split(Point[] points, int left, int right) {
-        Point piv = points[left];
-        int i = left, j = right + 1;
-        while (true) {
-            while (i < right && points[++i].compareTo(piv) < 0);
-            while (j > left && points[--j].compareTo(piv) > 0);
-            if (i >= j) {
-                break;
-            }
-            Point temp = points[i];
-            points[i] = points[j];
-            points[j] = temp;
-        }
-        Point temp = points[j];
-        points[j] = points[left];
-        points[left] = temp;
-        return j;
-    }
     static class Point implements Comparable<Point>{
         int index;
         double dist;
@@ -91,15 +40,15 @@ class Result {
             this.dist = dist;
         }
 
-        public int compareTo(Point part){
-            return Double.compare(this.dist,part.dist);
+        public int compareTo(Point p){
+            return Double.compare(this.dist,p.dist);
         }
     }
-    /*============================== END =========================================*/
+/*============================== END =========================================*/
 }
 
 
-class Solution {
+class NearestNeighbor {
     public static void main(String args[]) {
         /*
         This function is used to increase the size of recursion stack. It makes the size of stack
@@ -121,18 +70,14 @@ class Solution {
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(System.out));
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-
         int p_x = Integer.parseInt(bufferedReader.readLine().trim());
-
         int p_y = Integer.parseInt(bufferedReader.readLine().trim());
-
         int k = Integer.parseInt(bufferedReader.readLine().trim());
 
         int n_pointsRows = Integer.parseInt(bufferedReader.readLine().trim());
         int n_pointsColumns = Integer.parseInt(bufferedReader.readLine().trim());
 
         List<List<Integer>> n_points = new ArrayList<>();
-
         IntStream.range(0, n_pointsRows).forEach(i -> {
             try {
                 n_points.add(
@@ -145,8 +90,7 @@ class Solution {
             }
         });
 
-        List<List<Integer>> result = Result.nearest_neighbours(p_x, p_y, k, n_points);
-
+        List<List<Integer>> result = NearestNeighborBruteForceSolution.nearest_neighbours(p_x, p_y, k, n_points);
         result.stream()
             .map(
                 r -> r.stream()

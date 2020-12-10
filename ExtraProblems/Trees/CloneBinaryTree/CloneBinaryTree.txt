@@ -1,63 +1,27 @@
 Clone a Binary Tree
 
-
-
 Problem Statement:
-
-
-
 Given a binary tree (represented by its root node, like usual), clone it. Return the root node of the cloned tree.
-
-
-
-Remember: Cloning or copying a tree is best done recursively. Notice how clean and succinct the code is. Some of you may be tempted to do it breadth-first. But that's more complicated to handle in implementation. 
-
-
+Remember: Cloning or copying a tree is best done recursively. Notice how clean and succinct the code is.
+Some of you may be tempted to do it breadth-first. But that's more complicated to handle in implementation.
 
 Input/Output Format For The Function:
-
-
-
 Input format:
 
-
-
 There is only one argument named root denoting the root of the input tree.
-
-
-
 Output format:
 
-
-
 Return the root of cloned tree.
-
-
-
 Input/Output Format For The Custom Input:
-
-
-
 Input Format:
-
-
-
 line number 1: <noOfNodes> denoting number of nodes of the tree.
 line number 2: <noOfNdoes space seprated integers> denoting the values of the nodes. Please make sure there are not leading or trailing spaces and between two integers there must be a single space.
 line number 3: <rootIndex> denoting the root of the tree. value of rootIndex must be between -1 to noOfNodes-1
 line number 4: <noOfEdges> denoting the number of edges of the tree
 next noOfEdges line: <parentNodeIndex><space><childNodeIndex><space><leftOrRightFlag>. Here <parentNodeIndex> and <childNodeIndex> are the node indexes ranging from 0 to noOfNodes-1. <leftOrRighFlag> is either "L" or "R" (without quotes) denoting the left or right child where "L" stands for left child and "R" stands for right child.
 
-
 For the below tree:
-
-
-
-
-
 Raw input will be:
-
-
 
 5
 
@@ -75,26 +39,11 @@ Raw input will be:
 
 1 4 R
 
-
-
 Output Format:
-
-
-
 It is exactly same as raw input format.
-
-
-
 For the below tree:
 
-
-
-
-
 Raw output will be:
-
-
-
 5
 
 1 2 3 4 5
@@ -117,38 +66,13 @@ Constraints:
 
 0 <= number of nodes <= 100000
 1 <= values stored in the nodes <= 10^9
-
-
 Sample Test Case:
-
-
-
 Sample Input:
-
-
-
-
-
-
-
 Sample Output:
-
-
-
-
-
-
-
 Tree node structure:
 
-
-
 Class TreeNode {
-
 int val;
-
 TreeNode left_ptr;
-
 TreeNode right_ptr;
-
 }

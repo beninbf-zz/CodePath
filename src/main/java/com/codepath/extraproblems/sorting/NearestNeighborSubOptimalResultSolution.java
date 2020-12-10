@@ -1,16 +1,12 @@
+package main.java.com.codepath.extraproblems.sorting;
+
 import java.io.*;
-import java.math.*;
-import java.security.*;
-import java.text.*;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.*;
-import java.util.regex.*;
 import java.util.stream.*;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-class Result {
+class NearestNeighborSubOptimalResult {
     /*============================== START =========================================*/
     public static List<List<Integer>> nearest_neighbours(int p_x, int p_y, int k, List<List<Integer>> n_points) {
         int len = n_points.size();
@@ -18,9 +14,9 @@ class Result {
         most distance will be at the front of the queus*/
         PriorityQueue<Point> maxHeap = new PriorityQueue<>();
         for(int i = 0; i<len; i++){
-            int x = n_points.get(i).get(0), y = n_points.get(i).get(1); 
-            /*We keep on adding all the points and ensure that the size of heap never 
-            exceeds k. If it does, we poll from it, that is remove the point having 
+            int x = n_points.get(i).get(0), y = n_points.get(i).get(1);
+            /*We keep on adding all the points and ensure that the size of heap never
+            exceeds k. If it does, we poll from it, that is remove the point having
             the most distance from point P from all the existing points in the maxheap.*/
             maxHeap.add(new Point(i, Math.sqrt((p_x-x)*1l*(p_x-x) + (p_y-y)*1l*(p_y-y))));
             if(maxHeap.size()>k){
@@ -36,7 +32,7 @@ class Result {
         return result;
     }
 
-    /*Point is a class with two attributes for each point 
+    /*Point is a class with two attributes for each point
         present n_points- index and distance from point P.*/
     static class Point implements Comparable<Point>{
         int index;
@@ -55,7 +51,7 @@ class Result {
 }
 
 
-class Solution {
+class NearestNeighborSubOptimalResultSolution {
     public static void main(String args[]) {
         /*
         This function is used to increase the size of recursion stack. It makes the size of stack
@@ -101,7 +97,7 @@ class Solution {
             }
         });
 
-        List<List<Integer>> result = Result.nearest_neighbours(p_x, p_y, k, n_points);
+        List<List<Integer>> result = NearestNeighborSubOptimalResult.nearest_neighbours(p_x, p_y, k, n_points);
 
         result.stream()
             .map(
