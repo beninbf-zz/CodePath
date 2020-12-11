@@ -1,9 +1,5 @@
 package main.java.com.codepath.techscreens.noom;
 
-enum ResponsibilityType {
-    PERSONAL_COACHING, GROUP, MANAGING
-}
-
 public class Responsibility {
 
     public int getPercentage() {
@@ -20,5 +16,9 @@ public class Responsibility {
     public Responsibility(ResponsibilityType type, int percentage) {
         this.type = type;
         this.percentage = percentage;
+    }
+
+    public String toString() {
+      return type + " : " + percentage;
     }
 }
