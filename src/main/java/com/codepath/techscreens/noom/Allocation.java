@@ -16,9 +16,7 @@ public class Allocation implements Comparable<Allocation> {
     // For Baseline allocation there is not start and end date.
     public Allocation(Responsibility personalCoaching, Responsibility managing, Responsibility groupCoaching) {
         this.type = AllocationType.BASELINE;
-        responsibilityMap.put(personalCoaching.getType(), personalCoaching.getPercentage());
-        responsibilityMap.put(managing.getType(), managing.getPercentage());
-        responsibilityMap.put(groupCoaching.getType(), groupCoaching.getPercentage());
+        loadResponsibilityMap(personalCoaching, managing, groupCoaching);
         this.start = 0;
         this.end = 0;
     }
@@ -26,12 +24,16 @@ public class Allocation implements Comparable<Allocation> {
     // For Temporary allocation there is a start and end time.
     public Allocation(Responsibility personalCoaching, Responsibility managing, Responsibility groupCoaching, int start, int end) throws Exception {
         this.type = AllocationType.TEMPORARY;
-        responsibilityMap.put(personalCoaching.getType(), personalCoaching.getPercentage());
-        responsibilityMap.put(managing.getType(), managing.getPercentage());
-        responsibilityMap.put(groupCoaching.getType(), groupCoaching.getPercentage());
+        loadResponsibilityMap(personalCoaching, managing, groupCoaching);
         validatedStartAndEnd(start, end);
         this.start = start;
         this.end = end;
+    }
+
+    private void loadResponsibilityMap(Responsibility personalCoaching, Responsibility managing, Responsibility groupCoaching) {
+        responsibilityMap.put(personalCoaching.getType(), personalCoaching.getPercentage());
+        responsibilityMap.put(managing.getType(), managing.getPercentage());
+        responsibilityMap.put(groupCoaching.getType(), groupCoaching.getPercentage());
     }
 
     private void validatedStartAndEnd(int start, int end) throws Exception {
